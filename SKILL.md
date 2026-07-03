@@ -222,10 +222,11 @@ underlying issue so repeats become countable evidence.
 
 ### Review trigger
 
-At session start, after reading SUMMARY.md, consolidation is due when any
-issue_key has ≥2 entries from ≥2 different sessions, or ≥5 entries have
-`status:"new"`, or the user asks for it. When due, propose it in one line and
-run on confirmation — never silently rewrite your own operating rules.
+At session start (after reading SUMMARY.md) and again at session close,
+consolidation is due when any issue_key has ≥2 entries from ≥2 different
+sessions, or ≥5 entries have `status:"new"`, or the user asks for it. When
+due, propose it in one line and run on confirmation — never silently rewrite
+your own operating rules.
 
 ### Consolidation — a normal task through the pipeline
 
@@ -245,6 +246,27 @@ Spec → executor → fresh verifier, target repo = this skill's directory.
 - **DoD:** `scripts/publish-check.sh` exits 0; hard rules unchanged unless the
   user approved changing them; frontmatter intact. Commit; push on user
   confirmation or when the user asked for publication.
+
+### Session close
+
+The loop closes at the end of every session, not at the start of the next one.
+Before the final report:
+
+1. **Sweep.** Audit the session against the capture triggers and append
+   anything missed to `log.jsonl`. "Nothing to log" is valid only when no
+   trigger fired.
+2. **Digest.** If anything was appended this session, refresh the
+   pending-clusters list in `SUMMARY.md` (≤30 lines: issue_key, count,
+   one-line lesson). SUMMARY is derived state — the orchestrator updates it
+   directly, no pipeline.
+3. **Trigger check.** If the review trigger is met, propose consolidation in
+   the final report as one line naming the top clusters; run it on
+   confirmation — this session if budget allows, else first thing next
+   session.
+4. **Report.** The final report names the feedback outcome explicitly:
+   entries logged (by issue_key) or "no feedback events this session".
+   Closing a session with pending work in `feedback/` and no mention of it
+   is itself a process failure.
 
 ## Communication discipline
 

@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.4.0 — 2026-07-04
+
+- Session close step (user correction: the skill was never updated after
+  sessions despite 28 pending feedback entries): mandatory end-of-session
+  sweep of uncaptured events, SUMMARY.md pending-clusters refresh,
+  review-trigger check with a one-line consolidation proposal, and an
+  explicit feedback outcome in the final report. Review trigger now
+  evaluated at session close as well as session start.
+
 ## 2.3.0 — 2026-07-03
 
 - Codex headless launch rules made precise (user prompt about permission
