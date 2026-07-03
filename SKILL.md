@@ -230,5 +230,13 @@ Spec → executor → fresh verifier, target repo = this skill's directory.
 - One short pipeline status: done / in progress / blocked-and-why.
 - Don't retell subagent reports — only the decision and the next step.
 - Progress claims only from tool results of this session; unverified — say so.
-- Check budget/limit consumption periodically; when low — lower subagent effort and merge small tasks into bigger ones, never skip specs or verification.
+- Check budget/limit consumption periodically — at session start and before each
+  large parallel dispatch. Quick estimate: `npx -y ccusage@latest blocks 2>&1 | tail -20`
+  — a local-transcript estimate of the current 5-hour block (its weekly totals are
+  estimates too; the authoritative session/weekly percentages exist only in the
+  interactive `/usage` panel, so when the estimate runs hot, ask the user for the
+  `/usage` numbers). If the tool is unavailable, skip without blocking. When low
+  (>80% of the block, a hot weekly estimate, or the user reports a squeeze) —
+  lower subagent effort and merge small tasks into bigger ones, defer optional
+  review passes; never skip specs or verification.
 - The final message re-grounds a reader who saw none of the process: outcome first, plain sentences, no invented shorthand.

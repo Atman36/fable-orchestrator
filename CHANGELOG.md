@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.1.0 — 2026-07-03
+
+- Budget check made concrete (explicit user request): at session start and before
+  large parallel dispatches, estimate the current 5-hour block via `ccusage`
+  (local-transcript estimate); the authoritative session/weekly percentages exist
+  only in the interactive `/usage` panel — ask the user for them when the estimate
+  runs hot. Downshift actions unchanged: lower effort, merge tasks, defer optional
+  review passes, never skip specs or verification.
+
 ## 2.0.0 — 2026-07-03
 
 - Feedback loop: adverse events captured to `feedback/log.jsonl` (issue_key clustering), review trigger (≥2 repeats from ≥2 sessions, or ≥5 pending), consolidation through the normal spec→executor→verifier pipeline with promotion gate, smallest-surface mapping, and privacy scrub.
