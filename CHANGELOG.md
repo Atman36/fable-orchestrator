@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.2.0 — 2026-07-03
+
+- Codex quota check (explicit user request): before the first Codex routing of a
+  session, read the weekly/5-hour `rate_limits` snapshot from the newest Codex
+  session rollout log (quota-free, offline); re-read after each `codex exec`;
+  above ~80% weekly used, route to Codex only on explicit user request.
+
 ## 2.1.0 — 2026-07-03
 
 - Budget check made concrete (explicit user request): at session start and before

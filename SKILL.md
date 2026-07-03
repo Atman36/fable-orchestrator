@@ -78,6 +78,15 @@ Rules of engagement:
   a precise question and a required report format suffice.
 - Quota discipline: at most one retry per call; on a quota error, stop routing
   to Codex for the rest of the session.
+- Quota check (quota-free, offline) before the first Codex routing of a session:
+  the newest `~/.codex/sessions/**/rollout-*.jsonl` embeds a `rate_limits`
+  snapshot — `secondary.used_percent` is the weekly figure, `primary` the
+  5-hour one. Trust `primary` only while its `resets_at` is in the future;
+  treat snapshots older than ~6h as stale (numbers are only as fresh as the
+  last Codex run). Every completed `codex exec` refreshes the log for free —
+  re-read after each call. Above ~80% weekly used, route to Codex only on
+  explicit user request. (Format observed on CLI 0.142.5; undocumented, may
+  drift.)
 - On any Codex failure, inspect what it left behind (worktree `git status`)
   before falling back to a Claude subagent, and note the substitution in the
   report.
