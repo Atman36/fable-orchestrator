@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.3.0 — 2026-07-03
+
+- Codex headless launch rules made precise (user prompt about permission
+  requests): approvals never block `codex exec` — they fail cleanly; pin
+  `--sandbox` AND `-c approval_policy=never` explicitly (ambient config.toml
+  sandbox_mode may be danger-full-access); post-subcommand `-a` is broken
+  (openai/codex#26602); write tasks get `workspace-write` inside a worktree;
+  full-access/bypass only in externally sandboxed environments with explicit
+  user approval.
+
 ## 2.2.0 — 2026-07-03
 
 - Codex quota check (explicit user request): before the first Codex routing of a
