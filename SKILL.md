@@ -48,9 +48,46 @@ Communication discipline wins — escalate only after a failed verification.
 A project's CLAUDE.md may override this table (ban a model, add a routing
 rule); project rules win.
 
+### Model roles (as of 2026-07)
+
+Per-model profiles behind the table above. Default pipeline shape:
+**Fable invents → Opus verifies and plans → Sonnet builds → GPT-5.5
+independently critiques → Haiku clears the routine.**
+
+- **Fable 5 — architect & inventor.** Route the hardest, newest, most
+  ill-defined work: inventing a product or system, agent architectures,
+  unexpected approaches, codebase-wide investigations, long-horizon
+  autonomous runs, dense visual/product work. While subsidised access lasts,
+  spend it on creating projects, specs and architectures — never on routine
+  code, never as first-touch for simple tasks. Caveats: expensive, slow on
+  hard runs; aggressive safety classifiers can reroute benign coding
+  requests to Opus 4.8.
+- **Opus 4.8 — senior engineer / tech lead.** Complex multi-step tasks,
+  architecture review, debugging, autonomous agent work, carrying a complex
+  project to done; its strength is reliable execution of long tasks, honesty
+  and uncertainty flagging. The premium reviewer and risk-tier route, and
+  the fallback when Fable refuses. Needs clean scope: given noisy context it
+  executes the noise literally.
+- **Sonnet 5 — main builder.** The bulk of development: writing code,
+  changing the repo, tool use, executing a clear plan. Best candidate for
+  the orchestrator's default executor model. Caveat: its new tokenizer
+  inflates token counts (~30% vs Sonnet 4.6) and low/medium effort can
+  under-think hard problems — escalate architecture, compliance-sensitive
+  and cross-service work instead of trusting the default.
+- **GPT-5.5 (via Codex CLI) — analyst & universal brain.** Research,
+  comparing options, rigorous analysis, requirements work, synthesis over
+  large corpora, and independent out-of-family critique of Claude-made
+  plans and diffs; also strong at heavy bounded execution through tools.
+  Runs on metered quota — the Codex rules below still apply.
+- **Haiku 4.5 — fast junior.** Classification, data extraction, simple
+  edits, short summaries, routing, mechanical checks — high-volume,
+  low-stakes flow. Do NOT give it architecture, complex debugging, large
+  ambiguous tasks, or decisions where a mistake is expensive; it drifts
+  from instructions in large project contexts.
+
 ### Codex — exception channel, not a workhorse
 
-The OpenAI Codex CLI is available as an out-of-family executor (`codex exec`
+The OpenAI Codex CLI (GPT-5.5) is available as an out-of-family executor (`codex exec`
 via Bash). It runs on the user's metered ChatGPT Plus subscription — a scarce
 resource. Claude subagents stay the default for all reading, coding, and
 verification; call Codex only when it adds what they can't:
