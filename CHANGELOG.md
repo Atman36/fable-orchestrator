@@ -1,5 +1,33 @@
 # Changelog
 
+## 2.5.0 — 2026-07-04
+
+- Merged the most valuable rules from two user-provided orchestrator variants
+  (an issue-based "hands" pipeline and a multi-model pipeline); model routing
+  and the PLAN.md/spec-file board are unchanged:
+  - New hard rule 5: judgment is never delegated — scouts bring facts with
+    coordinates and all N options with objective attributes; the orchestrator
+    picks. Scout prompts get an allowed/forbidden verb list.
+  - Falsifiable DoD: the check must be able to fail — mentally break the
+    solution and confirm the command catches it.
+  - Under-recon markers: "probably/likely/apparently" banned in specs —
+    resolve before dispatch or promote to an explicit Decision.
+  - Grounding gate for synthesis artifacts: name the deepest source of truth,
+    verify claims against it verbatim (connectives/quantifiers added during
+    compression); derived-vs-derived agreement proves nothing.
+  - Executor envelope: STOP on spec-reality divergence or already-done work,
+    with proof (a divergence is a spec defect, the ladder does not advance);
+    reports gain a "Noticed, didn't touch" section triaged into new tasks.
+  - Report protocol: full subagent reports as files under `<taskdir>/reports/`
+    with self-sufficient ≤15-line digests; successor audits predecessor's
+    traces after mid-task death; browser checks headless only.
+  - Verifier verdict "unverifiable here" is legal — a named risk beats a
+    silent green.
+  - Final review arbitration: accept / reject-with-rationale / defer-to-task;
+    always accept "tests green but a protection silently died". Pipeline-end
+    cleanup: stop leftover processes before removing worktrees and branches.
+  - Codex: end every `codex exec` with `</dev/null` (stdin hang trap).
+
 ## 2.4.0 — 2026-07-04
 
 - Session close step (user correction: the skill was never updated after
