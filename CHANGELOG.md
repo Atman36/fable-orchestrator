@@ -1,5 +1,51 @@
 # Changelog
 
+## 2.8.0 — 2026-07-05
+
+- First feedback-log consolidation (71 raw entries reviewed, backlog cleared to
+  `archive.jsonl`; see `SUMMARY.md`). 10 clusters cleared the promotion gate
+  (≥2 observations, ≥2 sessions) and were folded into the smallest fitting
+  surface:
+  - **Verify, don't inherit** (9 sessions, the dominant pattern): a spec
+    asserting a codebase fact — existence, location, validity, live wiring,
+    git-tracking state — inherited from a scout summary, pasted report, or
+    memory anchor instead of a direct read. New spec-writing rule to treat
+    every secondhand claim as a hypothesis to verify.
+  - **DoD gates must fit the task's scope** (merges 4 sub-patterns, 3-9
+    sessions each): repo-wide gates asserted as absolute-green break on
+    pre-existing unrelated failures — scope to the delta; grep-based bans must
+    not collide with spec-mandated prose; fresh-environment specs need
+    explicit bootstrap steps and content-aware (not existence-only) checks;
+    DoD counts must assert invariants, not brittle deltas, and a changed fact
+    must be grepped and updated across every surface.
+  - **Contracts frozen early must fit what's consumed later** (2 sessions):
+    derive a consumer task's needs field-by-field against the frozen producer
+    contract before dispatch.
+  - **Runtime/live smoke beyond visual fidelity** (3 sessions): typecheck +
+    build + HTTP-200 can all stay green while the page crashes at runtime or
+    a spawned process hangs — any UI-behavior or external-process change
+    needs a live smoke stage, not just visual-design diffs.
+  - **Destructive-fork and publish discipline** (6 sessions, reinforces
+    Autonomy tiers from 2.7.0): irreversible/destructive actions are never
+    pre-authorized inside a spec, even via prior-session board notes — always
+    re-confirmed live; executor envelope now states "commit only, never push"
+    explicitly.
+  - **Subagent reporting mechanics** (4 sessions): final messages must carry
+    the complete report, not a lone correction; external-CLI agent artifacts
+    are a hard completion gate; Explore-type scouts can't Write.
+  - **Background-dispatch turn discipline** (bundled with the above): end the
+    turn after a background dispatch instead of polling; a subagent waiting on
+    its own child job polls in-turn rather than pausing on Monitor.
+  - **Worktree/disk hygiene** (3 sessions): check `df -h` before fanning out
+    dependency-installing worktrees; verify a prerequisite commit is present
+    in a worktree's base before dispatch.
+  - **No `git stash` for executors in shared checkouts** (2 sessions): use
+    `git show`/`git diff <sha>` for baseline comparisons instead.
+  - Roughly 25 single-session observations (incl. this session's own
+    dev-server teardown and DoD-grep-self-collision findings) were reviewed
+    and rejected for now under the promotion gate — logged in `archive.jsonl`
+    for re-evaluation if they recur.
+
 ## 2.7.1 — 2026-07-05
 
 - Loop mode refinements from a third-party "self-improving system in 14 steps"

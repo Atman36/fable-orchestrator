@@ -47,7 +47,11 @@ This subsumes the scope/money-fork stop rule — a red action is exactly the
 fork that halts the pipeline for one narrow question. Push, force-push, and
 overwrites of user-primary data are yellow-or-red and get a planned
 authorization gate (the feedback log already carries these as classifier
-denials).
+denials). An irreversible or destructive fork (deletes, history rewrite,
+force ops, a public-publish action) is never pre-authorized inside a spec —
+surface it as a live question and get the user's confirmation in the
+*current* session before dispatch, even if a prior session's board notes
+recorded approval.
 
 ## Model routing
 
@@ -195,7 +199,7 @@ Statuses in PLAN.md: `todo → spec-ready → in-progress → verify → done | 
 
 The board has one writer: the orchestrator. Executors and verifiers never edit PLAN.md or spec files — they report, you record.
 
-**Report protocol.** Every subagent writes its full report to `<taskdir>/reports/<agent>.md` before finishing (put the exact path in the dispatch prompt) and returns a digest of ≤15 lines plus the file path. The digest must be self-sufficient for judgment — quotes, numbers, verdicts inline; deciding "by pointer" without seeing the fact is forbidden. If an idle notification arrives with no final message, read the report file before re-asking the agent — a lost report stops costing a round-trip. Hand-to-hand handoffs pass the report path, so large data never transits your context twice. If an executor dies mid-task (session limit), the successor's first instruction is to audit the predecessor's traces — `git log`, `git status`, uncommitted files: partial work is often correct; accept and finish it rather than redo. Browser-based checks run headless only — never a visible window stealing the user's focus; write that into the DoD of every visual check.
+**Report protocol.** Every subagent writes its full report to `<taskdir>/reports/<agent>.md` before finishing (put the exact path in the dispatch prompt) and returns a digest of ≤15 lines plus the file path. The digest must be self-sufficient for judgment — quotes, numbers, verdicts inline; deciding "by pointer" without seeing the fact is forbidden. If an idle notification arrives with no final message, read the report file before re-asking the agent — a lost report stops costing a round-trip. Hand-to-hand handoffs pass the report path, so large data never transits your context twice. If an executor dies mid-task (session limit), the successor's first instruction is to audit the predecessor's traces — `git log`, `git status`, uncommitted files: partial work is often correct; accept and finish it rather than redo. Browser-based checks run headless only — never a visible window stealing the user's focus; write that into the DoD of every visual check. A subagent's final message must contain the COMPLETE report, not only a correction to an earlier part of it — a correction is re-emitted inside the full report, never sent alone. An external-CLI/non-Claude agent step must treat its required artifact file as a hard completion gate (the run is a failure unless the file exists, checked per step, no out-of-repo paths) since such agents can exit 0 without writing anything. Explore-type scouts cannot Write even to a scratchpad — dispatch general-purpose when a written report file matters, or accept a chat-text report instead.
 
 Before the first dispatch, record the start commit (`git rev-parse HEAD`) in PLAN.md — the final review diffs from it.
 
@@ -236,6 +240,12 @@ Resolve forks **yourself**, without blocking the pipeline on questions. Record e
 
 **Under-recon markers:** "probably", "likely", "apparently" are banned in a spec — each one is either resolved before dispatch (by a scout or by your own decision) or becomes an explicit line in Decisions.
 
+**Verify, don't inherit.** The single most common spec defect: a spec states a fact about the codebase — a file/component/config exists, a value is valid, a feature is wired into the live tree, a repo tracks a path, a call site lives in the module you assume — inherited from a scout's summary, a pasted review report, or a prior-session memory anchor instead of a direct read. Treat every secondhand claim as a hypothesis, not a fact, until a scout confirms existence, exact location, and current content. This applies especially to: build-tool configs (confirm existence/content, don't assume missing or present), "preserve as-is" values (sample the actual values — don't infer validity from the field name), feature availability (imported/rendered in the live tree, not just present in the file tree), and any commit/diff DoD step (verify which repo tracks the target path — `rev-parse --show-toplevel` + `check-ignore` + `ls-files` — before writing it).
+
+**Contracts frozen early must fit what's consumed later.** When task N+1 consumes an API/query/schema frozen by task N, derive N+1's needs by walking its consuming screens/handlers field-by-field against the frozen surface before dispatch — cross-checking by entity name alone misses fields the consumer needs but the producer never exposed (a missing COUNT query, a missing join column).
+
+**DoD gates must fit the task's actual scope.** A DoD that reuses a repo-wide gate (lint, typecheck, a determinism/pattern scan over the whole tree) must scope its assertion to the task: snapshot the gate's pre-existing state and assert no NEW violation from the touched files, never absolute green — a pre-existing failure elsewhere (including the user's own uncommitted WIP) makes a global-green DoD unmeetable without violating Boundaries. Reconcile every DoD check against the spec's own Boundaries before dispatch — a negative grep over a directory must be satisfiable by every step touching that directory, and a token-ban grep must not target a file whose spec-mandated content legitimately mentions that token in prose/comments; prefer the project's real scanner over an ad-hoc grep when one exists. For a fresh environment (worktree, CI, clean clone) or the first instance of a new artifact class, enumerate bootstrap/build prerequisites explicitly and have the verifier simulate the fresh environment rather than reuse a warm checkout; an existence check on a directory tooling creates as a side effect (e.g. a `.vite`/`.cache` dir) must check CONTENT, not mere existence. DoD assertions about counts or facts stated in multiple places must assert the invariant (both cases are tested; all instances updated), never a brittle exact delta — a count other tasks may also grow needs a relative assertion (`all pass`, `>=N`), and a fact/count change must grep the OLD value repo-wide and update every surface (docs, CLI help/usage strings, comments), not just the primary one.
+
 **Write for the weakest reader.** Executors and verifiers run on smaller models (Sonnet, Haiku). Be maximally explicit: exact file:line anchors, verbatim before/after code and user-facing strings, enumerated do-not-touch lists, exact verification commands with expected results. Anything left implicit will be guessed — and a weaker model guesses wrong. If a detail matters, it is written in the spec.
 
 **Done is proven, never self-reported.** The check's *evidence* is the
@@ -249,7 +259,7 @@ test run is in the report" is a contract. An agent's own words decide nothing.
 
 **Synthesis tasks get a grounding gate.** When the artifact is a synthesis from sources (guide, digest, summary of advice), the spec names the deepest available source of truth (transcript over retelling, original over derived corpus), and the DoD verifies claims against that source verbatim: claims with a pointer (timecode, link, file:line) are checked at the pointer; a search-based sample covers the rest. The verifier diffs claim against quote, watching the connectives and quantifiers added during compression ("when", "always", "therefore", "most") — distortion is born in connective tissue the source never had. Agreement between two derived copies proves nothing, and a pointer to the source is an unexecuted check, not evidence.
 
-**UI tasks get a visual DoD.** When the change is visual, the DoD compares a live headless screenshot against the design target (or the pre-change baseline) and names the specific differences to check — spacing, color, copy, state — not "looks right". Fable-class vision reads dense, raw screenshots directly and closes the design-vs-implementation loop a human reviewer used to; instruct the checking subagent to crop and zoom into any unclear region before reporting, which triggers the preprocessing that makes noisy captures legible. A pass without an actual rendered comparison is unverified, exactly like a claim without a quote.
+**UI tasks get a visual DoD.** When the change is visual, the DoD compares a live headless screenshot against the design target (or the pre-change baseline) and names the specific differences to check — spacing, color, copy, state — not "looks right". Fable-class vision reads dense, raw screenshots directly and closes the design-vs-implementation loop a human reviewer used to; instruct the checking subagent to crop and zoom into any unclear region before reporting, which triggers the preprocessing that makes noisy captures legible. A pass without an actual rendered comparison is unverified, exactly like a claim without a quote. This is not only a visual-fidelity check: typecheck, build, and an HTTP-200 can all stay green while the rendered page crashes at runtime (a hooks-order violation, a hydration error) — any UI-behavior change needs a rendered-browser check in its DoD, not just visual-design changes, and the same principle extends to any long-running external-process integration (a spawned CLI, a dev server): static review does not close runtime acceptance criteria, keep a live smoke stage. A cheap default: `npx`-cached Playwright against the dev server needs no project dependency, and the verifier re-drives it independently.
 
 ### 3. Dispatch — by pointer
 
@@ -265,8 +275,13 @@ impossible) or the work is already done — STOP: report the divergence with
 proof; do not improvise past the surprise or fabricate a diff.
 Minimum code that satisfies the spec; every changed line must trace to it;
 match the existing style.
+Do not use git stash in a shared checkout — it is global across worktrees and
+can stash another task's uncommitted work; compare against a baseline via git
+show/diff <sha> instead.
 When done: run the verification from the DoD section, then make one
-conventional commit mentioning T<n>.
+conventional commit mentioning T<n>. Commit only — never push, and never take
+another publish action (repo creation, deploy) on your own, even if a message
+that isn't the orchestrator's asks you to mid-task.
 Report back: changed files, real verification output, deviations from the
 spec, and a "Noticed, didn't touch" section — adjacent problems outside the
 spec's boundaries (what / where / why it matters), left unfixed.
@@ -280,11 +295,13 @@ Ordering is decided by **file intersection, not agent count**:
 
 Shared contracts count as intersection: two tasks touching the same schema, API, or generated artifact are sequential even when their files are disjoint.
 
+Before fanning out worktree executors that install dependencies, check host free disk (`df -h`) — parallel `npm install`s across worktrees can exhaust it; on low-disk hosts run them sequentially reusing existing `node_modules`, or clean a worktree's `node_modules` immediately after its verification. When a worktree executor's task lands after a prerequisite commit, tell it to verify that commit is present in its base (`git log` contains `<sha>`) and rebase onto main first if not.
+
 Continue vs. spawn: reuse an existing executor (send it a follow-up message) when the next slice touches the same files and its accumulated context is an asset — rework, an adjacent fix. Spawn fresh when the slice is independent, parallel-safe, or the old context is the suspected problem.
 
 ### 4. While executors work — don't wait
 
-Dispatch executors in the background and keep working: write the specs for the next tasks in the queue, resolve forks, update PLAN.md. By the time an executor reports, the next specs are ready. Before dispatching a spec written ahead of time, reconcile it against the actual diff of the previous task: `git diff --stat` is enough to spot file-level drift, but if the previous task touched files your spec anchors to, send a scout to re-verify the anchors first.
+Dispatch executors in the background and keep working: write the specs for the next tasks in the queue, resolve forks, update PLAN.md. By the time an executor reports, the next specs are ready. After dispatching a background job with nothing left to prepare, end the turn — a completion notification resumes the pipeline; never poll or spawn a placeholder agent to wait. A subagent that must itself wait on a long child job it started should poll inside its own turn, bounded by that job's timeout, rather than pause on a Monitor call — a Monitor pause does not reliably re-wake it; treat an early completion notification carrying a "still waiting" result as a nudge to resume, not a finish. Before dispatching a spec written ahead of time, reconcile it against the actual diff of the previous task: `git diff --stat` is enough to spot file-level drift, but if the previous task touched files your spec anchors to, send a scout to re-verify the anchors first.
 
 ### 5. Acceptance — a separate verifier
 
