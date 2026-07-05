@@ -19,6 +19,8 @@ This skill is a toolbox, not a script. Before anything else, understand what the
 
 You decide the shape of the work. Skipping a stage is fine when you can say why; skipping verification never is. When you have enough information to act, act — do not re-derive settled facts or survey options you will not pursue.
 
+**An assessment is a complete deliverable.** Fable is more proactive than Opus 4.8 — left unconstrained it infers a change and starts building it. So separate a request to *act* from a request to *understand*: when the user is describing a problem, asking a question, or thinking out loud, the deliverable is your answer — report findings and stop; do not spin up a pipeline, open worktrees, or order edits until asked. The trigger to build is an actual instruction to build, not your own inference that building would help.
+
 ## Hard rules
 
 1. **Never write code or edit project files yourself.** All repo changes go through executor subagents. (Writing spec/board files in the task directory and the feedback log in the skill directory is your job, not a violation.)
@@ -45,6 +47,18 @@ Escalation is about executor quality, never scope: forks that change scope or
 money still stop the pipeline. Under budget pressure the budget rule in
 Communication discipline wins — escalate only after a failed verification.
 
+**Effort is a cost/latency trade-off, not a quality dial.** The effort column
+sets how deeply a model reflects before answering, not how good the answer is
+allowed to be. Spend `high`/`xhigh` where first-shot correctness matters more
+than speed — architecture-critical verification, final review, a fork whose
+cost of being wrong is high — and `low`/`medium` on routine, well-bounded
+subtasks where full depth is only wasted latency and spend. Raising a critical
+subagent's effort is a legal escalation lever alongside swapping to a smarter
+model: lift the Agent `effort` param, or put `ultrathink` in the dispatch
+prompt for a single `xhigh` turn. At `xhigh` Fable and Opus reflect on and
+validate their own work before responding — reserve it for the passes where
+that self-check earns its cost.
+
 A project's CLAUDE.md may override this table (ban a model, add a routing
 rule); project rules win.
 
@@ -60,8 +74,11 @@ independently critiques → Haiku clears the routine.**
   autonomous runs, dense visual/product work. While subsidised access lasts,
   spend it on creating projects, specs and architectures — never on routine
   code, never as first-touch for simple tasks. Caveats: expensive, slow on
-  hard runs; aggressive safety classifiers can reroute benign coding
-  requests to Opus 4.8.
+  hard runs; aggressive safety classifiers — targeting offensive-security,
+  biology/life-sciences, and summarized-thinking-extraction content — can
+  reroute benign coding requests to Opus 4.8 (returned as a `refusal`, not an
+  error). Route first-touch architecture and spec work in those domains
+  straight to Opus rather than spending a Fable round-trip on a likely refusal.
 - **Opus 4.8 — senior engineer / tech lead.** Complex multi-step tasks,
   architecture review, debugging, autonomous agent work, carrying a complex
   project to done; its strength is reliable execution of long tasks, honesty
@@ -203,6 +220,8 @@ Resolve forks **yourself**, without blocking the pipeline on questions. Record e
 
 **Synthesis tasks get a grounding gate.** When the artifact is a synthesis from sources (guide, digest, summary of advice), the spec names the deepest available source of truth (transcript over retelling, original over derived corpus), and the DoD verifies claims against that source verbatim: claims with a pointer (timecode, link, file:line) are checked at the pointer; a search-based sample covers the rest. The verifier diffs claim against quote, watching the connectives and quantifiers added during compression ("when", "always", "therefore", "most") — distortion is born in connective tissue the source never had. Agreement between two derived copies proves nothing, and a pointer to the source is an unexecuted check, not evidence.
 
+**UI tasks get a visual DoD.** When the change is visual, the DoD compares a live headless screenshot against the design target (or the pre-change baseline) and names the specific differences to check — spacing, color, copy, state — not "looks right". Fable-class vision reads dense, raw screenshots directly and closes the design-vs-implementation loop a human reviewer used to; instruct the checking subagent to crop and zoom into any unclear region before reporting, which triggers the preprocessing that makes noisy captures legible. A pass without an actual rendered comparison is unverified, exactly like a claim without a quote.
+
 ### 3. Dispatch — by pointer
 
 The spec file is self-sufficient, so the executor prompt is a short envelope that does not duplicate it:
@@ -342,4 +361,4 @@ Before the final report:
   (>80% of the block, a hot weekly estimate, or the user reports a squeeze) —
   lower subagent effort and merge small tasks into bigger ones, defer optional
   review passes; never skip specs or verification.
-- The final message re-grounds a reader who saw none of the process: outcome first, plain sentences, no invented shorthand.
+- The final message re-grounds a reader who saw none of the process: outcome first, then the evidence, the risks if any, and the next step; plain sentences, no internal labels, arrow chains, or invented shorthand from the run.

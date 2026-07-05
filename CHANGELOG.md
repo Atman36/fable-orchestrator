@@ -1,5 +1,28 @@
 # Changelog
 
+## 2.6.0 — 2026-07-05
+
+- Folded the in-scope, orchestration-relevant guidance from Anthropic's
+  official Fable 5 prompting guide into the skill (items already covered —
+  progress-audit rule, memory loop, delegate-and-continue — were left as-is):
+  - Model routing: effort is a cost/latency trade-off, not a quality dial —
+    `high`/`xhigh` only where first-shot correctness beats speed; raising a
+    subagent's effort (Agent `effort` param or `ultrathink` in-prompt) is a
+    legal escalation lever alongside swapping models.
+  - Prime directive: an assessment is a complete deliverable — Fable is more
+    proactive than Opus, so a question/thinking-out-loud gets an answer, not
+    an auto-spun pipeline; the trigger to build is an instruction, not an
+    inference.
+  - Fable role caveat: named the safety-classifier domains (offensive-security,
+    biology/life-sciences, summarized-thinking extraction); route first-touch
+    work in those domains to Opus instead of eating a likely refusal.
+  - Specs: UI tasks get a visual DoD — compare a live headless screenshot to
+    the design target/baseline and name the diffs; crop-and-zoom to unlock
+    noisy-input preprocessing; a pass without a rendered comparison is
+    unverified.
+  - Communication: final-message shape made explicit — outcome, evidence,
+    risks, next step; no internal shorthand or arrow chains.
+
 ## 2.5.0 — 2026-07-04
 
 - Merged the most valuable rules from two user-provided orchestrator variants
