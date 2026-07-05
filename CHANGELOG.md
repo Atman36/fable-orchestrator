@@ -1,5 +1,23 @@
 # Changelog
 
+## 2.7.1 — 2026-07-05
+
+- Loop mode refinements from a third-party "self-improving system in 14 steps"
+  write-up. Most of it was already covered (verifier>self-critique, routing
+  matrix, worktrees, visual DoD, safety boundary, the state-file/memory
+  progression = the feedback loop + project dossier) or too unreliable to trust
+  on specifics (mixed model versions, unverifiable launch lore) — only the
+  loop-execution nuances were taken:
+  - Trigger types named: manual `/loop`, cron schedule, or event (CI failure,
+    new PR); days-long / laptop-off runs belong on hosted infra (a saved cloud
+    routine), not a local session that dies with the terminal.
+  - Hard-stop condition fits the loop's job: an improvement loop stops at a
+    target metric / done-check; a discovery/audit loop stops after N rounds
+    surface nothing new (until-dry).
+  - A classifier refusal in an unattended loop is a distinct outcome, not a
+    failed round: route to Opus and log it, never silently retry on Fable or
+    burn the attempt cap — otherwise it becomes a silent regression.
+
 ## 2.7.0 — 2026-07-05
 
 - Folded the orchestration-relevant patterns from two third-party Fable 5

@@ -322,7 +322,10 @@ round.
 
 A loop needs five parts, or it either never stops or never learns:
 
-1. **Schedule / trigger** — when a round fires.
+1. **Schedule / trigger** — when a round fires: a manual in-session loop
+   (`/loop`), a cron schedule, or an event (a CI failure, a new PR). A
+   days-long or laptop-off run belongs on hosted infra (a saved cloud routine),
+   not a local session that dies when the terminal closes.
 2. **One change per round** — fix the single most important thing found, never
    everything at once; one round = one small, reviewable diff.
 3. **The same check every round** — a fixed, falsifiable gate (exit code + diff
@@ -333,13 +336,21 @@ A loop needs five parts, or it either never stops or never learns:
    it but may not rewrite it; promotion into the steering memory is a
    human/loop decision, not something a round self-serves.
 5. **A hard stop** — a cap on rounds/attempts, a spend cap, and an explicit
-   definition of *done* and *blocked*. A model that never tires never stops on
-   its own, and this is the most expensive model to leave running.
+   definition of *done* and *blocked* that fits the loop's job: an improvement
+   loop stops at a target metric or the done-check passing; a discovery/audit
+   loop stops after N consecutive rounds surface nothing new (until-dry). A
+   model that never tires never stops on its own, and this is the most
+   expensive model to leave running.
 
 Route every round through the Autonomy tiers: green rounds run unattended,
 yellow rounds stop at a branch/draft for a human, red rounds never fire without
 a per-action authorization. Run any new loop once by hand and read the state
 file it writes before putting it on a schedule.
+
+In an unattended loop a **classifier refusal is a distinct outcome, not a
+failed round**: route that round to Opus and log it, never silently retry it on
+Fable or spend the attempt cap on it — a refusal that reads as a generic
+failure becomes a silent regression that costs you at debug time.
 
 ## Feedback loop
 
