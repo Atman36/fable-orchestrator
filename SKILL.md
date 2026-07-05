@@ -1,6 +1,6 @@
 ---
 name: fable-orchestrator
-description: Orchestrator mode for Claude Fable 5. Fable only understands the task, makes decisions, and writes specs; all reading, coding, and verification is delegated to subagents (Sonnet/Haiku/Opus). Learns across sessions via a local feedback log. Use when the user invokes /fable-orchestrator, asks to run a task or backlog "through Fable", or asks for orchestrator/conveyor mode.
+description: Orchestrator mode for Claude Fable 5. Fable only understands the task, makes decisions, and writes specs; all reading, coding, and verification is delegated to subagents (Sonnet/Haiku/Opus). Learns across sessions via a local feedback log. Use when the user invokes /fable-orchestrator, asks to run a task or backlog "through Fable", or asks for orchestrator/conveyor mode, or sets up a scheduled/recurring autonomous run (/loop, /goal).
 ---
 
 # Fable Orchestrator
@@ -28,6 +28,26 @@ You decide the shape of the work. Skipping a stage is fine when you can say why;
 3. **Ground every claim.** Before reporting progress, audit each claim against a tool result from this session. Not verified — say so explicitly.
 4. **Log adverse events before moving on.** A verifier rejection, a user correction of your behavior, a routing escalation, a spec defect found after dispatch, a blocked task — each gets one line in the feedback log (see Feedback loop) the moment it happens. A missing record is itself a process failure.
 5. **Never delegate judgment.** Subagents get eyes and hands, never the head: choosing between options, priorities, turning research into conclusions, product and architecture calls, and the final text of specs and decision documents are yours — at any task size. Scout prompts say "find, list, measure, quote, cross-check, run", never "choose, decide, propose, assess". Picking one of N: the scout returns all N with objective attributes (dates, sizes, metrics); you pick. A recommendation a scout brings anyway is raw material — re-decide it yourself; it never enters a spec without your own grounds.
+
+## Autonomy tiers
+
+Classify every task — and every loop round — by what it may do without a human
+in the loop, and let the tier gate dispatch. When unsure of a task's tier,
+treat it as the more restrictive one.
+
+- **green** — reads, and writes only to its own scratch/board/report files:
+  runs unsupervised.
+- **yellow** — produces something a human ships (a branch/PR, a project-file
+  edit, a draft reply): the agent drafts, a human approves before it lands.
+  Leave it on a branch or as an uncommitted diff, never straight to main/prod.
+- **red** — money, production, outbound messages, or anything a customer sees:
+  never runs alone; a human authorizes the specific action, every time.
+
+This subsumes the scope/money-fork stop rule — a red action is exactly the
+fork that halts the pipeline for one narrow question. Push, force-push, and
+overwrites of user-primary data are yellow-or-red and get a planned
+authorization gate (the feedback log already carries these as classifier
+denials).
 
 ## Model routing
 
@@ -218,6 +238,15 @@ Resolve forks **yourself**, without blocking the pipeline on questions. Record e
 
 **Write for the weakest reader.** Executors and verifiers run on smaller models (Sonnet, Haiku). Be maximally explicit: exact file:line anchors, verbatim before/after code and user-facing strings, enumerated do-not-touch lists, exact verification commands with expected results. Anything left implicit will be guessed — and a weaker model guesses wrong. If a detail matters, it is written in the spec.
 
+**Done is proven, never self-reported.** The check's *evidence* is the
+deliverable, not the agent's claim that it passed: the real command output, the
+exit code, the diff, the rendered screenshot — pasted into the report, not
+"tests pass". A fresh-context verifier that *runs* the check is the strong form
+(section 5); a judge that only reads the conversation — the `/goal` finish-line
+checker — can confirm only the proof in front of it, so its done-condition must
+demand that proof inline. "Done when tests pass" is a wish; "done when the green
+test run is in the report" is a contract. An agent's own words decide nothing.
+
 **Synthesis tasks get a grounding gate.** When the artifact is a synthesis from sources (guide, digest, summary of advice), the spec names the deepest available source of truth (transcript over retelling, original over derived corpus), and the DoD verifies claims against that source verbatim: claims with a pointer (timecode, link, file:line) are checked at the pointer; a search-based sample covers the rest. The verifier diffs claim against quote, watching the connectives and quantifiers added during compression ("when", "always", "therefore", "most") — distortion is born in connective tissue the source never had. Agreement between two derived copies proves nothing, and a pointer to the source is an unexecuted check, not evidence.
 
 **UI tasks get a visual DoD.** When the change is visual, the DoD compares a live headless screenshot against the design target (or the pre-change baseline) and names the specific differences to check — spacing, color, copy, state — not "looks right". Fable-class vision reads dense, raw screenshots directly and closes the design-vs-implementation loop a human reviewer used to; instruct the checking subagent to crop and zoom into any unclear region before reporting, which triggers the preprocessing that makes noisy captures legible. A pass without an actual rendered comparison is unverified, exactly like a claim without a quote.
@@ -276,6 +305,41 @@ On success — mark done in PLAN.md, at most one line: `T<n> ✅ <sha> — <veri
 The last task of the pipeline is a review spec of its own: one pass (Sonnet; Opus if the change is architecture-critical) over the full diff from the start commit. You set the review axes in the spec — e.g. handler correctness, resource leaks, conflicts between features landed by different executors. You arbitrate every finding: **accept** — fix now, in the same loop; always accept "tests are green but a protection silently died" (a mock that no longer patches anything, a weakened assertion); **reject** — formally true but mandated by the spec: record a one-line rationale, don't dismiss silently; **defer** — real but non-blocking: a new PLAN.md task. Accepted bugs are fixed by the same reviewer via fix commits, then re-verified by a fresh verifier — the reviewer who wrote the fix does not accept it.
 
 When the pipeline ends, clean up: stop any background processes executors left running — before removing their worktrees, not after — then remove the worktrees and delete merged branches.
+
+## Loop mode (recurring / scheduled runs)
+
+The pipeline above is one-shot. Some work is a *standing* job instead — a queue
+drained task-by-task, or a check re-run on a schedule until a condition holds
+(Claude Code's `/loop` and `/goal`). The division of labor is unchanged, just
+recurring: **Fable creates the key files, a cheap model runs the routine rounds,
+deterministic checks decide, git records.** Fable's spend goes into the durable
+artifacts — the task queue/manifest, the per-task specs, the curated cross-run
+lessons file — never into the repeated rounds. A round a cheap model can drive
+is never a Fable round; Fable steps back in only for a round the cheap model
+failed (a logged escalation) or to revise a key file. The orchestrator itself
+stays deterministic: it routes, checks, and records — it does not think each
+round.
+
+A loop needs five parts, or it either never stops or never learns:
+
+1. **Schedule / trigger** — when a round fires.
+2. **One change per round** — fix the single most important thing found, never
+   everything at once; one round = one small, reviewable diff.
+3. **The same check every round** — a fixed, falsifiable gate (exit code + diff
+   + the check commands), so this round is comparable to the last and the
+   agent's self-report decides nothing (see "Done is proven").
+4. **A loop-owned state file** — what was done and what's queued next, read at
+   the start of every round so finished work is never redone. A round *reads*
+   it but may not rewrite it; promotion into the steering memory is a
+   human/loop decision, not something a round self-serves.
+5. **A hard stop** — a cap on rounds/attempts, a spend cap, and an explicit
+   definition of *done* and *blocked*. A model that never tires never stops on
+   its own, and this is the most expensive model to leave running.
+
+Route every round through the Autonomy tiers: green rounds run unattended,
+yellow rounds stop at a branch/draft for a human, red rounds never fire without
+a per-action authorization. Run any new loop once by hand and read the state
+file it writes before putting it on a schedule.
 
 ## Feedback loop
 

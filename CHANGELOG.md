@@ -1,5 +1,37 @@
 # Changelog
 
+## 2.7.0 — 2026-07-05
+
+- Folded the orchestration-relevant patterns from two third-party Fable 5
+  write-ups (a "build anything" guide and a "loop library"); items already
+  covered by v2.6.0 (effort dial, refusal→Opus fallback, review-the-output)
+  were left as-is. New material was grounded against a real deterministic
+  loop harness ("agents execute, loop orchestrates, checks decide, git records"),
+  not the marketing framing:
+  - Autonomy tiers (green/yellow/red): classify every task and loop round by
+    what it may do unsupervised — green runs alone, yellow drafts for a human
+    to ship (branch/PR/diff, never straight to main/prod), red
+    (money/prod/outbound/customer-facing) never runs alone. Subsumes and
+    generalizes the scope/money-fork stop rule; push/force-push/primary-data
+    overwrite are yellow-or-red with a planned authorization gate.
+  - DoD "Done is proven, never self-reported": the check's evidence (real
+    output, exit code, diff, screenshot) is the deliverable, not the agent's
+    claim; a conversation-only judge (`/goal`) can confirm only the proof in
+    front of it, so its done-condition must demand that proof inline — "done
+    when tests pass" is a wish, "done when the green run is in the report" is a
+    contract.
+  - New "Loop mode" section for recurring/scheduled runs (`/loop`, `/goal`):
+    same division of labor, recurring — Fable creates the key files (queue,
+    specs, cross-run lessons), a cheap model runs the routine rounds,
+    deterministic checks decide, git records; the five parts a loop needs
+    (schedule, one-change-per-round, same falsifiable check, loop-owned state
+    file, hard stop with round/spend caps + done/blocked); route rounds through
+    the autonomy tiers; run once by hand before scheduling.
+  - Not adopted: the guides' core "cheap model plans, Fable executes the long
+    run" inverts this skill's Fable-as-orchestrator paradigm (Fable does
+    judgment and creates key files; cheap models execute) — kept the skill's
+    stance.
+
 ## 2.6.0 — 2026-07-05
 
 - Folded the in-scope, orchestration-relevant guidance from Anthropic's
