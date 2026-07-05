@@ -1,13 +1,38 @@
 ---
 name: fable-orchestrator
-description: Orchestrator mode for Claude Fable 5. Fable only understands the task, makes decisions, and writes specs; all reading, coding, and verification is delegated to subagents (Sonnet/Haiku/Opus). Learns across sessions via a local feedback log. Use when the user invokes /fable-orchestrator, asks to run a task or backlog "through Fable", or asks for orchestrator/conveyor mode, or sets up a scheduled/recurring autonomous run (/loop, /goal).
+description: Orchestrator mode for a strong head model (Claude Fable 5 by default; Opus 4.8 supported). The head only understands the task, makes decisions, and writes specs; all reading, coding, and verification is delegated to subagents (Sonnet/Haiku/Opus). Learns across sessions via a local feedback log. Use when the user invokes /fable-orchestrator, asks to run a task or backlog "through Fable", or asks for orchestrator/conveyor mode, or sets up a scheduled/recurring autonomous run (/loop, /goal).
 ---
 
 # Fable Orchestrator
 
 ## Why this mode exists
 
-Fable does only what a cheaper model cannot: **understands the essence of the task, resolves forks, and writes specs**. Everything else — reading, research, coding, checking — is done by subagents: Sonnet for code and analysis, Haiku for reading and mechanical checks, Opus for serious review and architecture-critical verification.
+The head does only what a cheaper model cannot: **understands the essence of the task, resolves forks, and writes specs**. Everything else — reading, research, coding, checking — is done by subagents: Sonnet for code and analysis, Haiku for reading and mechanical checks, Opus for serious review and architecture-critical verification.
+
+## Head model
+
+"The head" is whichever model is currently running this skill. Every hard
+rule, autonomy tier, and pipeline stage binds the head regardless of model;
+only the adaptations below differ by head.
+
+- **Default head: Fable 5.** Supported head: **Opus 4.8**, an explicit user
+  opt-in for when Fable is unavailable or too costly.
+- **Sonnet is not a supported head** for spec-writing or fork-resolution; in
+  loop mode it may only drain pre-written rails (existing specs/queues).
+
+When the head is Opus:
+
+1. The routing-table row "Final review, architecture-critical verification"
+   may stay Opus, but only as a fresh-context subagent — never self-review.
+2. On the hardest, most ill-defined architecture forks the head may dispatch
+   a one-shot Fable "architect consult" (options + trade-offs + evidence,
+   never a decision) — raw material the head re-decides on (hard rule 5
+   still applies).
+3. Keep the head's context clean: scouts return digests, raw dumps stay in
+   report files — Opus executes noisy context literally, its known weakness.
+4. Vision-heavy DoD comparisons go to a vision-capable subagent (Fable via
+   the Agent model param, or Opus) with the crop/zoom instruction, since the
+   head may not read dense screenshots reliably.
 
 ## Prime directive: understand the task, then decide how
 
@@ -89,7 +114,7 @@ rule); project rules win.
 ### Model roles (as of 2026-07)
 
 Per-model profiles behind the table above. Default pipeline shape:
-**Fable invents → Opus verifies and plans → Sonnet builds → GPT-5.5
+**The head invents → Opus verifies and plans → Sonnet builds → GPT-5.5
 independently critiques → Haiku clears the routine.**
 
 - **Fable 5 — architect & inventor.** Route the hardest, newest, most
@@ -259,7 +284,7 @@ test run is in the report" is a contract. An agent's own words decide nothing.
 
 **Synthesis tasks get a grounding gate.** When the artifact is a synthesis from sources (guide, digest, summary of advice), the spec names the deepest available source of truth (transcript over retelling, original over derived corpus), and the DoD verifies claims against that source verbatim: claims with a pointer (timecode, link, file:line) are checked at the pointer; a search-based sample covers the rest. The verifier diffs claim against quote, watching the connectives and quantifiers added during compression ("when", "always", "therefore", "most") — distortion is born in connective tissue the source never had. Agreement between two derived copies proves nothing, and a pointer to the source is an unexecuted check, not evidence.
 
-**UI tasks get a visual DoD.** When the change is visual, the DoD compares a live headless screenshot against the design target (or the pre-change baseline) and names the specific differences to check — spacing, color, copy, state — not "looks right". Fable-class vision reads dense, raw screenshots directly and closes the design-vs-implementation loop a human reviewer used to; instruct the checking subagent to crop and zoom into any unclear region before reporting, which triggers the preprocessing that makes noisy captures legible. A pass without an actual rendered comparison is unverified, exactly like a claim without a quote. This is not only a visual-fidelity check: typecheck, build, and an HTTP-200 can all stay green while the rendered page crashes at runtime (a hooks-order violation, a hydration error) — any UI-behavior change needs a rendered-browser check in its DoD, not just visual-design changes, and the same principle extends to any long-running external-process integration (a spawned CLI, a dev server): static review does not close runtime acceptance criteria, keep a live smoke stage. A cheap default: `npx`-cached Playwright against the dev server needs no project dependency, and the verifier re-drives it independently.
+**UI tasks get a visual DoD.** When the change is visual, the DoD compares a live headless screenshot against the design target (or the pre-change baseline) and names the specific differences to check — spacing, color, copy, state — not "looks right". A Fable-class head reads dense, raw screenshots directly and closes the design-vs-implementation loop a human reviewer used to; a non-Fable head delegates this comparison to a vision-capable subagent, instructed to crop and zoom into any unclear region before reporting, which triggers the preprocessing that makes noisy captures legible. A pass without an actual rendered comparison is unverified, exactly like a claim without a quote. This is not only a visual-fidelity check: typecheck, build, and an HTTP-200 can all stay green while the rendered page crashes at runtime (a hooks-order violation, a hydration error) — any UI-behavior change needs a rendered-browser check in its DoD, not just visual-design changes, and the same principle extends to any long-running external-process integration (a spawned CLI, a dev server): static review does not close runtime acceptance criteria, keep a live smoke stage. A cheap default: `npx`-cached Playwright against the dev server needs no project dependency, and the verifier re-drives it independently.
 
 ### 3. Dispatch — by pointer
 
@@ -328,14 +353,14 @@ When the pipeline ends, clean up: stop any background processes executors left r
 The pipeline above is one-shot. Some work is a *standing* job instead — a queue
 drained task-by-task, or a check re-run on a schedule until a condition holds
 (Claude Code's `/loop` and `/goal`). The division of labor is unchanged, just
-recurring: **Fable creates the key files, a cheap model runs the routine rounds,
-deterministic checks decide, git records.** Fable's spend goes into the durable
-artifacts — the task queue/manifest, the per-task specs, the curated cross-run
-lessons file — never into the repeated rounds. A round a cheap model can drive
-is never a Fable round; Fable steps back in only for a round the cheap model
-failed (a logged escalation) or to revise a key file. The orchestrator itself
-stays deterministic: it routes, checks, and records — it does not think each
-round.
+recurring: **the head creates the key files, a cheap model runs the routine
+rounds, deterministic checks decide, git records.** The head's spend goes into
+the durable artifacts — the task queue/manifest, the per-task specs, the curated
+cross-run lessons file — never into the repeated rounds. A round a cheap model
+can drive is never a head round; the head steps back in only for a round the
+cheap model failed (a logged escalation) or to revise a key file. The
+orchestrator itself stays deterministic: it routes, checks, and records — it does
+not think each round.
 
 A loop needs five parts, or it either never stops or never learns:
 

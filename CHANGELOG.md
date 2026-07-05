@@ -1,5 +1,21 @@
 # Changelog
 
+## 2.9.0 — 2026-07-06
+
+- Head-model parameterization: the skill now names "the head" (whichever
+  model runs it) instead of assuming Fable throughout the operating rules.
+  Fable 5 stays the default and strongest head; Opus 4.8 is a supported head
+  via explicit user opt-in; Sonnet is not a supported head for spec-writing
+  or fork-resolution. New "Head model" section (after "Why this mode
+  exists") states the Opus adaptations: final review/architecture-critical
+  verification stays a fresh-context subagent, never self-review; a one-shot
+  Fable "architect consult" is an escape valve for the hardest ill-defined
+  forks (raw material only, the head still decides); scouts keep the head's
+  context clean since Opus executes noisy context literally; vision-heavy DoD
+  comparisons delegate to a vision-capable subagent for non-Fable heads. The
+  visual-DoD rule's screenshot-reading claim is generalized accordingly.
+  Frontmatter description updated to name the head parameterization.
+
 ## 2.8.0 — 2026-07-05
 
 - First feedback-log consolidation (71 raw entries reviewed, backlog cleared to

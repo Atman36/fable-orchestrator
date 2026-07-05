@@ -27,6 +27,9 @@ Then reference it from your global `CLAUDE.md` so it loads for Fable sessions:
 > `~/.claude/skills/fable-orchestrator/SKILL.md` at session start and operate
 > as the orchestrator it describes.
 
+The skill also supports Opus 4.8 as the head via explicit invocation
+(`/fable-orchestrator`), for when Fable is unavailable or too costly.
+
 ## What's inside
 
 | Path | Purpose |
