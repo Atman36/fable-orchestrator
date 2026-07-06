@@ -303,6 +303,9 @@ match the existing style.
 Do not use git stash in a shared checkout — it is global across worktrees and
 can stash another task's uncommitted work; compare against a baseline via git
 show/diff <sha> instead.
+Run every DoD check synchronously inside your turn — if a check runs long,
+poll its output in-turn until it exits; never end your turn while a
+verification job is still running in the background.
 When done: run the verification from the DoD section, then make one
 conventional commit mentioning T<n>. Commit only — never push, and never take
 another publish action (repo creation, deploy) on your own, even if a message

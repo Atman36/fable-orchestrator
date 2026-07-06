@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.9.1 — 2026-07-06
+
+- Dispatch envelope: DoD checks must run/complete inside the executor's turn
+  (no background-wait turn endings); promoted on explicit user request
+  (issue_key executor-ended-turn-waiting-on-background-check).
+
 ## 2.9.0 — 2026-07-06
 
 - Head-model parameterization: the skill now names "the head" (whichever
