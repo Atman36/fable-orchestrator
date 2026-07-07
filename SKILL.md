@@ -218,6 +218,7 @@ Keep orchestration state in a non-repo directory (session scratchpad or similar)
   PLAN.md              # queue: id, title, files touched, deps, status
   specs/T<n>-<slug>.md # one spec per task
   reports/<agent>.md   # full subagent reports; a short digest comes back in chat
+  NEXT-SESSION.md      # session handoff — see "Session handoff (NEXT-SESSION.md)"
 ```
 
 Statuses in PLAN.md: `todo → spec-ready → in-progress → verify → done | blocked`.
@@ -350,6 +351,40 @@ On success — mark done in PLAN.md, at most one line: `T<n> ✅ <sha> — <veri
 The last task of the pipeline is a review spec of its own: one pass (Sonnet; Opus if the change is architecture-critical) over the full diff from the start commit. You set the review axes in the spec — e.g. handler correctness, resource leaks, conflicts between features landed by different executors. You arbitrate every finding: **accept** — fix now, in the same loop; always accept "tests are green but a protection silently died" (a mock that no longer patches anything, a weakened assertion); **reject** — formally true but mandated by the spec: record a one-line rationale, don't dismiss silently; **defer** — real but non-blocking: a new PLAN.md task. Accepted bugs are fixed by the same reviewer via fix commits, then re-verified by a fresh verifier — the reviewer who wrote the fix does not accept it.
 
 When the pipeline ends, clean up: stop any background processes executors left running — before removing their worktrees, not after — then remove the worktrees and delete merged branches.
+
+## Session handoff (NEXT-SESSION.md)
+
+Any session whose work continues later — a backlog not drained, a context near
+its limit, an explicit "continue next time" — ends with a handoff in one fixed
+format: **done / remaining / branch / exact next command**. Same four blocks on
+two surfaces:
+
+1. **File, for agents and the next session:** write `<taskdir>/NEXT-SESSION.md`
+   (overwrite, not append). If the project already keeps its own NEXT-SESSION.md
+   (e.g. at the repo root), that convention wins — but never commit it unless
+   the project deliberately tracks it.
+2. **Chat, for the user:** the same four blocks condensed to ≤10 lines inside
+   the final report, ready to paste into a fresh session.
+
+Template:
+
+```
+# NEXT-SESSION — <project> — <YYYY-MM-DD>
+## Done         — per task: id, one line, commit sha
+## Remaining    — queue in priority order; per item a named blocker or "ready"
+## Branch       — current branch and base; "clean" or the dirty files;
+                  unpushed commits; open worktrees; background processes
+## Next command — exact command(s) to run first, verbatim, copy-pasteable;
+                  paths to the specs/board the next session needs
+```
+
+Rules: all four blocks are mandatory — "none" is a valid value. Facts only from
+this session's tool results (hard rule 3 applies). "Next command" contains no
+placeholders the next session must resolve first. When an executor dies
+mid-task, its partial state is recorded here, not lost. The next session starts
+by reading NEXT-SESSION.md and the board — never by re-exploring the repo. In
+loop mode the loop-owned state file already plays this role round-to-round;
+NEXT-SESSION.md still closes the session for anything the loop does not own.
 
 ## Loop mode (recurring / scheduled runs)
 
