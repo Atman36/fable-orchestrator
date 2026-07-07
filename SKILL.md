@@ -332,6 +332,18 @@ Continue vs. spawn: reuse an existing executor (send it a follow-up message) whe
 
 Dispatch executors in the background and keep working: write the specs for the next tasks in the queue, resolve forks, update PLAN.md. By the time an executor reports, the next specs are ready. After dispatching a background job with nothing left to prepare, end the turn — a completion notification resumes the pipeline; never poll or spawn a placeholder agent to wait. A subagent that must itself wait on a long child job it started should poll inside its own turn, bounded by that job's timeout, rather than pause on a Monitor call — a Monitor pause does not reliably re-wake it; treat an early completion notification carrying a "still waiting" result as a nudge to resume, not a finish. Before dispatching a spec written ahead of time, reconcile it against the actual diff of the previous task: `git diff --stat` is enough to spot file-level drift, but if the previous task touched files your spec anchors to, send a scout to re-verify the anchors first.
 
+**The notification-driven chain (default dispatch loop).** A full pipeline runs
+"without pauses" using nothing beyond built-in background agents: write ALL specs
+up front while recon/early executors run, dispatch exactly one background executor
+per file-intersection group, and end the turn. The completion notification is the
+scheduler: each wake-up turn = accept the report (or trigger the rework ladder),
+log adverse events, dispatch the next pre-specced task, end the turn again. The
+head never sleeps, polls, or spawns waiter agents; wall-clock gaps between tasks
+collapse to one wake-up turn because every decision was made at spec-writing time.
+Follow-ups on a finished executor's own work go to the SAME agent via a resume
+message (it amends its commit if nothing landed after it); independent work in a
+DIFFERENT repo or disjoint file set may run in parallel with the chain.
+
 ### 5. Acceptance — a separate verifier
 
 Per task, a verifier subagent with a clean context and a narrow prompt: "run the verification command/scenario from the DoD section of `<spec path>` in `<dir>`; also confirm via `git status --porcelain` and `git diff --stat` that only files the spec names were touched; return facts per item: pass / fail / unverifiable here (what exactly could not be run and why), exact commands run, what you observed." It does not review code — it executes the check. Fresh-context verifiers beat self-critique; whoever built it never accepts it. An "unverifiable" verdict is legal — a named risk beats a silent green produced without an actual run.

@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.9.2 — 2026-07-07
+
+- §4: notification-driven chain documented as the default dispatch loop
+  (pre-written specs + one background executor per file-intersection group +
+  completion-notification wake-ups; resume the same agent for follow-ups on its
+  own work; parallel only for disjoint repos/file sets). Promoted on explicit
+  user request after a full-session run of the pattern.
+
 ## 2.9.1 — 2026-07-06
 
 - Dispatch envelope: DoD checks must run/complete inside the executor's turn
