@@ -1,5 +1,32 @@
 # Changelog
 
+## 2.12.0 — 2026-07-10
+
+Structural compression of SKILL.md: 54.7KB → 45.5KB always-loaded (−17%),
+with a further 8.2KB of situational material moved to `references/*.md`,
+loaded only when that situation arises. (Line counts are not comparable across
+versions: the old file kept whole paragraphs on single lines; the new file
+wraps at ~78 columns.) No rules changed — only relocated behind decision-point
+pointers or reformatted; every hard rule, tier, caveat, and catalog item
+preserved.
+
+- Progressive disclosure: Codex rules of engagement → `references/codex.md`
+  (imperative pointers at the routing-table row and the Codex section); Loop
+  mode → `references/loop-mode.md` (pointers in the prime directive and the
+  Loop mode section); consolidation mechanics → `references/consolidation.md`
+  (pointer in the Review trigger section).
+- Bulletized the large rule catalogs for weak-reader enumerability: report
+  protocol, autonomy standing gates, "Verify, don't inherit" surfaces,
+  "Enumerate the category" corollaries, "DoD gates" rules, final-review
+  arbitration and cleanup.
+- Tightened model-role profiles to role + routing + caveats (all caveats
+  kept: Sonnet tokenizer +30%, Fable classifier refusal→Opus, Haiku drift,
+  Opus noisy-context literalism).
+- "Smallest surface wins" gains a target: situational reference material goes
+  to `references/*.md` with an imperative pointer at the decision point.
+- `scripts/publish-check.sh` allowlist extended with `references/*.md`; README
+  "What's inside" table updated.
+
 ## 2.11.0 — 2026-07-10
 
 Consolidation of 56 feedback entries — 43 applied across 11 rule-groups plus
