@@ -1,5 +1,32 @@
 # Changelog
 
+## 2.10.0 — 2026-07-10
+
+Consolidation of 33 feedback entries — 8 rule-groups, each past the
+≥2-observations/≥2-sessions gate:
+
+- Report protocol: a stop-notification digest is unconfirmed until its key
+  claim (commit hash, report file, test count) is artifact-checked with
+  read-only commands; on a missing artifact, re-check before condemning the
+  agent or dispatching a replacement.
+- Verify-don't-inherit extensions: call-graph claims, type-union members,
+  API-gateway error-code contracts, reviewer findings as secondhand claims,
+  existing-test coverage in the branch diff.
+- DoD gates: known-flaky/red tests excluded from absolute gates (baseline
+  provenance recorded); pass-count delta when a hang/cancellation tail exists;
+  UI-copy/structure deletions must run the test suite and update co-located
+  tests open-to-assert.
+- Task board: statuses start at todo; never pre-fill future results.
+- Final review: standing axis — engine/runner tests run only on self-created
+  temp fixtures, never against the enclosing repo.
+- Dispatch: verify a check-driven executor can actually run its checks
+  (permission surface, dependency installs) before dispatch.
+- Hard rules: an explicit user waiver of rules 1–2 is honored, session-scoped,
+  with verification stages kept.
+- Consolidation: the head applies SKILL.md/CHANGELOG edits itself (the
+  self-modification classifier blocks subagent edits of startup-loaded files);
+  the fresh verifier is unchanged.
+
 ## 2.9.2 — 2026-07-07
 
 - §4: notification-driven chain documented as the default dispatch loop
