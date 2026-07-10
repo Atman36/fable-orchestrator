@@ -1,5 +1,68 @@
 # Changelog
 
+## 2.11.0 — 2026-07-10
+
+Consolidation of 56 feedback entries — 43 applied across 11 rule-groups plus
+minor folds, 13 rejected as already-covered or project-specific. Clusters past
+the ≥2-observations/≥2-sessions gate: enumerate-the-category (×8, ≥3 sessions),
+artifact-without-consumer (×3), field-name-on-consumer (×2), rendering-model-
+before-curl (×2); the rest are safety/ops singles promoted on explicit user
+request.
+
+- Verify-don't-inherit extensions: a field/column name is verified on the
+  CONSUMING type (client type, view's exposed columns), not the producer/DB row;
+  artifact round-trip consumability (patch→`git apply`, export→import) is
+  executed, never inferred from format family; an identifier's cross-process
+  lifecycle (minted vs loaded) is traced before cross-invocation reuse; concrete
+  numbers in a spec/DoD are computed, never invented.
+- Spec quality — enumerate the category, never a hand-picked list: define the
+  category (fields, copy strings, state writers, render variants, invariant
+  code-paths, worktree gates, deep-equal tests, shared-port implementors/mocks)
+  and have the executor enumerate members; word Boundaries as runtime-behavior
+  limits when a type cascade must cross them.
+- Spec quality — no new surface without a consumer: wire the first consumer or
+  state why it ships unconsumed; gate an extracted helper on a duplication
+  census of landed code. Final review resolves an unconsumed artifact in-package
+  (wire or delete), never deferred.
+- Spec quality — fail safe on destructive paths: trace every producer of a
+  decisive value, distinguish absent-by-design from absent-by-failure, default
+  the failure branch to inert (a fail-open loader feeding a removal set is a
+  mass-delete on any blip).
+- Cross-task — reconcile the combined failure matrix when task N+1 modifies a
+  recovery/error path task N also changed this session.
+- DoD — mutation probes break the guarded logic (not a shared constant) and pin
+  a literal boundary; conditional steps assert behavior, not diff location; a
+  gate on a deferred/scheduled action is re-checked at fire time with a race
+  test; every failure representation dominates success-styled branches; a
+  schema-add accounts for the live DB.
+- UI DoD — confirm the rendering model before a `curl` smoke check: SSR `curl`
+  executes the real server render (a strong crash check); CSR needs a headless
+  browser; client-prefill/interactivity verified by code-read, not the curl body.
+- Dispatch — resume-from-transcript is risky for write work (respawn fresh on a
+  stall after auditing traces); consecutive watchdog stalls across agents mean
+  infrastructure, so go synchronous.
+- Cleanup/monitoring — check liveness before destroying seemingly-stale
+  branches/worktrees; use `ps -p <pid>` not `kill -0` (sandbox EPERM reads as
+  death → treat permission-denied as ALIVE), watch the recorded worker pid, and
+  double-confirm terminal events; trust the orchestrator's own `git status`, not
+  a scout's clean report, before an overwriting dispatch.
+- Push — `git fetch`/`ls-remote` before an authorized push to learn the true
+  scope and report the real pushed range; re-confirm authorization after a scope
+  pivot; git-topology from a dossier/memory is a hypothesis to re-measure.
+- Report protocol — label dispatches as `<role/model> + <task-id> + <subject>`
+  with aligned report filenames; session-scratchpad specs can vanish between
+  turns (verify existence before dispatch, reuse one spec dir verbatim).
+- Minor folds: a shared key schema for parallel consistency sweeps; run a tool
+  in its native mode when the task is to test it; re-read the host sentence for a
+  verbatim in-sentence insert; relevance-check all candidate sources before
+  synthesis.
+
+Rejected (13): audit cross-migration redefinition, UI-mechanics existence,
+API-gateway status-class, out-of-family cross-check, documented-limitation-as-
+bypass, cache-cleanup denial (already covered by existing rules); foreign-repo
+pre-commit hooks, prompt-template drift, runner manifest allowed-paths, runner
+kill/resume recovery, base-branch upstream (project-specific → dossier).
+
 ## 2.10.0 — 2026-07-10
 
 Consolidation of 33 feedback entries — 8 rule-groups, each past the
