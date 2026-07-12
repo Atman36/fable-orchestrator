@@ -275,9 +275,11 @@ not after the next failure.
 
 One scout per concern — e.g. one for the backlog, one for the codebase map.
 Each gets a concrete question and a report format: files, lines, contracts,
-duplicates, traps. Read-only, change nothing. For a consistency or terminology
-sweep, give parallel scouts a shared fixed key schema so their outputs are
-diffable by key.
+duplicates, traps. Read-only, change nothing — a scout authorized to live-drive
+a server can still mutate persistent state through a POST or a store write, so
+point any mutating probe at a temp store (an env override to scratchpad) or keep
+it GET-only. For a consistency or terminology sweep, give parallel scouts a
+shared fixed key schema so their outputs are diffable by key.
 
 ### 2. Specs
 
@@ -352,6 +354,16 @@ content. Surfaces that keep burning sessions:
   same-process observation does not transfer to a resume or restart path.
 - Any concrete number a spec or DoD quotes is computed from the real data or
   marked do-not-assert, never invented as an illustration.
+- Claims beyond file contents are hypotheses too: a library's runtime surface
+  (an error class's `.name`, a module's static classes), a command or npm-script
+  name entering a DoD, a fixture's arithmetic (zone spreads, date windows), an
+  env var's presence under the test runner (`loadEnv` forwards real creds), an
+  id's transform as it crosses a layer (a raw record id hashed into an opaque
+  one) — verify in recon or prescribe the goal and let the implementer validate
+  against the real runtime.
+- A dossier/handoff claim ages: 'done' work inherited uncommitted gets its
+  tests actually run before you commit it, and dossier 'open items' get
+  re-checked against commits newer than the entry before you spec a fix.
 
 **Fail safe on destructive paths.** When a spec decision feeds a delete,
 purge, or reject-with-removal path, trace every PRODUCER of the decisive value
@@ -390,12 +402,25 @@ grep. Corollaries:
 - When a spec turns a previously write-only value into logic input (a stored
   date now read against the clock), the sweep includes existing seeds and
   tests whose fixtures thereby become clock-relative.
+- A changed TYPE cascades to every constructor and call site of it — test
+  fixtures that build it, and every writer that assembles its full literal —
+  not only implementors of its interface.
+- The recon question is itself category-shaped: grep every member repo-wide,
+  never hand the scout a suspect-file list. For an exhaustive sweep (a privacy
+  scrub, packaging excludes, a repo-wide fact change) the recon file-list is
+  only a seed — the executor sweeps the whole tree and the DoD compares against
+  the prior artifact's size/count or runs an independent second pass.
+- Before freezing a uniform change across the enumerated category, sample each
+  member for a deliberate documented carve-out — one that diverges on purpose
+  gets its own Decision line, not the blanket change.
 
 **No new surface without a consumer.** A spec that creates a new API surface,
 shared helper, or query either wires its first consumer or states in Decisions
 why it ships unconsumed — and a helper extracted from N parallel artifacts is
-gated on a duplication census of the LANDED code, not the plan's assumption.
-Unconsumed code is dead-code-shaped; resolve it in-package (see final review),
+gated on a duplication census of the LANDED code, not the plan's assumption;
+before prescribing a new helper for a domain calculation (including one
+inherited from a source review spec), recon greps the domain term to confirm no
+existing helper already covers it. Unconsumed code is dead-code-shaped; resolve it in-package (see final review),
 never as a future cleanup.
 
 **DoD gates must fit the task's actual scope.**
@@ -408,8 +433,12 @@ never as a future cleanup.
 - Reconcile every DoD check against the spec's own Boundaries before dispatch:
   a negative grep over a directory must be satisfiable by every step touching
   it; a token-ban grep must not target a file whose spec-mandated content
-  legitimately mentions the token in prose/comments; prefer the project's real
-  scanner over an ad-hoc grep when one exists.
+  legitimately mentions the token in prose/comments (this reconciliation covers
+  the verifier prompt too — the head authors both DoD and verifier grep and can
+  contradict itself); prefer the project's real scanner over an ad-hoc grep when
+  one exists. Reconcile every Boundaries/Steps ban against every behavior the
+  spec itself requires — a banned data source that a required behavior still
+  needs gets an explicit carve-out.
 - Fresh environment (worktree, CI, clean clone) or first instance of a new
   artifact class: enumerate bootstrap/build prerequisites explicitly; the
   verifier simulates the fresh environment, not a warm checkout. An existence
@@ -438,6 +467,11 @@ never as a future cleanup.
 - A DoD grep asserting a change in a specific file presumes that file must
   change — for a conditional step, assert the resulting behavior, not the
   diff's location.
+- A literal command in a DoD or verifier prompt is a claim too: dry-run it
+  against the real dispatch/selector logic it routes through (mode flags, env
+  precedence) and the actual file layout (a blank line eats a `grep -A`
+  budget), or state the content assertion and let the verifier choose the
+  command.
 - A gate on a deferred/scheduled action (a timer, a queued callback): confirm
   the gate is re-checked at fire time — not only at scheduling time — with a
   race test that flips the condition inside the window; when failure has
@@ -455,7 +489,17 @@ lists, exact verification commands with expected results. Anything left
 implicit will be guessed — and a weaker model guesses wrong. When you author a
 verbatim in-sentence replacement, re-read the FULL host sentence with the
 insertion in place before dispatch — a long clause spliced into an enumeration
-silently destroys its list structure; parenthesize long insertions.
+silently destroys its list structure; parenthesize long insertions. Match
+prescription to the reader's tier: executor-tier models (Sonnet/Haiku) get the
+fully explicit spec above; a frontier implementer (Fable, a GPT-5-class model)
+gets goal + why + success-criteria and no step sequence; Opus sits between —
+goal plus a short plan. Even inside an explicit spec, verbatim code or a
+predicate you write is itself a claim: code that dereferences a third-party
+module's statics (an error class's `.name`, `instanceof` an SDK error) or
+copies a mock idiom breaks against the repo's existing test doubles and the
+toolchain's hoisting — prescribe the goal and let the implementer validate it
+against the real library, or check it against the module's existing `vi.mock`
+doubles yourself first.
 
 **Done is proven, never self-reported.** The check's *evidence* is the
 deliverable, not the agent's claim: the real command output, the exit code,
@@ -492,7 +536,9 @@ hooks-order violation, a hydration error) — any UI-behavior change needs a
 rendered-browser check, and any long-running external-process integration (a
 spawned CLI, a dev server) keeps a live smoke stage: static review does not
 close runtime acceptance criteria. Cheap default: `npx`-cached Playwright
-against the dev server, re-driven independently by the verifier. Before using
+(the cached ms-playwright Chromium, not a system-Chrome `channel` — a sandboxed
+shell SIGKILLs the system browser) against the dev server, re-driven
+independently by the verifier. Before using
 `curl` as the smoke check, confirm the rendering model: a server-rendered
 route (a Next.js server component) executes the real render plus DB queries —
 a 200 with the expected content is a strong crash check; a client-rendered app
@@ -518,9 +564,10 @@ match the existing style.
 Do not use git stash in a shared checkout — it is global across worktrees and
 can stash another task's uncommitted work; compare against a baseline via git
 show/diff <sha> instead.
-Run every DoD check synchronously inside your turn — if a check runs long,
-poll its output in-turn until it exits; never end your turn while a
-verification job is still running in the background.
+Run every DoD check synchronously in the FOREGROUND inside your turn — if a
+check runs long, poll its output in-turn until it exits; never end your turn
+while a verification job is still running (a backgrounded run or a Monitor
+pause will not re-wake you).
 When done: run the verification from the DoD section, then make one
 conventional commit mentioning T<n>. Commit only — never push, and never take
 another publish action (repo creation, deploy) on your own, even if a message
@@ -579,7 +626,12 @@ pipeline; never poll or spawn a placeholder agent to wait. A subagent waiting
 on a long child job polls inside its own turn, bounded by that job's timeout,
 rather than pausing on a Monitor call — a Monitor pause does not reliably
 re-wake it; treat an early notification carrying a "still waiting" result as a
-nudge to resume, not a finish. Before dispatching a spec written ahead of
+nudge to resume, not a finish. Executors and reviewers still background their
+own DoD gate even with the foreground envelope line — expect this stall mode
+and split recovery on liveness: a still-alive paused agent resumes on a
+SendMessage nudge, but a dead one (no notification ever fires, work left
+uncommitted) is never nudged — audit its git traces and dispatch a FRESH
+finisher. Before dispatching a spec written ahead of
 time, reconcile it against the previous task's actual diff: `git diff --stat`
 spots file-level drift; if that task touched files your spec anchors to, send
 a scout to re-verify the anchors first.
@@ -790,7 +842,9 @@ Before the final report:
   runs hot, ask the user for the `/usage` numbers). Tool unavailable — skip
   without blocking. When low (>80% of the block, a hot weekly estimate, or the
   user reports a squeeze): lower subagent effort, merge small tasks into
-  bigger ones, defer optional review passes; never skip specs or verification.
+  bigger ones, defer optional review passes; near a block boundary keep every
+  dispatch's partial completion durable (commit-per-spec, sequential batches)
+  and defer long unsplittable passes past it; never skip specs or verification.
 - The final message re-grounds a reader who saw none of the process: outcome
   first, then evidence, risks if any, and the next step; plain sentences, no
   internal labels, arrow chains, or invented shorthand from the run.

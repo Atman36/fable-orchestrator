@@ -1,5 +1,58 @@
 # Changelog
 
+## 2.13.0 — 2026-07-12
+
+Consolidation of 62 feedback entries from ~15 sessions across projects. Clusters
+past the ≥2-observations/≥2-sessions gate: enumerate-the-category (×9),
+agent-backgrounded-own-gate (×3), dod-grep-vs-spec-mandated-prose (×3),
+dod-probe-wrong-invocation (×2), compression-metric-bytes (×2); the rest are
+singles promoted on explicit user request (prompt-style-by-model-strength) or
+folded into an existing rule at near-zero cost. Repeat-evidence singles (already
+covered) were archived without a text change; narrow/project-specific singles
+were rejected but kept in `archive.jsonl` as evidence for future repeats.
+
+- Dispatch/recovery — the DoD-gate envelope now says run checks in the
+  FOREGROUND (a backgrounded run or Monitor pause will not re-wake you), and
+  stall recovery splits on liveness: a still-alive paused agent resumes on a
+  SendMessage nudge, a dead one (no notification, work uncommitted) is
+  trace-audited and finished by a FRESH agent, never nudged.
+- Spec quality — prompt prescription scales with the reader's tier (frontier =
+  goal+why+success-criteria; Opus = goal+short plan; executor-tier = fully
+  explicit); verbatim code/predicates in a spec are claims too (statics,
+  error-class `.name`, copied mock idioms break against real test doubles and
+  toolchain hoisting) — prescribe the goal or check against the module's
+  existing doubles first.
+- Verify-don't-inherit extensions: claims beyond file contents are hypotheses
+  (a library's runtime surface, a command/script name, a fixture's arithmetic,
+  an env var's presence under the test runner, an id's transform across a
+  layer); a dossier/handoff "done"/"open-items" claim ages — run inherited
+  uncommitted tests before committing and re-check dossier items against newer
+  commits.
+- Enumerate-the-category corollaries: a changed TYPE cascades to every
+  constructor/call site (test fixtures included), not just interface
+  implementors; the recon question is itself category-shaped (grep every member
+  repo-wide, not a suspect-file list — exhaustive sweeps like privacy scrubs or
+  packaging excludes get a whole-tree pass plus a prior-artifact/second-pass
+  check); sample each member for a deliberate carve-out before a uniform change.
+- DoD/verifier — the token-ban-grep vs spec-mandated-prose reconciliation covers
+  verifier prompts too, and every Boundaries/Steps ban is reconciled against
+  every behavior the spec requires; a literal command in a DoD/verifier prompt
+  is a claim (dry-run it against the real selector logic and file layout, or
+  assert the content and let the verifier choose the command).
+- Recon/scope — a "read-only" scout that live-drives a server can still mutate
+  persistent state (point mutating probes at a temp store or keep them GET-only);
+  before prescribing a new helper, recon greps the domain term for an existing
+  one.
+- UI DoD — headless checks use the cached ms-playwright Chromium, not a
+  system-Chrome `channel` (a sandboxed shell SIGKILLs the system browser).
+- Budget — near a usage-block boundary keep every dispatch's partial completion
+  durable (commit-per-spec) and defer long unsplittable passes past it.
+- `references/consolidation.md` — measure size in bytes not lines; a
+  compression/rewrite pass gets a clause-level diff audit by the fresh verifier.
+- `references/loop-mode.md` — prod env mutation is a red owner-checklist action
+  even under a goal-pack; on a mid-`/goal` user pivot, name `/goal clear` at
+  once and author goal conditions with a user-override clause.
+
 ## 2.12.0 — 2026-07-10
 
 Structural compression of SKILL.md: 54.7KB → 45.5KB always-loaded (−17%),

@@ -51,3 +51,16 @@ In an unattended loop a **classifier refusal is a distinct outcome, not a
 failed round**: route that round to Opus and log it, never silently retry it on
 Fable or spend the attempt cap on it — a refusal that reads as a generic
 failure becomes a silent regression that costs you at debug time.
+
+A **production env mutation is a red action even when a goal-pack orders it**:
+the auto-mode classifier blocks the write and reads "record blocked items" as
+no-prod-writes. Verify the read-only form first, then hand the exact command to
+the owner as a checklist item — never spend attempts retrying it.
+
+## When the user pivots mid-run
+
+When the user orders an early wrap-up mid-`/goal`, the Stop hook keeps firing
+until the goal clears — name `/goal clear` in the SAME message, keep every
+subsequent hook-round reply to 2-3 sentences (no re-reporting), and author goal
+conditions with an explicit user-override clause ("…or the user closes the
+session early") so the hook can satisfy on a recorded handoff.

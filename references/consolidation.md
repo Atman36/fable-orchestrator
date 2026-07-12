@@ -26,6 +26,10 @@ verifier still validates the result.
 - **Disposition:** every reviewed entry becomes `applied@<version>` or
   `rejected(<reason>)`; applied/rejected entries move to `archive.jsonl`;
   bump CHANGELOG.md; regenerate SUMMARY.md.
+- **Measure and audit the edit:** size deltas are in bytes (`wc -c`), never
+  lines — a reflow makes line counts incomparable across versions; and any
+  compression or rewrite of a rules section gets a clause-level diff audit by
+  the fresh verifier, because even careful rewriting silently drops directives.
 - **DoD:** `scripts/publish-check.sh` exits 0; hard rules unchanged unless the
   user approved changing them; frontmatter intact. Commit; push on user
   confirmation or when the user asked for publication.
