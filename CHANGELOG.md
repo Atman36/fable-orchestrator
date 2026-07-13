@@ -1,5 +1,25 @@
 # Changelog
 
+## 2.14.0 — 2026-07-13
+
+Consolidation of 17 feedback entries (2026-07-12/13, two projects). Gate-met
+clusters: disk/rollback-artifact loss (×3), runner capture-blind idle-kills
+(×2 + a prior-session occurrence), allowed-path mis-scoping (asymmetry +
+type-cascade, 2 sessions). New "External runners (a kernel between you and
+the executor)" section in references/loop-mode.md consolidates kernel-path
+reconciliation, allowed-path unions incl. consumer-test cascades,
+gate-exit-code verification, notional cost caps, disk guard +
+rollback-patches-are-lossy-period, and kill triage (capture-blind kills,
+sleep-suspended timeouts); SKILL.md §3 Dispatch gains an imperative pointer
+to it. Prior-session working-tree drafts ratified and committed:
+env-label-in-digest hypothesis (verify-don't-inherit), instruction-doc
+tests-vs-DoD cross-check, optimistic-mirror failure-path DoD, and
+single-order-flake rerun triage. Near-zero-cost folds into the new section:
+notional-cost-gate, unverified-check-exit-code, cache-deletion-scope,
+macos-sleep-kills-agent-timeout. enumerate-the-category repeat archived with
+no text change (rule exists since 2.11.0). One entry stays pending
+(executor-skipped-red-tdd ×1). SKILL.md 50.7KB → 51.0KB.
+
 ## 2.13.0 — 2026-07-12
 
 Consolidation of 62 feedback entries from ~15 sessions across projects. Clusters

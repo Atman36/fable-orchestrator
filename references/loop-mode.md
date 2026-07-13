@@ -64,3 +64,50 @@ until the goal clears — name `/goal clear` in the SAME message, keep every
 subsequent hook-round reply to 2-3 sentences (no re-reporting), and author goal
 conditions with an explicit user-override clause ("…or the user closes the
 session early") so the hook can satisfy on a recorded handoff.
+
+## External runners (a kernel between you and the executor)
+
+When any job — standing loop or one-shot pipeline — dispatches specs through
+an external/programmatic runner instead of the built-in Agent tool, the runner
+interposes a kernel with its own path allowlists, cost caps, watchdogs, and
+rollback artifacts — reconcile each spec against the kernel BEFORE dispatch,
+or the runner silently rolls back healthy work:
+
+- **Forbidden paths** — enumerate the runner's global/kernel forbidden paths
+  and reconcile them against every file each spec orders changed; a
+  spec-mandated file on the forbidden list needs an explicit pre-dispatch
+  workaround decision, not a mid-run surprise.
+- **Allowed-path union** — sibling tasks sharing a surface (a doc section, a
+  config file) each get the UNION of that surface in their allowed paths; derive
+  the globs from the shared category, never hand-scope per task, or the second
+  task policy-fails on the shared file. The union includes the CONSUMER-TEST
+  dirs of every contract or behavior the task changes: an accept/reject or type
+  change cascades into test fixtures that construct or assert it, and globs
+  scoped to the primary module dir policy-fail that healthy cascade.
+- **Exit code is a claim** — verify a gate command's exit code in isolation
+  (`echo $?` immediately) against the documented baseline before freezing it
+  into a manifest: a compound command's outer exit can come from `tail`, not the
+  test runner, and a runner like `node --test` exits non-zero on accepted
+  cancelled/flaky tests — gate on parsed pass-counts when the suite has any.
+- **Cost caps** — under subscription auth the adapter's reported cost is
+  notional; omit a max-cost cap in manifests, or the default policy-fails
+  healthy tasks.
+- **Disk pressure** — a full disk silently corrupts the runner's rollback
+  artifacts (a truncated `diff.patch`), and a policy-failed task leaves no
+  commit, so that patch is the only record: check free disk before every
+  dispatch and PAUSE below the disk guard rather than salvaging post-rollback
+  (treat any such patch as lossy — `git apply --check`). Free disk with
+  project-local and package-manager-native cleanup only (`npm cache clean`,
+  `pip cache purge`, `pnpm store prune`); deleting caches outside the project
+  dir is an owner action. Rollback patches have also truncated with disk
+  headroom present: treat them as lossy, period — WIP commits and pushed
+  branches are the only reliable work artifacts; never plan salvage around a
+  rollback patch.
+- **Kill triage** — a killed run with 0-byte captured agent output, zero
+  changed files, and an awake machine is a runner capture defect (environment
+  failure): resume without advancing the escalation ladder; after two
+  consecutive capture-blind kills on the same task, stop retrying and run that
+  task with an in-session executor instead. Machine sleep suspends the
+  adapter's timeout timer and the wake-time kill of a likely-finished agent is
+  also an environment failure — dispatch long runs only while the machine will
+  stay awake.

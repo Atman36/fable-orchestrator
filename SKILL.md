@@ -364,6 +364,10 @@ content. Surfaces that keep burning sessions:
 - A dossier/handoff claim ages: 'done' work inherited uncommitted gets its
   tests actually run before you commit it, and dossier 'open items' get
   re-checked against commits newer than the entry before you spec a fix.
+- An environment-target label (staging vs prod) in a digest is a hypothesis —
+  before it enters an owner-facing report, cross-check it against which env
+  prior sessions audited with the same creds and against writes the owner says
+  they made; mislabeling prod as 'staging' hides the more severe fact.
 
 **Fail safe on destructive paths.** When a spec decision feeds a delete,
 purge, or reject-with-removal path, trace every PRODUCER of the decisive value
@@ -438,7 +442,12 @@ never as a future cleanup.
   contradict itself); prefer the project's real scanner over an ad-hoc grep when
   one exists. Reconcile every Boundaries/Steps ban against every behavior the
   spec itself requires — a banned data source that a required behavior still
-  needs gets an explicit carve-out.
+  needs gets an explicit carve-out. Cross-check a scout-authored instruction
+  doc's own test list against its Steps/DoD before freezing the spec, and
+  resolve any contradiction by the DoD.
+- Optimistic or mirrored local state (a local copy shadowing an async store
+  write) gets a failure-path DoD test: the write rejects → the mirror reverts;
+  the happy path alone hides a stuck-state bug a lane verifier passes over.
 - Fresh environment (worktree, CI, clean clone) or first instance of a new
   artifact class: enumerate bootstrap/build prerequisites explicitly; the
   verifier simulates the fresh environment, not a warm checkout. An existence
@@ -605,6 +614,12 @@ self-verification and turns every retry into an expensive coin flip; if the
 permissions can't be fixed, route to the strongest model and treat your own
 runner-side checks as the only gate.
 
+Dispatching specs through an external/programmatic runner (a manifest-driven
+kernel outside the Agent tool) — **read `references/loop-mode.md` § External
+runners first**: kernel-path reconciliation, allowed-path unions incl.
+consumer-test cascades, gate exit codes, rollback-artifact and kill-triage
+rules.
+
 Continue vs. spawn: reuse an existing executor (follow-up message) when the
 next slice touches the same files and its accumulated context is an asset —
 rework, an adjacent fix. Spawn fresh when the slice is independent,
@@ -667,7 +682,10 @@ On failure, triage the cause before burning an attempt:
   fix the spec yourself and re-dispatch; your failure, not theirs, the ladder
   does not advance (log it: category `spec_defect`).
 - **Environment failure** — missing dependency, flaky harness: fix the
-  environment and rerun; the ladder does not advance.
+  environment and rerun; the ladder does not advance. A single novel
+  full-suite failure that passes in isolation and on rerun is a suspect
+  order-flake — rerun (isolated + full) once before triaging it as an
+  implementation failure.
 - **Implementation failure** — the ladder:
   1–2. rework by the **same executor** (they have the context) with the
   verifier's point-by-point list;
