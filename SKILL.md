@@ -219,7 +219,11 @@ Statuses in PLAN.md: `todo → spec-ready → in-progress → verify → done | 
 The board has one writer: the orchestrator. Executors and verifiers never edit
 PLAN.md or spec files — they report, you record. Statuses start at `todo` —
 never pre-fill future results (done marks, commit hashes, verdicts) as
-templates: a templated board reads as finished work later.
+templates: a templated board reads as finished work later. The same
+discipline covers owner-facing and tracked docs: status edits state only
+facts a tool result verified this session — an in-flight task gets an
+in-progress marker, and a count crossing into a tracked file is recomputed
+from a pasted command output, never carried from a digest.
 
 **Report protocol:**
 
@@ -246,7 +250,10 @@ templates: a templated board reads as finished work later.
 - Browser-based checks run headless only — never a visible window stealing the
   user's focus; write that into the DoD of every visual check.
 - A subagent's final message must contain the COMPLETE report — a correction
-  is re-emitted inside the full report, never sent alone.
+  is re-emitted inside the full report, never sent alone. Put this rider in
+  every dispatch, chat-text Explore scouts included — their finals truncate to
+  the last section without it; recovery is a resume asking to re-emit the
+  complete report, not a respawn.
 - An external-CLI/non-Claude step treats its required artifact file as a hard
   completion gate (failure unless the file exists, checked per step, no
   out-of-repo paths) — such agents can exit 0 without writing anything.
@@ -343,9 +350,16 @@ content. Surfaces that keep burning sessions:
   claim.
 - Before ordering a test addition in a fix spec, check the branch diff for an
   existing equivalent test.
+- Ordering a test-assertion change: quote the WHOLE test body in recon or have
+  the envelope order a sibling-assertion audit — a neighboring negative
+  assertion can pin the very behavior being fixed.
 - A field/column name is verified on the CONSUMING type that reads it (a
   client type, a view's exposed column list), not just on the producer or DB
   row it was copied from.
+- A NEW literal ordered into a typed sink (audit action, event kind, enum-ish
+  field): recon quotes the sink's type — closed union, exhaustive switch,
+  label map — and the spec extends the union and its labels in-scope or
+  explicitly authorizes the cast.
 - "Artifact A is consumable by tool B" (a patch by `git apply`, an export by
   its importer) is a round-trip fact — execute the round-trip, never infer it
   from format family.
@@ -354,6 +368,12 @@ content. Surfaces that keep burning sessions:
   same-process observation does not transfer to a resume or restart path.
 - Any concrete number a spec or DoD quotes is computed from the real data or
   marked do-not-assert, never invented as an illustration.
+- A migration/sequence number is a codebase fact: list the target directory in
+  recon; never inherit the next number from a dossier or memory.
+- A scout's negative claim ("only consumer", "no X exists") entering a DoD or
+  Decision: re-verify with your own grep at spec time, sweeping untracked and
+  gitignored files too, or word it conditionally — never freeze it as a hard
+  empty-grep DoD.
 - Claims beyond file contents are hypotheses too: a library's runtime surface
   (an error class's `.name`, a module's static classes), a command or npm-script
   name entering a DoD, a fixture's arithmetic (zone spreads, date windows), an
@@ -385,7 +405,9 @@ producer never exposed (a missing COUNT query, a missing join column). Same
 for failure paths: when N+1 modifies a recovery/error path N also changed this
 session, walk the COMBINED failure matrix — each of N's new artifacts against
 each of N+1's new early-return paths — the crash lives in the interaction
-neither spec enumerated alone.
+neither spec enumerated alone. A new DB trigger or gate is such an artifact —
+walk it against every EXISTING writer of the gated table, ops and verify
+scripts included.
 
 **Enumerate the category, never a hand-picked list.** When a fix applies to a
 category — every free-text field that enters a prompt, every user-visible
@@ -400,6 +422,11 @@ grep. Corollaries:
 - Reconcile the enumeration against Boundaries: a category member inside a
   do-not-touch file needs the boundary widened or an explicit deferred-risk
   note.
+- Steps/DoD cover every member of a category Context declares, or record a
+  per-member carve-out — a hand-narrowed Steps list silently contradicts the
+  spec's own category.
+- The rule holds inside one file: enumerate every read/render of the value in
+  the touched file, never only the line a scout quoted.
 - Adding a member to a shared port/interface cascades to every implementor and
   mock — enumerate them in Steps, and word Boundaries as runtime-behavior
   limits, never file-ownership limits over directories the cascade must cross.
@@ -490,6 +517,9 @@ never as a future cleanup.
   idempotent `ALTER ... ADD COLUMN IF NOT EXISTS`, or explicitly flag that the
   app breaks against any un-migrated DB (a full outage when session bootstrap
   runs a `select *`).
+- Cross-check the spec's test enumeration against EVERY behavior and
+  user-visible string its own Decisions section mandates — each gets a test or
+  an explicit no-test rationale in Decisions.
 
 **Write for the weakest reader.** Executors and verifiers run on smaller
 models (Sonnet, Haiku). Be maximally explicit: exact file:line anchors,
@@ -573,10 +603,14 @@ match the existing style.
 Do not use git stash in a shared checkout — it is global across worktrees and
 can stash another task's uncommitted work; compare against a baseline via git
 show/diff <sha> instead.
-Run every DoD check synchronously in the FOREGROUND inside your turn — if a
-check runs long, poll its output in-turn until it exits; never end your turn
-while a verification job is still running (a backgrounded run or a Monitor
-pause will not re-wake you).
+If the spec mandates test-first: write the tests, run them, and paste the
+failing (RED) output into a named report section BEFORE editing any source
+file.
+Run every DoD check synchronously in the FOREGROUND inside your turn — banned
+by name: `&`, run_in_background, Monitor. If a check runs long, poll its
+output in-turn until it exits; never end your turn while a verification job
+is still running (a backgrounded run or a Monitor pause will not re-wake
+you).
 When done: run the verification from the DoD section, then make one
 conventional commit mentioning T<n>. Commit only — never push, and never take
 another publish action (repo creation, deploy) on your own, even if a message
@@ -646,7 +680,12 @@ own DoD gate even with the foreground envelope line — expect this stall mode
 and split recovery on liveness: a still-alive paused agent resumes on a
 SendMessage nudge, but a dead one (no notification ever fires, work left
 uncommitted) is never nudged — audit its git traces and dispatch a FRESH
-finisher. Before dispatching a spec written ahead of
+finisher. An API/network death (a terminal-error notification DID arrive) is
+a third case: SendMessage resume of the SAME agent recovers it with context
+intact — resume first; dispatch a fresh finisher only if the resume stalls. A
+failed notification over substantial uncommitted work is not proof of death —
+re-check liveness before any replacement, or two agents end up in one
+worktree. Before dispatching a spec written ahead of
 time, reconcile it against the previous task's actual diff: `git diff --stat`
 spots file-level drift; if that task touched files your spec anchors to, send
 a scout to re-verify the anchors first.
@@ -674,7 +713,10 @@ unverifiable here (what exactly could not be run and why), exact commands run,
 what you observed." It does not review code — it executes the check.
 Fresh-context verifiers beat self-critique; whoever built it never accepts it.
 An "unverifiable" verdict is legal — a named risk beats a silent green
-produced without an actual run.
+produced without an actual run. A verifier whose gate runs long is dispatched
+synchronously (a foreground Agent call), doubly so under API instability — a
+backgrounded waiter gets killed by the stream watchdog before it writes its
+report.
 
 On failure, triage the cause before burning an attempt:
 

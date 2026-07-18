@@ -1,5 +1,39 @@
 # Changelog
 
+## 2.15.0 — 2026-07-18
+
+Consolidation of 42 feedback entries (2026-07-13..18, three projects): 27
+applied, 4 rejected as rule-held/covered, 11 singles kept pending (status
+`pending` — reviewed below the promotion gate; a repeat re-arms the trigger).
+Gate-met clusters promoted into SKILL.md:
+
+- verify-don't-inherit (×4 + history) — new recon bullets: a NEW literal into
+  a typed sink quotes the sink's closed union; a test-assertion change quotes
+  the whole test body; migration/sequence numbers are listed from the
+  directory, never inherited; a scout's negative claim ("only consumer",
+  "no X exists") is re-grepped incl. untracked/ignored files or worded
+  conditionally.
+- enumerate-the-category (×5 + history) — Steps/DoD must cover a
+  Context-declared category or record per-member carve-outs; the rule applies
+  within a single file too.
+- executor-skipped-red-tdd (×3, rider self-caught all) — RED-output-before-
+  source-edits promoted into the standing executor envelope.
+- agent-backgrounded-own-gate (×3 recurrence after the 2.13 foreground line) —
+  envelope bans `&`/run_in_background/Monitor by name; long-gate verifiers
+  dispatch synchronously (§5).
+- api-death-resume (×4) — a terminal-error notification is not death:
+  SendMessage-resume the SAME agent first; fresh finisher only after a stalled
+  resume plus a liveness re-check (§4).
+- spec-test-list-vs-decisions (×2) — DoD bullet: test enumeration
+  cross-checked against every Decisions-mandated behavior and string.
+- Near-zero-cost folds: owner-facing/tracked-doc facts recomputed from pasted
+  output (digest-distrust + ungrounded-claim-in-owner-doc); combined failure
+  matrix covers a new DB trigger vs every existing writer incl. ops scripts;
+  complete-report rider extended to chat-text scouts (×2, one session).
+
+SKILL.md 51.0KB → ~53.9KB — AT the ~54KB watch threshold: structural
+compression pass due before the next consolidation adds text.
+
 ## 2.14.0 — 2026-07-13
 
 Consolidation of 17 feedback entries (2026-07-12/13, two projects). Gate-met
