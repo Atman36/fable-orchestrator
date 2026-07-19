@@ -1,5 +1,63 @@
 # Changelog
 
+## 2.16.0 — 2026-07-19
+
+Consolidation of 40 feedback entries (2026-07-13..19, five projects): 29
+applied, 11 singles kept pending. Structural change alongside: the three
+accumulated trap lists (verify-don't-inherit surfaces, enumerate-the-category
+corollaries, DoD-gate rules) moved VERBATIM out of the always-loaded SKILL.md
+into the new `references/spec-traps.md`, with an imperative pointer at the
+top of §2 Specs — future spec/DoD-trap promotions append there
+(consolidation.md updated), so SKILL.md's weight stays flat. SKILL.md ~53.9KB
+→ ~45KB despite this round's additions.
+
+Gate-met clusters promoted:
+
+- commit-dod-path-untracked (×2, 2 projects) — check-ignore/ls-files runs at
+  spec/addendum WRITE time; a create-document-at-path deliverable counts as a
+  commit-DoD step; verdicts are per-FILE-path, never the parent directory
+  (folds check-ignore-directory-vs-file).
+- source-criteria-to-dod (dod-paraphrase-dropped-source-criterion +
+  contract-requirement-without-dod-check, 2 projects) — quote source-doc/
+  contract criteria verbatim and derive the DoD line-by-line; every "must"
+  gets a mechanical check in each consuming spec.
+- failure-branch-ux (piggyback-save-partial-failure-semantics +
+  fail-safe-branch-needs-ux + ui-copy-edgecase-unspecified) — new §2
+  paragraph: specify partial-failure semantics of composed writes, the UX of
+  disabled auto-transitions, zero/empty renderings of composed strings.
+- review-axes (review-axis-interaction-matrix +
+  owner-parallel-review-catches-missed-defects) — §6 standing axes: cross-task
+  interaction; pre-demo adversarial pass on async/UI-state seams by a second
+  independent or out-of-family reviewer.
+- dataflow-producer-tracing (dod-item-without-data-producer +
+  persist-path-mapping-untraced) — persistence/render claims traced through
+  EVERY mapping layer to a persisted producer.
+- visual-geometry (visual-dod-no-usability-floor +
+  visual-compaction-without-bulk-map +
+  jsx-reorder-vs-class-builder-track-mismatch) — visual DoD sets a usability
+  floor; height cuts cite a measured per-section map; grid reorders pin the
+  class→track mapping or assert rendered widths.
+- shared-checkout non-exclusivity (dod-scope-blind-to-parallel-checkout +
+  foreign-uncommitted-edit-mid-pipeline) — DoD commands scoped to the
+  executor's own paths; foreign tracked-file edits quarantined between
+  dispatches with an envelope exclusion line.
+- direct-mode-preferred-for-small-doc-tasks (user correction ×2) — the head
+  proposes direct mode for small documentation-only tasks.
+- Re-armed folds into existing rules: token-ban grep exempts negative test
+  assertions; digest distrust extends to env-shape/behavior-pattern claims;
+  enumerate-the-category binds the head in direct-edit mode (grep-based
+  sweeps); successor-races-live-predecessor extends the live-concurrent-run
+  check to "continue" handoffs; smoke-server-inturn-shell sanctioned in the
+  envelope (start/poll/kill inside one call); standalone HTML opens with
+  `<meta charset="utf-8">` (user correction); api-death-resume ×2 archived as
+  rule-held confirmations; log counts via JSON parser → consolidation.md.
+
+From the user's agent-rules digest (2026-07-19): §5 gains three rules —
+deterministic DoDs may be gated by scripts/direct runs (independence ≠ model),
+reviewers/verifiers never see the executor's reasoning (anchoring), and
+acceptance splits into "built right?" (verifier) vs "right thing built?"
+(head, against the user's original intent).
+
 ## 2.15.0 — 2026-07-18
 
 Consolidation of 42 feedback entries (2026-07-13..18, three projects): 27

@@ -20,7 +20,13 @@ verifier still validates the result.
   project's CLAUDE.md or dossier, never this skill. Situational reference
   material (needed only when a specific situation arises) → the matching
   `references/*.md`, with an imperative pointer at the decision point in
-  SKILL.md.
+  SKILL.md. Spec/DoD trap lessons (secondhand-claim surfaces,
+  category-enumeration corollaries, DoD-gate rules) append to
+  `references/spec-traps.md`, not to SKILL.md — that keeps the always-loaded
+  file's weight flat.
+- **Count with a parser:** counts over `log.jsonl` come from a JSON parser
+  (`python3 -c "..."`), never a grep for an exact `"key":"value"` string —
+  JSON formatting varies across writers and a grep silently undercounts.
 - **Privacy scrub:** generalized wording only; no project names, private
   paths, client or employer specifics in tracked files.
 - **Disposition:** every reviewed entry becomes `applied@<version>` or

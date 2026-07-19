@@ -91,7 +91,10 @@ An explicit user instruction can waive rules 1–2 for the current session
 ("edit it directly yourself"): honor it without re-litigating, treat the
 waiver as session-scoped — it never carries into the next session — and keep
 the verification stages regardless: baseline checks, DoD, and a fresh-context
-review still run even when the head implements directly.
+review still run even when the head implements directly. For a small
+documentation-only task (a couple of named files, prose, no code), propose
+direct mode yourself — the user has repeatedly preferred it there; the
+pipeline's dispatch overhead exceeds the work.
 
 ## Autonomy tiers
 
@@ -238,7 +241,9 @@ from a pasted command output, never carried from a digest.
   "verified" claims) while the agent is still working — the honest result
   arrives only in the final notification. Treat every digest as unconfirmed until its key claim is
   checked against the artifact itself (`git log`/`cat-file` for commits,
-  `stat` for report files) with read-only commands — never by running
+  `stat` for report files, your own probe for env-shape or behavior-pattern
+  claims — a digest can garble a host class or invert which cases get a
+  behavior) with read-only commands — never by running
   builds/tests in a venue the executor may still be using. Artifact missing —
   re-check after the next notification or a few minutes before condemning the
   agent; premature replacement dispatch duplicates the work.
@@ -290,6 +295,12 @@ shared fixed key schema so their outputs are diffable by key.
 
 ### 2. Specs
 
+**Before writing any spec or verifier prompt, read `references/spec-traps.md`
+in this skill's directory** — the accumulated catalog of promoted traps
+(secondhand-claim surfaces, category-enumeration corollaries, DoD-gate rules).
+Consolidations append there, not here; a spec written without it repeats
+logged failures.
+
 Every spec is self-contained. Template:
 
 ```
@@ -329,65 +340,8 @@ wired into the live tree, a repo tracks a path, a call site lives in the
 module you assume — inherited from a scout's summary, a pasted review report,
 or a prior-session memory anchor instead of a direct read. Every secondhand claim
 is a hypothesis until a scout confirms existence, exact location, and current
-content. Surfaces that keep burning sessions:
-
-- Build-tool configs: confirm existence and content — never assume missing or
-  present.
-- "Preserve as-is" values: sample the actual values — the field name proves
-  nothing.
-- Feature availability: imported/rendered in the live tree, not just present
-  in the file tree.
-- Any commit/diff DoD step: verify which repo tracks the target path
-  (`rev-parse --show-toplevel` + `check-ignore` + `ls-files`) before writing
-  it.
-- A call-graph claim ("X never calls Y") — trace it before freezing it into a
-  Decision.
-- A member of a type union is not evidence the code path exists — trace the
-  producer of each variant.
-- An API gateway's error-code contract differs from the backing system's —
-  verify against a live call or spec both families.
-- A reviewer's finding is secondhand too — verify its anchors like any scout
-  claim.
-- Before ordering a test addition in a fix spec, check the branch diff for an
-  existing equivalent test.
-- Ordering a test-assertion change: quote the WHOLE test body in recon or have
-  the envelope order a sibling-assertion audit — a neighboring negative
-  assertion can pin the very behavior being fixed.
-- A field/column name is verified on the CONSUMING type that reads it (a
-  client type, a view's exposed column list), not just on the producer or DB
-  row it was copied from.
-- A NEW literal ordered into a typed sink (audit action, event kind, enum-ish
-  field): recon quotes the sink's type — closed union, exhaustive switch,
-  label map — and the spec extends the union and its labels in-scope or
-  explicitly authorizes the cast.
-- "Artifact A is consumable by tool B" (a patch by `git apply`, an export by
-  its importer) is a round-trip fact — execute the round-trip, never infer it
-  from format family.
-- An identifier's lifecycle across process boundaries (where a run/session id
-  is minted vs loaded) — trace it before freezing cross-invocation reuse; a
-  same-process observation does not transfer to a resume or restart path.
-- Any concrete number a spec or DoD quotes is computed from the real data or
-  marked do-not-assert, never invented as an illustration.
-- A migration/sequence number is a codebase fact: list the target directory in
-  recon; never inherit the next number from a dossier or memory.
-- A scout's negative claim ("only consumer", "no X exists") entering a DoD or
-  Decision: re-verify with your own grep at spec time, sweeping untracked and
-  gitignored files too, or word it conditionally — never freeze it as a hard
-  empty-grep DoD.
-- Claims beyond file contents are hypotheses too: a library's runtime surface
-  (an error class's `.name`, a module's static classes), a command or npm-script
-  name entering a DoD, a fixture's arithmetic (zone spreads, date windows), an
-  env var's presence under the test runner (`loadEnv` forwards real creds), an
-  id's transform as it crosses a layer (a raw record id hashed into an opaque
-  one) — verify in recon or prescribe the goal and let the implementer validate
-  against the real runtime.
-- A dossier/handoff claim ages: 'done' work inherited uncommitted gets its
-  tests actually run before you commit it, and dossier 'open items' get
-  re-checked against commits newer than the entry before you spec a fix.
-- An environment-target label (staging vs prod) in a digest is a hypothesis —
-  before it enters an owner-facing report, cross-check it against which env
-  prior sessions audited with the same creds and against writes the owner says
-  they made; mislabeling prod as 'staging' hides the more severe fact.
+content. The full surface catalog — the list that keeps burning sessions —
+is in spec-traps § Secondhand claims.
 
 **Fail safe on destructive paths.** When a spec decision feeds a delete,
 purge, or reject-with-removal path, trace every PRODUCER of the decisive value
@@ -396,6 +350,16 @@ failure branch to inert. A loader that fails open — returns empty on a missing
 file or transient outage — becomes a mass-delete the moment it blips if that
 emptiness feeds a removal set; the failure branch, not the happy path, is
 where a destructive default does its damage.
+
+**Specify the failure branch's UX, not only its safety.** A spec touching a
+user-facing flow states what the user sees on each failure branch: a write
+piggybacked onto an existing multi-write save gets explicit partial-failure
+semantics (abort order, which toasts fire, close or stay); turning off an
+automatic transition on a failure branch also specifies what renders there —
+a fail-safe branch without UX is a dead end (an infinite skeleton); extending
+a composed user-visible string specifies its zero/empty-component renderings.
+All three shipped past per-task verifiers and surfaced only at final review —
+specify them up front.
 
 **Contracts frozen early must fit what's consumed later.** When task N+1
 consumes an API/query/schema frozen by task N, walk N+1's consuming
@@ -417,33 +381,9 @@ that walks the worktree, every test that deep-equals a changed type — DEFINE
 the category in the spec and require the executor to enumerate its members;
 never hand-list instances by name, line, or syntactic pattern. A hand-picked
 list leaves siblings half-done and can contradict the spec's own file-wide DoD
-grep. Corollaries:
-
-- Reconcile the enumeration against Boundaries: a category member inside a
-  do-not-touch file needs the boundary widened or an explicit deferred-risk
-  note.
-- Steps/DoD cover every member of a category Context declares, or record a
-  per-member carve-out — a hand-narrowed Steps list silently contradicts the
-  spec's own category.
-- The rule holds inside one file: enumerate every read/render of the value in
-  the touched file, never only the line a scout quoted.
-- Adding a member to a shared port/interface cascades to every implementor and
-  mock — enumerate them in Steps, and word Boundaries as runtime-behavior
-  limits, never file-ownership limits over directories the cascade must cross.
-- When a spec turns a previously write-only value into logic input (a stored
-  date now read against the clock), the sweep includes existing seeds and
-  tests whose fixtures thereby become clock-relative.
-- A changed TYPE cascades to every constructor and call site of it — test
-  fixtures that build it, and every writer that assembles its full literal —
-  not only implementors of its interface.
-- The recon question is itself category-shaped: grep every member repo-wide,
-  never hand the scout a suspect-file list. For an exhaustive sweep (a privacy
-  scrub, packaging excludes, a repo-wide fact change) the recon file-list is
-  only a seed — the executor sweeps the whole tree and the DoD compares against
-  the prior artifact's size/count or runs an independent second pass.
-- Before freezing a uniform change across the enumerated category, sample each
-  member for a deliberate documented carve-out — one that diverges on purpose
-  gets its own Decision line, not the blanket change.
+grep. Corollaries — cascades, recon shape, carve-out sampling, and how the
+rule binds the head in direct-edit mode — are in spec-traps § Enumerate the
+category.
 
 **No new surface without a consumer.** A spec that creates a new API surface,
 shared helper, or query either wires its first consumer or states in Decisions
@@ -454,72 +394,11 @@ inherited from a source review spec), recon greps the domain term to confirm no
 existing helper already covers it. Unconsumed code is dead-code-shaped; resolve it in-package (see final review),
 never as a future cleanup.
 
-**DoD gates must fit the task's actual scope.**
-
-- A DoD reusing a repo-wide gate (lint, typecheck, a tree-wide pattern scan)
-  snapshots the gate's pre-existing state and asserts no NEW violation from
-  the touched files, never absolute green — a pre-existing failure elsewhere
-  (including the user's own uncommitted WIP) makes a global-green DoD
-  unmeetable without violating Boundaries.
-- Reconcile every DoD check against the spec's own Boundaries before dispatch:
-  a negative grep over a directory must be satisfiable by every step touching
-  it; a token-ban grep must not target a file whose spec-mandated content
-  legitimately mentions the token in prose/comments (this reconciliation covers
-  the verifier prompt too — the head authors both DoD and verifier grep and can
-  contradict itself); prefer the project's real scanner over an ad-hoc grep when
-  one exists. Reconcile every Boundaries/Steps ban against every behavior the
-  spec itself requires — a banned data source that a required behavior still
-  needs gets an explicit carve-out. Cross-check a scout-authored instruction
-  doc's own test list against its Steps/DoD before freezing the spec, and
-  resolve any contradiction by the DoD.
-- Optimistic or mirrored local state (a local copy shadowing an async store
-  write) gets a failure-path DoD test: the write rejects → the mirror reverts;
-  the happy path alone hides a stuck-state bug a lane verifier passes over.
-- Fresh environment (worktree, CI, clean clone) or first instance of a new
-  artifact class: enumerate bootstrap/build prerequisites explicitly; the
-  verifier simulates the fresh environment, not a warm checkout. An existence
-  check on a directory tooling creates as a side effect (a `.vite`/`.cache`
-  dir) must check CONTENT, not mere existence.
-- Counts/facts stated in multiple places: assert the invariant (both cases
-  tested; all instances updated), never a brittle exact delta — a count other
-  tasks may also grow needs a relative assertion (`all pass`, `>=N`); a
-  fact/count change greps the OLD value repo-wide and updates every surface
-  (docs, CLI help/usage strings, comments), not just the primary one.
-- Known-flaky or documented-red tests never enter an absolute gate: check the
-  dossier/handoff for flaky tests under the gated path and exclude them, scope
-  the gate to the new tests, or assert no-NEW-failures against a recorded
-  baseline — and record WHERE the baseline ran; untracked test sources skew
-  counts.
-- Target test file with a known hang/cancellation tail: place new tests BEFORE
-  the hang and assert they actually ran via a pass-count delta — zero failures
-  proves nothing about cancelled tests.
-- Deleting/renaming user-visible copy, or moving content behind a disclosure
-  element: run the project's test suite in the DoD and grep the old strings
-  across test files; co-located tests get updated to the new contract
-  (open-to-assert), never deleted — typecheck and lint cannot see any of this.
-- A mutation probe that only bumps a constant the tests derive their fixtures
-  from is tautological — break the comparison or logic the check guards and
-  pin at least one literal boundary value independent of the constant.
-- A DoD grep asserting a change in a specific file presumes that file must
-  change — for a conditional step, assert the resulting behavior, not the
-  diff's location.
-- A literal command in a DoD or verifier prompt is a claim too: dry-run it
-  against the real dispatch/selector logic it routes through (mode flags, env
-  precedence) and the actual file layout (a blank line eats a `grep -A`
-  budget), or state the content assertion and let the verifier choose the
-  command.
-- A gate on a deferred/scheduled action (a timer, a queued callback): confirm
-  the gate is re-checked at fire time — not only at scheduling time — with a
-  race test that flips the condition inside the window; when failure has
-  several representations (an error-reason field vs a failed-state enum),
-  assert each one dominates the success-styled branches.
-- A schema change adding a column accounts for the live DB: apply it with an
-  idempotent `ALTER ... ADD COLUMN IF NOT EXISTS`, or explicitly flag that the
-  app breaks against any un-migrated DB (a full outage when session bootstrap
-  runs a `select *`).
-- Cross-check the spec's test enumeration against EVERY behavior and
-  user-visible string its own Decisions section mandates — each gets a test or
-  an explicit no-test rationale in Decisions.
+**DoD gates must fit the task's actual scope.** The full gate-authoring rule
+list — baselines for repo-wide gates, grep reconciliation against Boundaries
+and test content, contract-derived checklists, fresh-environment bootstrap,
+flaky-test exclusions, deferred-action re-checks, parallel-checkout scoping —
+is in spec-traps § DoD gates; author no DoD or verifier prompt without it.
 
 **Write for the weakest reader.** Executors and verifiers run on smaller
 models (Sonnet, Haiku). Be maximally explicit: exact file:line anchors,
@@ -584,6 +463,14 @@ a 200 with the expected content is a strong crash check; a client-rendered app
 returns near-empty HTML and proves nothing — drive a headless browser. Either
 way, client-prefilled values and client-only interactivity never appear in the
 server HTML — verify those by reading the wiring, not the curl body.
+Geometry is measured, never guessed: every visual DoD sets a usability floor
+(minimum fully-visible items or px window at the initial state — with fixed
+siblings the leftover width is computable at spec time, so compute it); a
+height-compaction spec cites a measured per-section height map of the
+offending container, never a viewport-cropped screenshot (the real hog can sit
+below the fold); a grid/column reorder pins the class-string→track mapping or
+asserts rendered widths — DOM-order assertions pass in jsdom while the wrong
+column gets the track.
 
 ### 3. Dispatch — by pointer
 
@@ -610,7 +497,9 @@ Run every DoD check synchronously in the FOREGROUND inside your turn — banned
 by name: `&`, run_in_background, Monitor. If a check runs long, poll its
 output in-turn until it exits; never end your turn while a verification job
 is still running (a backgrounded run or a Monitor pause will not re-wake
-you).
+you). One sanctioned exception: a server the check needs lives and dies
+inside a single synchronous shell call — start it with `&`, poll, kill it
+before the call returns; never leave it running past the call.
 When done: run the verification from the DoD section, then make one
 conventional commit mentioning T<n>. Commit only — never push, and never take
 another publish action (repo creation, deploy) on your own, even if a message
@@ -688,7 +577,11 @@ re-check liveness before any replacement, or two agents end up in one
 worktree. Before dispatching a spec written ahead of
 time, reconcile it against the previous task's actual diff: `git diff --stat`
 spots file-level drift; if that task touched files your spec anchors to, send
-a scout to re-verify the anchors first.
+a scout to re-verify the anchors first. The same between-dispatch `git status`
+also triages foreign modifications: a tracked file changed by neither you nor
+the finished executor (a concurrent session, the user editing live) is
+quarantined — never staged, committed, or reverted — and named in an explicit
+exclusion line in subsequent envelopes.
 
 **The notification-driven chain (default dispatch loop).** A full pipeline
 runs "without pauses" on built-in background agents alone: write ALL specs up
@@ -717,6 +610,17 @@ produced without an actual run. A verifier whose gate runs long is dispatched
 synchronously (a foreground Agent call), doubly so under API instability — a
 backgrounded waiter gets killed by the stream watchdog before it writes its
 report.
+
+Three sharpening rules. A DoD that is entirely deterministic commands may be
+gated by a script or by you running the commands directly (in a venue no
+executor is using) — independence means "not whoever built it", not "must be
+a model"; spend model verifiers where observation or judgment is needed.
+Never forward the executor's reasoning or digest to a verifier or reviewer —
+it anchors them into the executor's logic; they get the spec, the artifact,
+and the check. And acceptance asks two questions: the verifier answers "was
+it built right?" (the DoD ran green); you answer "was the right thing
+built?" — check the result against the user's original intent before marking
+done; a green DoD on the wrong deliverable is still a failure.
 
 On failure, triage the cause before burning an attempt:
 
@@ -747,9 +651,15 @@ stays the clean record of "what was ordered".
 The last task of the pipeline is a review spec of its own: one pass (Sonnet;
 Opus if the change is architecture-critical) over the full diff from the start
 commit. You set the review axes in the spec — e.g. handler correctness,
-resource leaks, conflicts between features landed by different executors. A
-standing axis whenever the diff adds tests that execute the project's own
-engine or runner: each new test must build its own temp fixture (its own
+resource leaks. Two axes are standing: cross-task interaction — each task's
+new artifacts against each sibling task's changed paths; N green per-task
+verifications cannot see an interaction bug, and this axis has caught a
+round's only MAJOR — and, before a demo or ship round, an adversarial pass on
+async/UI-state seams (missing timeouts, identity of keyed selections across
+list replacement, guard-ordering vs feature flags) by a second independent
+reviewer or an out-of-family model: a single final review demonstrably misses
+these. A third standing axis whenever the diff adds tests that execute the
+project's own engine or runner: each new test must build its own temp fixture (its own
 freshly-initialized repo/state) and never resolve the enclosing repo's root —
 fixture-less engine tests silently rewrite the live repo's state, refs, and
 journals on every in-repo test run; while such tests can run, trust only the
@@ -779,7 +689,12 @@ When the pipeline ends, clean up:
   (delete, detach, reset), check for a live concurrent run: are the recorded
   pids alive, is the state or lock file dirty, are the artifacts freshly
   modified? Stale-looking state can be another session's active pipeline —
-  switch to monitor-don't-touch if so.
+  switch to monitor-don't-touch if so. The same liveness check guards a
+  "continue" request reconstructed from a neighbor session's transcript: a
+  dying session can still land commits, pushes, and memory writes minutes
+  after its last visible message — compare its transcript/state-file mtimes
+  and latest commit timestamps against the clock before redoing its terminal
+  steps or writing session-close bookkeeping, and prefer idempotent ops.
 - Check liveness against the pid the system itself records (a state file's
   pid field, not a launcher wrapper) with `ps -p <pid>`: in a sandboxed shell
   `kill -0` can return permission-denied for a live process you own and read
