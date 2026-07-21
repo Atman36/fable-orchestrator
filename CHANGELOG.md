@@ -1,5 +1,70 @@
 # Changelog
 
+## 2.17.0 — 2026-07-21
+
+Consolidation of 75 feedback entries (63 new from 2026-07-19..21 plus the 11
+singles left pending at 2.16.0 and 1 applied-inline): 73 applied, 2 rejected,
+log drained to zero. Literal `issue_key` repeats were only 3, so clustering ran
+by FAILURE FAMILY across sessions — that is what met the promotion gate, and
+it is how the next round should read the log too.
+
+Headline promotion — **changing a predicate voids every blast-radius claim
+scoped to the old one** (spec-traps § Enumerate the category). Two blockers,
+two sessions, same shape: removing a narrowing clamp turned a "no audience
+stated" placeholder into a real company-wide grant on 257 documents, and
+widening an admin gate from one capability to a set of five granted 10 of 13
+principals access previously denied. Both survived every per-task
+verification, both surfaced only at the cross-task review axis, and in both
+cases the head had told the user the change had zero blast radius. Paired
+promotion in §6: feed the final reviewer the session's live measurements —
+severity is a function of blast radius, and "not measured" in a review is an
+action item for the head, not a caveat to accept.
+
+Into `references/spec-traps.md` (12.6KB → 28.9KB; read at spec-writing time,
+so the always-loaded file stays the constrained one):
+
+- Secondhand claims — 9 new surfaces: external review/audit packages (dead
+  file:line citations AND prescribed fixes as unmeasured hypotheses); negative
+  premises ("no caller exists"); a gate cited by superseded migration number;
+  migration dependency claims; state ownership / row shape / comment content;
+  quantities carried from memory; a third-party library's config surface; a
+  dry-run flag's guard expression; WHEN a destructive mechanism fires.
+- Enumerate the category — 6 new corollaries: the predicate rule above;
+  hand-listed call sites are never the category (2 sessions); registry
+  accessor lookups by id; shared-derivation consumers; copy that describes
+  changed behavior; existence/cardinality invariants on a new delete path.
+- DoD gates — 22 new rules, incl. no DoD may run SQL before recon names the
+  venue; production build in the gate for app-router diffs; numeric invariants
+  cite their literal output line; mutation probes name the test expected to
+  die (a probe that kills nothing is a finding); in-memory DB doubles prove
+  nothing about transaction abort; fixtures derive from the real parser; test
+  edits outside named files reported with assertions quoted; RLS-filtered
+  DELETE fails silently; Boundaries verified against the test harness; ops
+  migration application (object census, row count, baseline first).
+
+Into SKILL.md (48.7KB → 51.9KB, +6.5%) — only head-binding and envelope rules:
+direct mode widened from documentation-only to any task with NO CODE TO AUTHOR
+(user correction); fetch-before-push extended to CI bots writing to main;
+recon gains diff-branch-first, masked prod-scout command forms, and the
+auto-mode classifier blocking prod DB reads; owner feedback diffed against the
+owner's same-day decisions; the git-stash ban now quotes the revert-proof
+recipe IN FULL (two executors breached the bare ban); the executor envelope
+demands literal command output and test counts split diff-touched vs
+swept-unchanged (5 occurrences, 2 sessions); worktree isolation cuts from the
+PUSHED ref, with a fast-forward self-heal and never-resume-an-autocleaned-
+worktree; verifier file lists re-derived after rework; orchestrator git
+mutations use `git -C` plus a branch assertion.
+
+Rejected: api-403-mass-agent-death (already covered by the §4 API-death resume
+protocol); executor-stopped-correctly-with-measured-proof (a positive
+confirmation of the RED-first and literal-output riders, no rule change).
+
+Note for the next round: SKILL.md grew 3.2KB after 2.16.0 cut it to 45KB. The
+additions are all genuinely head/envelope/dispatch rules rather than spec
+traps, but the trend is worth a compression pass — with the clause-level diff
+audit consolidation.md requires, since careful rewriting silently drops
+directives.
+
 ## 2.16.0 — 2026-07-19
 
 Consolidation of 40 feedback entries (2026-07-13..19, five projects): 29

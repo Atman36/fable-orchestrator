@@ -1,4 +1,4 @@
-# Codex (GPT-5.5 via `codex exec`) — rules of engagement
+# Codex (GPT-5.6 via `codex exec`) — rules of engagement
 
 Read this file before every Codex routing. The OpenAI Codex CLI runs on the
 user's metered ChatGPT Plus subscription — a scarce resource. Claude subagents

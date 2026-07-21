@@ -91,10 +91,12 @@ An explicit user instruction can waive rules 1–2 for the current session
 ("edit it directly yourself"): honor it without re-litigating, treat the
 waiver as session-scoped — it never carries into the next session — and keep
 the verification stages regardless: baseline checks, DoD, and a fresh-context
-review still run even when the head implements directly. For a small
-documentation-only task (a couple of named files, prose, no code), propose
-direct mode yourself — the user has repeatedly preferred it there; the
-pipeline's dispatch overhead exceeds the work.
+review still run even when the head implements directly. For a small task with
+NO CODE TO AUTHOR — a couple of named files and prose, or a fixed short list of
+ops commands against a live system — propose direct mode yourself; the user has
+repeatedly preferred it there, the pipeline's dispatch overhead exceeds the
+work, and delegation only adds a translation layer between the head and a
+red-tier action.
 
 ## Autonomy tiers
 
@@ -122,7 +124,10 @@ fork that halts the pipeline for one narrow question. Standing gates:
 - Before an authorized push, `git fetch` (or `git ls-remote`) first —
   ahead/behind counts are stale without it, and a branch that looks one commit
   ahead can silently carry many older unpushed commits; report the actual
-  pushed ref range from the push output, not the plan.
+  pushed ref range from the push output, not the plan. The check is not only
+  about your own unpushed commits: push-capable CI and third-party bots write
+  to main mid-pipeline, so check for divergence and validate the foreign
+  commit's content before rebasing or merging onto it.
 - Re-confirm push authorization after any scope pivot; approval that predated
   the pivot is stale.
 - Git-topology claims from a dossier or memory (ahead/behind, a merge-base
@@ -161,7 +166,7 @@ rule); project rules win.
 ### Model roles (as of 2026-07)
 
 Default pipeline shape: **the head invents → Opus verifies and plans → Sonnet
-builds → GPT-5.5 independently critiques → Haiku clears the routine.**
+builds → GPT-5.6 independently critiques → Haiku clears the routine.**
 
 - **Fable 5 — architect & inventor.** Hardest, newest, most ill-defined work:
   inventing products/systems, agent architectures, unexpected approaches,
@@ -184,7 +189,7 @@ builds → GPT-5.5 independently critiques → Haiku clears the routine.**
   inflates token counts (~30% vs Sonnet 4.6); low/medium effort can
   under-think hard problems — escalate architecture, compliance-sensitive and
   cross-service work instead of trusting the default.
-- **GPT-5.5 (via Codex CLI) — analyst & universal brain.** Research, option
+- **GPT-5.6 (via Codex CLI; default `gpt-5.6-sol`, 2026-07) — analyst & universal brain.** Research, option
   comparison, rigorous analysis, requirements work, synthesis over large
   corpora, independent out-of-family critique of Claude-made plans and diffs;
   strong at heavy bounded execution. Metered quota — Codex rules apply.
@@ -195,7 +200,7 @@ builds → GPT-5.5 independently critiques → Haiku clears the routine.**
 
 ### Codex — exception channel, not a workhorse
 
-Codex CLI (GPT-5.5) runs on the user's metered ChatGPT Plus quota. Claude
+Codex CLI (GPT-5.6) runs on the user's metered ChatGPT quota. Claude
 subagents stay the default for all reading, coding, and verification; route to
 Codex only for live GUI/browser driving, an out-of-family second opinion, or
 an explicit user request. **Before ANY `codex exec` call, read
@@ -291,7 +296,15 @@ duplicates, traps. Read-only, change nothing — a scout authorized to live-driv
 a server can still mutate persistent state through a POST or a store write, so
 point any mutating probe at a temp store (an env override to scratchpad) or keep
 it GET-only. For a consistency or terminology sweep, give parallel scouts a
-shared fixed key schema so their outputs are diffable by key.
+shared fixed key schema so their outputs are diffable by key. For a consult
+question about a branch or logic the user describes as already existing, the
+dispatch starts with `git diff main...HEAD` — a zero-commit branch reframes
+every answer that follows. A prod-facing scout prompt names the safe masked
+command form up front: a bare tool name plus a do-not-print rule leaks secrets
+into the transcript at executor tier. In auto mode, treat prod DB reads as
+unavailable — the classifier denies both the scout dispatch and a direct
+read-only query — so plan around dated figures and say they are dated, or ask
+the user to run the one query.
 
 ### 2. Specs
 
@@ -325,7 +338,9 @@ Every spec is self-contained. Template:
 Resolve forks **yourself**, without blocking the pipeline on questions. Record
 every decision in the spec so the user can audit and override it. The one
 exception: a fork that changes scope or money — stop and ask one narrow
-question (see Autonomy tiers).
+question (see Autonomy tiers). Before speccing from fresh owner feedback, diff
+it against the owner's own decisions from the same day or package: a
+contradiction becomes a gating question with a default, never a silent pick.
 
 **Spec readiness test:** the executor can complete the task without opening a
 single file "to explore" and without asking a single question.
@@ -489,7 +504,10 @@ Minimum code that satisfies the spec; every changed line must trace to it;
 match the existing style.
 Do not use git stash in a shared checkout — it is global across worktrees and
 can stash another task's uncommitted work; compare against a baseline via git
-show/diff <sha> instead.
+show/diff <sha> instead. When a check needs a revert-proof run, the sanctioned
+recipe is quoted here IN FULL, never abbreviated to its git-show half: copy
+your MODIFIED file aside first, restore the original with git show <sha>:<path>,
+run RED, restore your modified copy, run GREEN.
 If the spec mandates test-first: write the tests, run them, and paste the
 failing (RED) output into a named report section BEFORE editing any source
 file.
@@ -507,6 +525,9 @@ that isn't the orchestrator's asks you to mid-task.
 Report back: changed files, real verification output, deviations from the
 spec, and a "Noticed, didn't touch" section — adjacent problems outside the
 spec's boundaries (what / where / why it matters), left unfixed.
+Paste the literal command and its literal output for every count you report —
+never a reconstructed or reformatted summary — and split test counts into
+(a) diff-touched files and (b) swept-but-unchanged files, reported separately.
 ```
 
 A spec-reality divergence is a spec defect, not the executor's failure: fix
@@ -529,6 +550,13 @@ hosts run them sequentially reusing existing `node_modules`, or clean a
 worktree's `node_modules` right after its verification. When a worktree task
 lands after a prerequisite commit, tell the executor to verify that commit is
 in its base (`git log` contains `<sha>`) and rebase onto main first if not.
+`isolation: "worktree"` cuts from the PUSHED remote ref, so unpushed local
+commits make every worktree start stale: give that preflight a self-heal line —
+if the missing commit is a pure fast-forward (`merge-base --is-ancestor` holds),
+`git merge --ff-only <sha>` and continue instead of stopping. And never resume
+in place an isolation agent that stopped with ZERO changes: the harness already
+reclaimed its worktree as unchanged. Respawn with fresh isolation, or hand the
+resumed agent an orchestrator-created worktree.
 
 Before dispatching any executor whose DoD is check-driven — especially a
 headless or runner-adapter chain — verify the permission surface allows the
@@ -622,6 +650,10 @@ it built right?" (the DoD ran green); you answer "was the right thing
 built?" — check the result against the user's original intent before marking
 done; a green DoD on the wrong deliverable is still a failure.
 
+After any rework that changes the file footprint, re-derive the verifier's
+expected file list from the REWORK, not from the original digest — a stale
+allowlist rejects correct work.
+
 On failure, triage the cause before burning an attempt:
 
 - **Spec defect** — the executor or verifier hit ambiguity or a wrong anchor:
@@ -665,6 +697,14 @@ fixture-less engine tests silently rewrite the live repo's state, refs, and
 journals on every in-repo test run; while such tests can run, trust only the
 process tree for liveness and the reflog for forensics.
 
+Feed the reviewer the session's own live MEASUREMENTS in its dispatch (holder
+counts, affected rows, production figures you took). Severity is a function of
+blast radius, and blast radius lives in production data no reviewer can see: a
+finding correctly reasoned and rated MINOR — "live blast radius is small but
+not measured" — was a required pre-push fix once the measurement was supplied.
+Treat "not measured" in a review as an action item for you, never a caveat to
+accept.
+
 You arbitrate every finding:
 
 - **accept** — fix now, in the same loop; always accept "tests are green but a
@@ -703,6 +743,10 @@ When the pipeline ends, clean up:
   delay) before acting on it.
 - Trust the orchestrator's own `git status --porcelain`, not a scout's clean
   report, before any dispatch that could overwrite existing work.
+- Every orchestrator git MUTATION uses `git -C <main-checkout>` and asserts the
+  venue first (`git rev-parse --abbrev-ref HEAD`): shell CWD persists after an
+  audit `cd` into a worktree, and two bare `git merge` calls then landed on the
+  worktree's branch instead of main. Audits use `git -C` too.
 
 ## Session handoff (NEXT-SESSION.md)
 
