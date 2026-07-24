@@ -218,6 +218,33 @@ location, and current content:
   stay green" while mandating the contradicting behavior puts the executor in
   an unresolvable bind — and the silence being "fixed" may be the tested,
   intended product behavior.
+- Affected TESTS are enumerated by IDENTIFIER, never by user-facing literal:
+  grep the flag, predicate, constant, component and type names the diff touches,
+  plus the importers of every touched file. A literal-string sweep misses a test
+  that drives the removed branch through a mocked input (mocked route params, a
+  stubbed store), and a scout's test list is a seed, not the category — the spec
+  states the runnable grep and orders the executor to re-enumerate rather than
+  inherit the count. Two sessions, two projects, same shape: a hand-listed
+  seven-test set missed an eighth using the same fixture; a literal grep missed
+  a view test exercising the deleted branch via mocked search params.
+- The same enumeration feeds the Boundaries FILE ALLOWLIST, not only Steps.
+  A changed type's mock fixtures and constructors are category members, so an
+  allowlist derived from the Steps list forces the executor to choose between
+  the spec and a compiling tree — grep the constructors of every changed type
+  before freezing Boundaries.
+- A user-visible CONFIRMATION — or any acknowledgement, error, or status the
+  actor sees — is a category of SURFACES, not a message: enumerate every one
+  (inline message, toast / callback answer, edited original, removed keyboard,
+  follow-up prompt) or write "all surfaces" explicitly. A requirement anchored
+  to a single builder leaves the siblings contradicting it: a toast kept
+  soliciting a comment the flow no longer captured, a UX dead end that passed
+  its per-task verifier.
+- When the category is used to GENERATE inputs (synthetic queries, property-test
+  fixtures), check the generated members against every higher-priority
+  dispatch/routing rule before freezing the property: one generated string that
+  happened to equal a real record's title was intercepted by an exact-title
+  route, making the property unsatisfiable as written. Either exclude the
+  colliding members or mandate an intent guard in the test up front.
 
 ## DoD gates
 
@@ -401,7 +428,13 @@ location, and current content:
   variant — hidden vs disabled vs read-only, save footers and bulk actions
   included; kin of the failure-branch-UX rule.
 - When Steps contain both a costly external call and a cheap terminal guard,
-  order the guard FIRST and explicitly: executors follow Steps literally.
+  order the guard FIRST and explicitly: executors follow Steps literally. Any
+  fix premised on an EXTERNAL system's capability (an export format, an API
+  surface, a quota, a permission) gets that guard as Step 0 with an explicit
+  STOP clause — reproduce the capability live against the real target before a
+  line of code. One such guard failed in minutes (the export hit the same size
+  limit the fix assumed it would dodge), killing a wrong premise for the price
+  of one call; a follow-up probe then found the path that did work.
 - "Reuse the existing pattern at X" transfers the SHAPE, not the preconditions
   that make the shape correct — the spec states WHY X is correct so the
   executor can check those preconditions still hold. An idiom sound only
@@ -419,6 +452,60 @@ location, and current content:
   When a spec has an addendum with a revised goal, tell executors the
   addendum's acceptance bar supersedes and any out-of-scope claim must quote
   its sentence in the report.
+- **A check proves nothing until its VENUE can fail for the reason under
+  test.** Four preconditions, each established this session before a command or
+  probe is frozen into a DoD. (a) The RUNNER is a codebase fact: read the
+  repo's own scripts (`package.json`, the task runner, the CI config) for the
+  canonical gate instead of writing the one you expect — a spec froze
+  `npx vitest run` where the gate was `npm test` (build + `node --test` over
+  `dist`) — and dry-run the literal command against the real tree, since a
+  pre-existing basename collision left bare `pytest -q` unable to collect at
+  all. (b) The HARNESS ENTRY POINT traverses the layer that WRITES the state the
+  feature reads: a probe script that bypasses the webhook owning those writes
+  exercises the fallback path, so its green is about the wrong mechanism. (c)
+  The probe's SURFACE and PRINCIPAL match the real usage scenario — a
+  group-surface probe hard-gated to public documents produced a FALSE regression
+  that reached the owner-facing QA report until re-probed as a DM by the
+  department-scoped principal testers actually use. (d) The ARTIFACT under test
+  is the freshly built one: a reused dev/preview server keeps serving the
+  previous build, and a green suite over source says nothing about the `dist`
+  the probe loads — rebuild, restart, or assert the artifact's hash/mtime first.
+  Where a precondition cannot be met, the DoD says "unverifiable here" and names
+  what only the operator can run; extending the harness (in-transaction writes)
+  is the alternative, never a green on the fallback.
+- Nondeterministic answer paths (anything LLM-mediated, retry-driven, or
+  timing-sensitive) need N≥3 repeated runs before any zero-occurrence claim: a
+  "0 safe-refusals across 59 probes" result was refuted by a re-run hitting one
+  on the same question. One green pass proves possibility, never absence.
+- When two hypotheses are indistinguishable through the failing surface (stale
+  deploy vs missing env/creds vs broken code, and the deployment exposes no
+  version), probe a read-only SIBLING route sharing the failing path's helper
+  chain: a 200 carrying the real record proves env, DB, and credentials live and
+  isolates the deploy by elimination — faster than adding a version endpoint
+  mid-incident.
+- A gate is never edited to make it pass. When a size, lint, format, or
+  file-count guard trips, the fix is the code — never raising the limit, adding
+  an allowlist entry, or rewriting the hook command to route around an
+  unconfigured environment. State it in Boundaries whenever the DoD runs a
+  project guard, and have the verifier diff the guard's own config against the
+  base commit.
+- A project's git hooks can fail INSIDE a worktree while passing in the main
+  checkout (formatters resolving workspace paths from the repo root), blocking a
+  worktree executor's commit on a defect that is not its own. Name the fallback
+  in the envelope — run the fixer from the main checkout, re-stage, commit — so
+  the executor never disables the hook to get unstuck; the same envelope tells
+  it to activate the repo's toolchain environment before running git or hooks
+  rather than compensating with ad-hoc PATH edits.
+- A set of screenshots claiming N distinct states is not evidence until the N
+  files are proven distinct (`shasum -a 256 <dir>/*.png` — every hash unique):
+  an unscoped full-page capture of a view that renders every state at once
+  yields byte-identical files. Scope each capture to its subject, and wait for
+  animations to finish — a visibility assertion resolves mid-transition, so the
+  shot lands on a half-rendered element.
+- A performance DoD states the measurement CONDITIONS, not only the target
+  number: profiling overlays, per-event logging, and an open inspector inflate
+  the very numbers used to judge the fix. Measure with instrumentation off,
+  against a recorded baseline, removing one suspect at a time.
 - A percentage-based deletion or stop threshold cannot distinguish
   absence-driven removals (dangerous: an empty upstream response) from
   policy-driven removals (intended: a gate tightened). When such a rule fires,

@@ -132,6 +132,11 @@ fork that halts the pipeline for one narrow question. Standing gates:
   the pivot is stale.
 - Git-topology claims from a dossier or memory (ahead/behind, a merge-base
   SHA) are hypotheses — re-measure in recon before any branch decision.
+- A red op plans its PERMISSION path before it is needed: in auto mode the
+  classifier denies even user-authorized prod-write commands, and the user's own
+  `!`-prefixed attempt can silently do nothing. Prepare one exact
+  copy-pasteable command for them, and confirm the run by its EFFECT (a
+  freshness query, a row count) — never by the report that it ran.
 
 ## Model routing
 
@@ -408,6 +413,18 @@ before prescribing a new helper for a domain calculation (including one
 inherited from a source review spec), recon greps the domain term to confirm no
 existing helper already covers it. Unconsumed code is dead-code-shaped; resolve it in-package (see final review),
 never as a future cleanup.
+
+**A check proves nothing until its venue can fail for the reason under test.**
+Before freezing a command or probe into a DoD, establish four things this
+session: the runner is read from the repo's own scripts (not the one you
+expect) and dry-run against the real tree; the harness entry point traverses
+the layer that WRITES the state the feature reads; the probe's surface and
+principal match the real usage scenario; the artifact under test is the freshly
+built one, in a venue not serving a stale build. Unit-green/live-fail, a probe
+that could never fire the feature, and a false regression published to the owner
+each came from skipping one — details, the sibling-route probe for
+stale-deploy-vs-env, and the N≥3 nondeterminism rule are in spec-traps § DoD
+gates.
 
 **DoD gates must fit the task's actual scope.** The full gate-authoring rule
 list — baselines for repo-wide gates, grep reconciliation against Boundaries
@@ -813,7 +830,14 @@ to `feedback/log.jsonl`:
 ```
 
 `issue_key` is the clustering handle — reuse the same slug for the same
-underlying issue so repeats become countable evidence.
+underlying issue so repeats become countable evidence. The field set is fixed:
+an entry written with a variant schema (`ts`/`note` in place of
+`date`/`observation`) drops out of the parser counts consolidation runs on, so
+its lesson never triggers a review. Every write into a SECTIONED document — a
+dossier, PLAN.md, SUMMARY.md — uses an anchored edit at the target heading; a
+shell append is positional and lands under whatever heading happens to be last,
+so `cat >>` is reserved for genuinely append-only files (`log.jsonl`,
+`archive.jsonl`).
 
 ### Review trigger
 

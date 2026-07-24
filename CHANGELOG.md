@@ -1,5 +1,62 @@
 # Changelog
 
+## 2.18.0 — 2026-07-24
+
+Consolidation of the 17 entries logged since 2.17.0 (2026-07-21..24, four
+projects): 15 applied, 2 archived as confirmations of rules already in force,
+log drained to zero. Literal `issue_key` repeats were 2, so clustering again ran
+by FAILURE FAMILY across sessions.
+
+Headline promotion — **a check proves nothing until its VENUE can fail for the
+reason under test** (SKILL.md §2, full rule in `references/spec-traps.md` § DoD
+gates). Seven entries across four sessions, one shape: the command ran, the
+probe went green, and the venue could never have produced a failure. Four
+preconditions now precede any DoD command or probe — the runner is read from the
+repo's own scripts and dry-run against the real tree (a spec froze
+`npx vitest run` where the gate was `npm test`; a bare `pytest -q` could not
+collect at all against a pre-existing basename collision); the harness entry
+point traverses the layer that WRITES the state the feature reads (a probe
+bypassing the webhook that owns those writes tested the fallback path); the
+probe's surface and principal match the real usage scenario (a group-surface
+probe hard-gated to public documents produced a FALSE regression that reached
+the owner-facing QA report); and the artifact under test is the freshly built
+one. Paired: nondeterministic answer paths need N≥3 runs before any
+zero-occurrence claim, and when stale-deploy and missing-env are
+indistinguishable through the failing route, a read-only SIBLING route sharing
+its helper chain isolates the cause by elimination.
+
+Second family — **enumerate affected tests by IDENTIFIER, never by user-facing
+literal** (spec-traps § Enumerate the category). Four entries, three projects: a
+literal-string sweep misses a test driving the removed branch through a mocked
+input; a scout's test list is a seed, not the category; the same enumeration
+feeds the Boundaries file allowlist, not only Steps (a changed type's mock
+fixtures are members); a user-visible "confirmation" is a category of surfaces
+(message, toast, edited original, keyboard) and anchoring the requirement to one
+builder shipped a toast soliciting a comment the flow no longer captured; and a
+category used to GENERATE inputs is checked against higher-priority routing
+rules before the property is frozen.
+
+Also promoted:
+
+- Autonomy tiers: a red op plans its PERMISSION path up front — auto mode denies
+  even user-authorized prod-write commands, and the user's own `!` attempt can
+  silently do nothing; confirm the run by its EFFECT, never by the report.
+- Spec-traps § DoD gates: an external-system capability premise gets a live
+  Step-0 guard with a STOP clause; a gate is never edited to make it pass; a
+  project's git hooks can fail inside a worktree while passing in the main
+  checkout; a screenshot set claiming N states proves nothing until the N hashes
+  are distinct; a performance DoD states its measurement conditions.
+- Feedback capture: the log's field set is fixed — one entry written with a
+  variant schema (`ts`/`note`) had been invisible to every consolidation count;
+  and writes into sectioned documents use anchored edits, never `cat >>`, which
+  lands under whatever heading happens to be last.
+
+Confirmed without an edit (rules already in force, kept as evidence): the
+API-death resume protocol (2.15.0) and the measured blast-radius stop rule
+(2.17.0), both of which worked end-to-end this round.
+
+Sizes: SKILL.md 51819 → 53452 bytes; `references/spec-traps.md` 29047 → 35472.
+
 ## 2.17.0 — 2026-07-21
 
 Consolidation of 75 feedback entries (63 new from 2026-07-19..21 plus the 11
