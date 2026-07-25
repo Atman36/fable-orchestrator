@@ -1,5 +1,70 @@
 # Changelog
 
+## 2.19.0 — 2026-07-25
+
+Consolidation of the 25 entries logged since 2.18.0 (2026-07-24..25, five
+projects): 23 applied, 2 archived as confirmations of rules already in force,
+log drained to zero. One literal `issue_key` repeat, so clustering ran by
+FAILURE FAMILY again. SKILL.md +3.0 KB (pipeline mechanics only), spec-traps.md
++8.1 KB (every spec/DoD lesson).
+
+Headline promotion — **a measurement is a claim about the act of measuring, not
+about the thing measured.** Five entries, four projects, one shape: the number
+was true of the query, the window, or the tree that produced it, and false of
+the system. A scout's "26 runs, one unclosed" over 87 days became 27 unclosed
+once the run id was joined across all 152 events — after the wrong figure had
+reached the user and an owner-facing document; so every "N of M" now states M
+from its own `COUNT(*)` and names the join key. A `git log -3` hid the
+fourth-commit-back implementation of the task about to be re-specced — ranges
+`base..HEAD`, never fixed windows. A baseline probe built off a dirty tree
+compiled another session's uncommitted fix for the very defect being baselined
+and reported it absent — a baseline pins its artifact to a sha. And a
+`0.6 × topScore` floor was frozen over an un-normalised fusion sum whose scale
+nobody measured, silently reversing a per-document cap an earlier MAJOR fix had
+introduced (invisible to 1143 green tests): a ratio threshold is a claim about
+the SCALE, so recon reports the distribution — including the value for the class
+the threshold must NOT exclude — or the spec defers the number.
+
+Second family — **a declaration is not a location, and a digest is not a
+shape.** `Project.timezone: string` froze the access path `project?.timezone`
+while the value lived at `project.settings.timezone`; a hand-maintained types
+file declared the same table twice and the converter imported the OTHER
+declaration; a digest's item COUNT licensed a spec prescribing a per-item icon
+for a registry with no icon field at all; a scout established a document's
+structure from its table of contents while the running text disagreed. Recon now
+quotes a live READ before an access path is frozen, greps the entity name
+file-wide before a schema edit, traces a prescribed attribute to a quoted member,
+and reports structural facts as a per-item table with a SOURCE column after
+scanning every representation.
+
+Third family — **the half-named category.** An upsert has two column lists and a
+spec naming only `values` is half a spec (the UPDATE path silently lost both new
+columns; the mocked DB kept everything green). A changed literal is grepped
+across tests too, and the test-to-update set declared an authorized Boundaries
+extension — otherwise "don't change assertions" + "0 failed tests" + the rewrite
+order are mutually unsatisfiable, and the assertion rule is worded as
+anti-weakening from the start. A Decision changing what an endpoint RETURNS
+pulls the response-type module into the allowlist. A hand-authored vocabulary
+list is a claim that the module owns no equivalent — and in an inflected
+language its entries are roots, verified by a root → forms → predicate table.
+An exempted sibling consumer of a shared constant gets an end-to-end probe and a
+pinning test, not a paragraph of reasoning.
+
+Pipeline mechanics (SKILL.md): session-start recon checks for a live CONCURRENT
+writer (other `claude` processes, source mtimes), and a foreign writer in the
+same checkout halts dispatch as one narrow question; a whole dispatch block
+dying on the same transport error is infrastructure — re-dispatch verbatim once
+before any triage; an API-death recovery audits git traces first, then resumes
+the SAME agent; stall recovery on a fault-injection DoD RUNS the gate rather
+than reading `git status`, since that window leaves the tree deliberately broken
+and file-level inspection calls it complete. Final review gains a fourth
+standing axis — every destructive or terminal transition must establish its
+recovery path BEFORE it commits, and stay reachable by the sweep meant to retry
+it (three reviews, two repos, same shape, all passing their happy-path tests) —
+and an adversarial REFUTE pass now precedes any rework that would rewrite
+shipped behavior. Plus a DoD gate: a fix answering an owner complaint is
+verified against the branch THEY hit, not the generic case.
+
 ## 2.18.0 — 2026-07-24
 
 Consolidation of the 17 entries logged since 2.17.0 (2026-07-21..24, four

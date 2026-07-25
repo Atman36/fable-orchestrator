@@ -287,6 +287,16 @@ from a pasted command output, never carried from a digest.
 Before the first dispatch, record the start commit (`git rev-parse HEAD`) in
 PLAN.md — the final review diffs from it.
 
+Session-start recon also checks for a CONCURRENT writer, not only a dirty tree:
+one `git status` is a point-in-time measurement that goes stale within minutes.
+Check other live `claude` processes and mtimes on tracked sources, and re-check
+between dispatches. A live foreign writer in the same checkout halts dispatch
+and goes to the user as one narrow question (they divide the work) — never
+something to route around: the other side runs `git stash push` and
+`git checkout --` on files you share. To measure what it has already landed,
+list the RANGE `git log <base>..HEAD`, never a fixed `-N` window — a `-3` hid
+the fourth-commit-back implementation of the very task about to be re-specced.
+
 ## Pipeline
 
 ### 1. Recon (subagents, parallel)
@@ -615,11 +625,25 @@ and split recovery on liveness: a still-alive paused agent resumes on a
 SendMessage nudge, but a dead one (no notification ever fires, work left
 uncommitted) is never nudged — audit its git traces and dispatch a FRESH
 finisher. An API/network death (a terminal-error notification DID arrive) is
-a third case: SendMessage resume of the SAME agent recovers it with context
-intact — resume first; dispatch a fresh finisher only if the resume stalls. A
+a third case: audit the git traces FIRST — substantial correct work left
+uncommitted plus a network-class error means a SendMessage resume of the SAME
+agent, which recovers it with context intact; dispatch a fresh finisher only if
+that resume stalls, never as the first move. A
 failed notification over substantial uncommitted work is not proof of death —
 re-check liveness before any replacement, or two agents end up in one
-worktree. Before dispatching a spec written ahead of
+worktree. When EVERY agent of one dispatch block dies within seconds on the
+same transport error (ConnectionRefused, ENOTFOUND), that is infrastructure,
+never a prompt or spec defect: re-dispatch the block verbatim once before any
+triage — do not rewrite prompts, downgrade models, or conclude the task was too
+big. **And when the task's DoD mandates fault injection (a RED proof, a
+mutation probe), stall recovery starts by RUNNING the gate, not by reading
+`git status`:** in that window a dead agent's tree is *deliberately* broken and
+file-level inspection calls it complete — one stall left every expected file
+modified and the suite red on exactly the spec's own injected failure, and a
+commit there would have shipped it. A red tree whose ONLY failure is the
+injected one means "stalled mid-proof, restore and finish"; that test's
+identity localizes the stall and goes back to the resumed agent as its own RED
+evidence rather than being re-derived. Before dispatching a spec written ahead of
 time, reconcile it against the previous task's actual diff: `git diff --stat`
 spots file-level drift; if that task touched files your spec anchors to, send
 a scout to re-verify the anchors first. The same between-dispatch `git status`
@@ -712,7 +736,15 @@ project's own engine or runner: each new test must build its own temp fixture (i
 freshly-initialized repo/state) and never resolve the enclosing repo's root —
 fixture-less engine tests silently rewrite the live repo's state, refs, and
 journals on every in-repo test run; while such tests can run, trust only the
-process tree for liveness and the reflog for forensics.
+process tree for liveness and the reflog for forensics. A fourth standing axis
+covers every destructive or terminal state transition in the diff: is the
+recovery path established BEFORE the destruction commits, and is the terminal
+state still reachable by the sweep meant to retry it? Three independent reviews
+in two repos hit this shape in one session — a retry deleted its inputs then
+best-effort re-queued them; a work item was marked dropped without checking the
+locked period would not be emptied; a failed job was marked errored, which
+removed it from the only sweep that could retry it. All three passed their
+happy-path tests.
 
 Feed the reviewer the session's own live MEASUREMENTS in its dispatch (holder
 counts, affected rows, production figures you took). Severity is a function of
@@ -721,6 +753,16 @@ finding correctly reasoned and rated MINOR — "live blast radius is small but
 not measured" — was a required pre-push fix once the measurement was supplied.
 Treat "not measured" in a review as an action item for you, never a caveat to
 accept.
+
+A review's findings are hypotheses with severities attached by someone who did
+not run them. Before dispatching rework that would rewrite shipped behavior,
+run ONE adversarial pass told to REFUTE each finding with executed evidence,
+and arbitrate from that pass, not from the review digest. One such pass over
+five findings confirmed three with hard numbers, re-framed a "vacuous test" as
+merely under-powered (the pre-change code failed the same assertions), and
+turned a MAJOR into correct-behavior-not-a-defect once its end-to-end effect
+was seen. The pass costs one agent; acting on a wrong finding costs a rework
+round plus the regression it introduces.
 
 You arbitrate every finding:
 

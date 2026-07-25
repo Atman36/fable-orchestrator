@@ -37,7 +37,13 @@ location, and current content:
 - An API gateway's error-code contract differs from the backing system's —
   verify against a live call or spec both families.
 - A reviewer's finding is secondhand too — verify its anchors like any scout
-  claim.
+  claim — and so is the ARCHITECTURE its phrasing implies. Before a spec places
+  a guard "in the repository/service layer", recon quotes the function that
+  actually executes the operation with its `file:line`: a finding worded around
+  a "repository" delete described a delete written inline in a store slice
+  (the only repository delete was bulk-only), so the executor built an
+  equivalent guard inside the file allowlist and left the real DELETE
+  unguarded.
 - Before ordering a test addition in a fix spec, check the branch diff for an
   existing equivalent test.
 - Ordering a test-assertion change: quote the WHOLE test body in recon or have
@@ -126,6 +132,55 @@ location, and current content:
   silently disables the guard, and the "dry" run pushed straight to prod with
   autodeploy. An ops spec relying on a dry run quotes the guard expression
   proving the flag suppresses the mutation, or tests it on a no-change state.
+- A declaration is not a LOCATION. A field named in a type declaration says
+  nothing about where the value sits at runtime: before a spec freezes an access
+  path, recon quotes one live READ of it from a working consumer. A scout's
+  `Project.timezone: string` froze `project?.timezone`; the value lives at
+  `project.settings.timezone`, and the single-level chain would also have
+  crashed every fixture lacking `settings`.
+- A digest's COUNT of items says nothing about their SHAPE. Prescribing a
+  per-item attribute (icon, label, order key, variant) requires that attribute
+  traced to a quoted MEMBER of the artifact, never to a summary sentence about
+  it — "6 nav items, 45 lines" licensed a spec ordering "the icon from the same
+  set the neighbours use" for a registry with no icon field and no icon
+  rendering anywhere.
+- When a scout reports the STRUCTURE of an artifact that has more than one
+  internal representation (table of contents vs body headings, schema vs
+  migration, README vs code), the dispatch enumerates the representations first,
+  scans EACH, and requires a per-item table with a SOURCE column. "Sections 1–9
+  as expected" was read off the document's own TOC while the running text
+  disagreed on three of them — the source contradicted itself, and the head
+  nearly rejected a correct review finding as a false positive. Never accept
+  "matches expectation" without the source named per item.
+- A scout's aggregate is a claim about its own QUERY, not about the table. Every
+  "N of M" entering a report states M from its own `COUNT(*)` of the base table
+  and NAMES the join key, or a filtered or sampled query masquerades as a
+  census: "26 runs over 87 days, one unclosed" became 27 unclosed once the run
+  id was joined across all 152 run events — after the wrong figure had reached
+  both the user and an owner-facing document. Two disagreeing counts are settled
+  by re-measurement, never by picking the more plausible one.
+- A threshold expressed as a FRACTION of another value is a claim about the
+  SCALE. Recon reports the real distribution (min / median / top, plus the value
+  for the class the threshold must NOT exclude) before the spec names a number,
+  and the DoD exercises realistic magnitudes rather than fixture integers. A
+  `0.6 × topScore` relevance floor over an un-normalised weighted-fusion sum
+  rejected the diversity candidate on every realistic query, refilled the slot
+  from the dominant document's overflow, and thereby REVERSED the per-document
+  cap a previous MAJOR fix had introduced — invisible to six per-task runs and a
+  green 1143-test suite, caught by an adversarial verifier reproducing
+  production scoring. Where the distribution cannot be measured, the spec output
+  is "measure first" or "defer", never a plausible-looking constant.
+- A literal vocabulary, pattern list, or threshold table handed to an executor
+  is a claim that the target module owns no equivalent: recon greps the module
+  for a list serving the same role, and the spec orders REUSE or extension of it
+  — a hand-written prefix list omitted a word the module's own catalog
+  vocabulary already knew and broke a test protecting legitimate browsing, in a
+  task whose stated purpose was to REMOVE divergent heuristics. In an inflected
+  language the entries are ROOTS, not dictionary forms ("базе" does not start
+  with "база"), and the DoD requires a root → inflected forms → predicate
+  verdict table over EVERY entry, not a spot check of the entries that motivated
+  the change. Both failures happened in one session, the second after the spec
+  had been amended to fix the first.
 - WHEN a destructive mechanism fires is never inferred from adjacent facts.
   "Deletions run only at the end of a successful scan" held for one removal
   class while policy-driven removals applied inline mid-run — the reassurance
@@ -231,7 +286,43 @@ location, and current content:
   A changed type's mock fixtures and constructors are category members, so an
   allowlist derived from the Steps list forces the executor to choose between
   the spec and a compiling tree — grep the constructors of every changed type
-  before freezing Boundaries.
+  before freezing Boundaries. Reconcile the allowlist against every behavior the
+  spec's own Decisions require: a Decision changing what an endpoint RETURNS
+  pulls in the module DECLARING its response type — an excluded `response_model`
+  schema file forced the executor to encode structured data (skipped ids and
+  reasons) into a free-text message field.
+- A spec that CHANGES a user-visible literal (href, label, copy) makes the
+  literal's own grep Step 0, across sources AND tests, classifying every hit as
+  rewrite / test-to-update / legitimately-staying, and declares the
+  test-to-update set an authorized Boundaries extension. Otherwise "do not
+  change existing assertions" + "0 failed tests" + the rewrite order are
+  mutually unsatisfiable and the executor correctly stops with zero changes: a
+  test pinning `href='/task/t1'` was outside an allowlist that named only source
+  files. Word the assertion rule as ANTI-WEAKENING from the start, never as a
+  freeze.
+- A table written through an UPSERT has TWO column lists, and a spec naming only
+  one is half a spec: Steps name the `onConflictDoUpdate` SET payload alongside
+  the `values` payload, and the DoD asserts a key-set diff (`keys(set)` equals
+  `keys(values)` minus the conflict target) rather than the presence of the
+  specific new field. Two specs added columns to a one-row-per-week upsert, so
+  the INSERT path carried them and the UPDATE path — the NORMAL path there — did
+  not; clearing never wrote the null. Every test stayed green because the DB is
+  mocked, and an executor's "Noticed, didn't touch" caught it.
+- In a hand-maintained schema or types file, one entity can be declared MORE
+  THAN ONCE: the category is every declaration, enumerated by grepping the
+  entity name file-wide with the executor reporting the count. A spec named the
+  `tasks` block; the converter imported a second hand-maintained `TaskDB`
+  interface in that same file, so the column landed in one declaration and tsc
+  stayed silent.
+- Deliberately EXEMPTING a sibling consumer of a shared constant or predicate is
+  a behavioral claim, not a scoping decision. Enumerate the consumers and
+  require one end-to-end probe of user-visible output per consumer, the exempted
+  ones included, and pin the exempted behavior with a test rather than a
+  paragraph of reasoning. A spec fixed a topic-blind shortcut at the pre-search
+  layer and exempted the renderer as "topically correct by construction"; the
+  renderer read the same widened constant with no topic guard and changed which
+  questions get a title list instead of model prose — judged GOOD on
+  arbitration, but reached by accident and guarded by nothing.
 - A user-visible CONFIRMATION — or any acknowledgement, error, or status the
   actor sees — is a category of SURFACES, not a message: enumerate every one
   (inline message, toast / callback answer, edited original, removed keyboard,
@@ -472,7 +563,25 @@ location, and current content:
   the probe loads — rebuild, restart, or assert the artifact's hash/mtime first.
   Where a precondition cannot be met, the DoD says "unverifiable here" and names
   what only the operator can run; extending the harness (in-transaction writes)
-  is the alternative, never a green on the fallback.
+  is the alternative, never a green on the fallback. Two corollaries. In a repo
+  not exercised THIS session, prove the gate runs at all before writing a
+  check-driven spec — one green baseline run of the repo's own runner, or an
+  explicit "unverifiable here" declared up front: a venv holding packages for a
+  python3.13 the host had since removed, with pytest in neither the venv nor
+  `requirements.txt`, cost three rounds of venue repair after the specs were
+  already written, and a broken venue turns every executor into a blind one.
+  And a before/after or BASELINE probe pins its artifact to a COMMIT: assert a
+  clean tree at the expected sha, or build from a clean checkout of the base,
+  before building. Precondition (d) forbids a stale artifact; the inverse is
+  equally fatal — a baseline build off a dirty tree compiled another session's
+  uncommitted fix for the very defect being baselined and reported it absent,
+  which as a "before" measurement would have been a false before/after claim.
+- A fix answering an owner's complaint about a surface they cannot see is
+  verified against the branch THEY hit — their role, their data distribution —
+  not against the generic case, and the report states the branch condition. A
+  restored direction selector passed every gate while the owner still saw
+  nothing: all of his members hold admin roles, for which the selector is
+  contractually absent.
 - Nondeterministic answer paths (anything LLM-mediated, retry-driven, or
   timing-sensitive) need N≥3 repeated runs before any zero-occurrence claim: a
   "0 safe-refusals across 59 probes" result was refuted by a re-run hitting one
