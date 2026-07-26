@@ -168,40 +168,17 @@ responding — reserve it for passes where that self-check earns its cost.
 A project's CLAUDE.md may override this table (ban a model, add a routing
 rule); project rules win.
 
-### Model roles (as of 2026-07)
+### Model roles
 
 Default pipeline shape: **the head invents → Opus verifies and plans → Sonnet
 builds → GPT-5.6 independently critiques → Haiku clears the routine.**
-
-- **Fable 5 — architect & inventor.** Hardest, newest, most ill-defined work:
-  inventing products/systems, agent architectures, unexpected approaches,
-  codebase-wide investigations, long-horizon autonomous runs, dense
-  visual/product work. While subsidised access lasts, spend it on creating
-  projects, specs and architectures — never routine code, never first-touch
-  for simple tasks. Expensive, slow on
-  hard runs; safety classifiers (offensive-security, biology/life-sciences,
-  summarized-thinking-extraction) can reroute benign requests to Opus 4.8 as a
-  `refusal`, not an error — route first-touch architecture/spec work in those
-  domains straight to Opus.
-- **Opus 4.8 — senior engineer / tech lead.** Complex multi-step tasks,
-  architecture review, debugging, autonomous agent work, carrying a complex
-  project to done; reliable
-  on long tasks, honest about uncertainty. The premium reviewer, the risk-tier
-  route, the fallback when Fable refuses. Needs clean scope — given noisy
-  context it executes the noise literally.
-- **Sonnet 5 — main builder.** The bulk of development: code, repo changes,
-  tool use, executing a clear plan; the default executor. Its tokenizer
-  inflates token counts (~30% vs Sonnet 4.6); low/medium effort can
-  under-think hard problems — escalate architecture, compliance-sensitive and
-  cross-service work instead of trusting the default.
-- **GPT-5.6 (via Codex CLI; default `gpt-5.6-sol`, 2026-07) — analyst & universal brain.** Research, option
-  comparison, rigorous analysis, requirements work, synthesis over large
-  corpora, independent out-of-family critique of Claude-made plans and diffs;
-  strong at heavy bounded execution. Metered quota — Codex rules apply.
-- **Haiku 4.5 — fast junior.** Classification, extraction, simple edits, short
-  summaries, routing, mechanical checks. NOT for architecture, complex
-  debugging, large ambiguous tasks, or expensive-mistake decisions; drifts
-  from instructions in large contexts.
+Fable architects, Opus reviews and carries risk, Sonnet builds, GPT-5.6 gives
+the out-of-family critique, Haiku does the mechanical work. **Per-model
+strengths, limits and refusal behavior are in `references/model-roles.md` —
+read it before routing anything off the table above.** One routing consequence
+belongs here: Fable's safety classifiers can turn a benign
+offensive-security or life-sciences request into a `refusal`, so first-touch
+architecture/spec work in those domains is routed straight to Opus.
 
 ### Codex — exception channel, not a workhorse
 
@@ -248,15 +225,15 @@ from a pasted command output, never carried from a digest.
   re-asking the agent.
 - A stop notification is not completion and its digest is not evidence: a
   mid-flight digest can carry invented specifics (commit hashes, test counts,
-  "verified" claims) while the agent is still working — the honest result
-  arrives only in the final notification. Treat every digest as unconfirmed until its key claim is
-  checked against the artifact itself (`git log`/`cat-file` for commits,
-  `stat` for report files, your own probe for env-shape or behavior-pattern
-  claims — a digest can garble a host class or invert which cases get a
-  behavior) with read-only commands — never by running
-  builds/tests in a venue the executor may still be using. Artifact missing —
-  re-check after the next notification or a few minutes before condemning the
-  agent; premature replacement dispatch duplicates the work.
+  "verified" claims) while the agent still works — the honest result arrives
+  only in the final notification. Treat every digest as unconfirmed until its
+  key claim is checked against the artifact with READ-ONLY commands
+  (`git log`/`cat-file` for commits, `stat` for report files, your own probe
+  for env-shape or behavior-pattern claims — a digest can garble a host class
+  or invert which cases get a behavior), never by running builds or tests in a
+  venue the executor may still be using. Artifact missing — re-check after the
+  next notification or a few minutes before condemning the agent; premature
+  replacement dispatch duplicates the work.
 - Hand-to-hand handoffs pass the report path — large data never transits your
   context twice.
 - Executor died mid-task (session limit) → the successor's first instruction
@@ -291,9 +268,11 @@ Session-start recon also checks for a CONCURRENT writer, not only a dirty tree:
 one `git status` is a point-in-time measurement that goes stale within minutes.
 Check other live `claude` processes and mtimes on tracked sources, and re-check
 between dispatches. A live foreign writer in the same checkout halts dispatch
-and goes to the user as one narrow question (they divide the work) — never
-something to route around: the other side runs `git stash push` and
-`git checkout --` on files you share. To measure what it has already landed,
+and goes to the user as one narrow question — never something to route around:
+the other side runs `git stash push` and `git checkout --` on files you share.
+Ask it early: the answer re-syncs stale MISSION context as often as it divides
+files (one such question surfaced a full scope pivot before three dispatches
+went into the other session's files). To measure what it has already landed,
 list the RANGE `git log <base>..HEAD`, never a fixed `-N` window — a `-3` hid
 the fourth-commit-back implementation of the very task about to be re-specced.
 
@@ -325,9 +304,9 @@ the user to run the one query.
 
 **Before writing any spec or verifier prompt, read `references/spec-traps.md`
 in this skill's directory** — the accumulated catalog of promoted traps
-(secondhand-claim surfaces, category-enumeration corollaries, DoD-gate rules).
-Consolidations append there, not here; a spec written without it repeats
-logged failures.
+(secondhand-claim surfaces, category-enumeration corollaries, divided-ownership
+rules, DoD gates). Consolidations append there, not here; a spec written
+without it repeats logged failures.
 
 Every spec is self-contained. Template:
 
@@ -366,12 +345,12 @@ decision) or becomes an explicit line in Decisions.
 
 **Verify, don't inherit.** The most common spec defect: a spec states a
 codebase fact — a file/component/config exists, a value is valid, a feature is
-wired into the live tree, a repo tracks a path, a call site lives in the
-module you assume — inherited from a scout's summary, a pasted review report,
-or a prior-session memory anchor instead of a direct read. Every secondhand claim
-is a hypothesis until a scout confirms existence, exact location, and current
-content. The full surface catalog — the list that keeps burning sessions —
-is in spec-traps § Secondhand claims.
+wired into the live tree, a repo tracks a path, a call site lives in the module
+you assume — inherited from a scout digest, a pasted review, an owner-facing
+registry doc, or a memory anchor instead of a direct read. Every secondhand
+claim is a hypothesis until a scout confirms existence, exact location, and
+current content; paths and identifiers then enter the spec by PASTE from the
+report, never retyped. Full surface catalog: spec-traps § Secondhand claims.
 
 **Fail safe on destructive paths.** When a spec decision feeds a delete,
 purge, or reject-with-removal path, trace every PRODUCER of the decisive value
@@ -382,14 +361,14 @@ emptiness feeds a removal set; the failure branch, not the happy path, is
 where a destructive default does its damage.
 
 **Specify the failure branch's UX, not only its safety.** A spec touching a
-user-facing flow states what the user sees on each failure branch: a write
-piggybacked onto an existing multi-write save gets explicit partial-failure
-semantics (abort order, which toasts fire, close or stay); turning off an
-automatic transition on a failure branch also specifies what renders there —
-a fail-safe branch without UX is a dead end (an infinite skeleton); extending
-a composed user-visible string specifies its zero/empty-component renderings.
-All three shipped past per-task verifiers and surfaced only at final review —
-specify them up front.
+user-facing flow states what the user sees on each failure branch: partial-
+failure semantics for a write piggybacked onto an existing multi-write save
+(abort order, which toasts fire, close or stay); what renders where an
+automatic transition was turned off (a fail-safe branch without UX is an
+infinite skeleton); the zero/empty renderings of a composed string. All three
+shipped past per-task verifiers and surfaced only at final review. The same
+discipline covers SUCCESS states owned by two components — see spec-traps
+§ Divided ownership for mount lifetime and cross-surface copy reuse.
 
 **Contracts frozen early must fit what's consumed later.** When task N+1
 consumes an API/query/schema frozen by task N, walk N+1's consuming
@@ -407,22 +386,25 @@ scripts included.
 category — every free-text field that enters a prompt, every user-visible
 string in a file, every writer of a piece of state, every render variant of a
 shared component, every code path feeding an invariant, every existing gate
-that walks the worktree, every test that deep-equals a changed type — DEFINE
-the category in the spec and require the executor to enumerate its members;
-never hand-list instances by name, line, or syntactic pattern. A hand-picked
-list leaves siblings half-done and can contradict the spec's own file-wide DoD
-grep. Corollaries — cascades, recon shape, carve-out sampling, and how the
-rule binds the head in direct-edit mode — are in spec-traps § Enumerate the
-category.
+that walks the worktree, every query listing columns for a changed table, every
+test that deep-equals a changed type — DEFINE the category in the spec and
+require the executor to enumerate its
+members; never hand-list instances by name, line, or syntactic pattern. A
+hand-picked list leaves siblings half-done and can contradict the spec's own
+file-wide DoD grep. Corollaries — cascades, recon shape, carve-out sampling,
+member/field granularity, and how the rule binds the head in direct-edit mode —
+are in spec-traps § Enumerate the category.
 
-**No new surface without a consumer.** A spec that creates a new API surface,
-shared helper, or query either wires its first consumer or states in Decisions
-why it ships unconsumed — and a helper extracted from N parallel artifacts is
-gated on a duplication census of the LANDED code, not the plan's assumption;
-before prescribing a new helper for a domain calculation (including one
-inherited from a source review spec), recon greps the domain term to confirm no
-existing helper already covers it. Unconsumed code is dead-code-shaped; resolve it in-package (see final review),
-never as a future cleanup.
+**No new surface without a consumer.** A spec creating a new API surface,
+shared helper, query, or FIELD either wires its first consumer or states in
+Decisions why it ships unconsumed and which task produces it — a deferred
+producer is written into that sibling's spec as a required step. A helper
+extracted from N parallel artifacts is gated on a duplication census of the
+LANDED code, not the plan's assumption, and recon greps the domain term first
+to confirm no existing helper covers it — a helper inherited from a review spec
+is not exempt from that grep. Unconsumed code is
+dead-code-shaped; resolve it in-package (see final review), never as a future
+cleanup.
 
 **A check proves nothing until its venue can fail for the reason under test.**
 Before freezing a command or probe into a DoD, establish four things this
@@ -431,10 +413,9 @@ expect) and dry-run against the real tree; the harness entry point traverses
 the layer that WRITES the state the feature reads; the probe's surface and
 principal match the real usage scenario; the artifact under test is the freshly
 built one, in a venue not serving a stale build. Unit-green/live-fail, a probe
-that could never fire the feature, and a false regression published to the owner
-each came from skipping one — details, the sibling-route probe for
-stale-deploy-vs-env, and the N≥3 nondeterminism rule are in spec-traps § DoD
-gates.
+that could never fire the feature, and a false regression published to the
+owner each came from skipping one. Details, the sibling-route probe for
+stale-deploy-vs-env, and the N≥3 nondeterminism rule: spec-traps § DoD gates.
 
 **DoD gates must fit the task's actual scope.** The full gate-authoring rule
 list — baselines for repo-wide gates, grep reconciliation against Boundaries
@@ -443,76 +424,48 @@ flaky-test exclusions, deferred-action re-checks, parallel-checkout scoping —
 is in spec-traps § DoD gates; author no DoD or verifier prompt without it.
 
 **Write for the weakest reader.** Executors and verifiers run on smaller
-models (Sonnet, Haiku). Be maximally explicit: exact file:line anchors,
-verbatim before/after code and user-facing strings, enumerated do-not-touch
-lists, exact verification commands with expected results. Anything left
-implicit will be guessed — and a weaker model guesses wrong. When you author a
-verbatim in-sentence replacement, re-read the FULL host sentence with the
-insertion in place before dispatch — a long clause spliced into an enumeration
-silently destroys its list structure; parenthesize long insertions. Match
-prescription to the reader's tier: executor-tier models (Sonnet/Haiku) get the
-fully explicit spec above; a frontier implementer (Fable, a GPT-5-class model)
-gets goal + why + success-criteria and no step sequence; Opus sits between —
-goal plus a short plan. Even inside an explicit spec, verbatim code or a
-predicate you write is itself a claim: code that dereferences a third-party
-module's statics (an error class's `.name`, `instanceof` an SDK error) or
-copies a mock idiom breaks against the repo's existing test doubles and the
-toolchain's hoisting — prescribe the goal and let the implementer validate it
-against the real library, or check it against the module's existing `vi.mock`
-doubles yourself first.
+models. Be maximally explicit: exact file:line anchors, verbatim before/after
+code and user-facing strings, enumerated do-not-touch lists, exact verification
+commands with expected results. Anything left implicit will be guessed, and a
+weaker model guesses wrong. Re-read the FULL host sentence with any verbatim
+in-sentence replacement in place before dispatch — a long clause spliced into
+an enumeration silently destroys its list structure; parenthesize long
+insertions. Match prescription to the reader's tier: Sonnet/Haiku get the fully
+explicit spec above; a frontier implementer (Fable, a GPT-5-class model) gets
+goal + why + success criteria and no step sequence; Opus sits between — goal
+plus a short plan. Verbatim code or a predicate you write is itself a claim:
+anything dereferencing a third-party module's statics (an error class's
+`.name`, `instanceof` an SDK error) or copying a mock idiom breaks against the
+repo's existing test doubles and the toolchain's hoisting — prescribe the goal
+and let the implementer validate it against the real library, or check it
+against the module's existing doubles yourself first.
 
 **Done is proven, never self-reported.** The check's *evidence* is the
-deliverable, not the agent's claim: the real command output, the exit code,
-the diff, the rendered screenshot — pasted into the report, not "tests pass".
-A fresh-context verifier that *runs* the check is the strong form (section 5);
-a judge that only reads the conversation — the `/goal` finish-line checker —
-can confirm only the proof in front of it, so its done-condition must demand
-that proof inline. "Done when tests pass" is a wish; "done when the green test
-run is in the report" is a contract. An agent's own words decide nothing.
+deliverable, not the agent's claim: real command output, exit code, diff,
+rendered screenshot — pasted into the report, not "tests pass". A fresh-context
+verifier that *runs* the check is the strong form (section 5); a judge that
+only reads the conversation (the `/goal` finish-line checker) can confirm only
+the proof in front of it, so its done-condition must demand that proof inline.
+"Done when tests pass" is a wish; "done when the green test run is in the
+report" is a contract. An agent's own words decide nothing.
 
 **Synthesis tasks get a grounding gate.** When the artifact is a synthesis
-from sources (guide, digest, summary of advice), the spec names the deepest
-available source of truth (transcript over retelling, original over derived
-corpus), and the DoD verifies claims against it verbatim: claims with a
-pointer (timecode, link, file:line) are checked at the pointer; a search-based
-sample covers the rest. The verifier diffs claim against quote, watching the
-connectives and quantifiers added during compression ("when", "always",
-"therefore", "most") — distortion is born in connective tissue the source
-never had. Agreement between two derived copies proves nothing; an unexecuted
-pointer is not evidence. Confirm the assumed source IS the source before
-synthesizing: dispatch relevance-check scouts across ALL candidate sources in
-parallel, each told to confirm or refute relevance first and stop early if
-irrelevant — a plausibly-named file can be the wrong corpus.
+from sources, the spec names the deepest available source of truth (transcript
+over retelling, original over derived corpus) and the DoD verifies claims
+against it verbatim — pointer-carrying claims checked AT the pointer, a sample
+for the rest, connectives and quantifiers watched. Two derived copies agreeing
+proves nothing; an unexecuted pointer is not evidence. Full rule, incl.
+confirming the assumed source IS the source: spec-traps § DoD gates.
 
-**UI tasks get a visual DoD.** A visual change's DoD compares a live headless
-screenshot against the design target (or pre-change baseline) and names the
-specific differences to check — spacing, color, copy, state — not "looks
-right". A Fable-class head reads dense raw screenshots directly; a non-Fable
-head delegates to a vision-capable subagent instructed to crop and zoom into
-unclear regions. A pass without a rendered comparison is unverified, like a
-claim without a quote. Not only visual fidelity: typecheck, build, and
-HTTP-200 can stay green while the rendered page crashes at runtime (a
-hooks-order violation, a hydration error) — any UI-behavior change needs a
-rendered-browser check, and any long-running external-process integration (a
-spawned CLI, a dev server) keeps a live smoke stage: static review does not
-close runtime acceptance criteria. Cheap default: `npx`-cached Playwright
-(the cached ms-playwright Chromium, not a system-Chrome `channel` — a sandboxed
-shell SIGKILLs the system browser) against the dev server, re-driven
-independently by the verifier. Before using
-`curl` as the smoke check, confirm the rendering model: a server-rendered
-route (a Next.js server component) executes the real render plus DB queries —
-a 200 with the expected content is a strong crash check; a client-rendered app
-returns near-empty HTML and proves nothing — drive a headless browser. Either
-way, client-prefilled values and client-only interactivity never appear in the
-server HTML — verify those by reading the wiring, not the curl body.
-Geometry is measured, never guessed: every visual DoD sets a usability floor
-(minimum fully-visible items or px window at the initial state — with fixed
-siblings the leftover width is computable at spec time, so compute it); a
-height-compaction spec cites a measured per-section height map of the
-offending container, never a viewport-cropped screenshot (the real hog can sit
-below the fold); a grid/column reorder pins the class-string→track mapping or
-asserts rendered widths — DOM-order assertions pass in jsdom while the wrong
-column gets the track.
+**UI tasks get a visual DoD.** A visual change is accepted on a live headless
+screenshot compared against the design target or pre-change baseline, with the
+specific differences named — never "looks right"; a non-Fable head delegates
+the comparison to a vision-capable subagent with a crop/zoom instruction. Green
+typecheck, build and HTTP-200 do not cover runtime: any UI-behavior change gets
+a rendered-browser check, and any long-running external-process integration a
+live smoke stage. Geometry is measured, never guessed. Full rule — Playwright
+defaults, when `curl` is and is not a valid smoke check, usability floors,
+height maps, grid-track pinning: spec-traps § DoD gates.
 
 ### 3. Dispatch — by pointer
 
@@ -614,43 +567,45 @@ infrastructure, not the task — make the next attempt a synchronous
 
 Dispatch executors in the background and keep working: write the next specs,
 resolve forks, update PLAN.md. After dispatching a background job with nothing
-left to prepare, end the turn — a completion notification resumes the
-pipeline; never poll or spawn a placeholder agent to wait. A subagent waiting
-on a long child job polls inside its own turn, bounded by that job's timeout,
-rather than pausing on a Monitor call — a Monitor pause does not reliably
-re-wake it; treat an early notification carrying a "still waiting" result as a
-nudge to resume, not a finish. Executors and reviewers still background their
-own DoD gate even with the foreground envelope line — expect this stall mode
-and split recovery on liveness: a still-alive paused agent resumes on a
-SendMessage nudge, but a dead one (no notification ever fires, work left
-uncommitted) is never nudged — audit its git traces and dispatch a FRESH
-finisher. An API/network death (a terminal-error notification DID arrive) is
-a third case: audit the git traces FIRST — substantial correct work left
-uncommitted plus a network-class error means a SendMessage resume of the SAME
-agent, which recovers it with context intact; dispatch a fresh finisher only if
-that resume stalls, never as the first move. A
-failed notification over substantial uncommitted work is not proof of death —
-re-check liveness before any replacement, or two agents end up in one
-worktree. When EVERY agent of one dispatch block dies within seconds on the
-same transport error (ConnectionRefused, ENOTFOUND), that is infrastructure,
-never a prompt or spec defect: re-dispatch the block verbatim once before any
-triage — do not rewrite prompts, downgrade models, or conclude the task was too
-big. **And when the task's DoD mandates fault injection (a RED proof, a
-mutation probe), stall recovery starts by RUNNING the gate, not by reading
-`git status`:** in that window a dead agent's tree is *deliberately* broken and
-file-level inspection calls it complete — one stall left every expected file
-modified and the suite red on exactly the spec's own injected failure, and a
-commit there would have shipped it. A red tree whose ONLY failure is the
-injected one means "stalled mid-proof, restore and finish"; that test's
-identity localizes the stall and goes back to the resumed agent as its own RED
-evidence rather than being re-derived. Before dispatching a spec written ahead of
-time, reconcile it against the previous task's actual diff: `git diff --stat`
-spots file-level drift; if that task touched files your spec anchors to, send
-a scout to re-verify the anchors first. The same between-dispatch `git status`
-also triages foreign modifications: a tracked file changed by neither you nor
-the finished executor (a concurrent session, the user editing live) is
-quarantined — never staged, committed, or reverted — and named in an explicit
-exclusion line in subsequent envelopes.
+left to prepare, end the turn — a completion notification resumes the pipeline;
+never poll or spawn a placeholder agent to wait. A subagent waiting on a long
+child job polls inside its own turn, bounded by that job's timeout, rather than
+pausing on a Monitor call — a Monitor pause does not reliably re-wake it; treat
+an early notification carrying a "still waiting" result as a nudge to resume,
+not a finish.
+
+Executors and reviewers background their own DoD gate even with the foreground
+envelope line — expect that stall mode, and split recovery by case:
+
+- **Alive but paused** — resume it with a SendMessage nudge.
+- **Dead** (no notification ever fires, work left uncommitted) — never nudge:
+  audit its git traces and dispatch a FRESH finisher. A failed notification
+  over substantial uncommitted work is not proof of death — re-check liveness
+  first, or two agents end up in one worktree.
+- **API/network death** (a terminal-error notification DID arrive) — audit the
+  git traces FIRST; substantial correct work plus a network-class error means a
+  SendMessage resume of the SAME agent, which recovers it with context intact.
+  A fresh finisher only if that resume stalls, never as the first move.
+- **A whole dispatch block dying within seconds on the same transport error**
+  (ConnectionRefused, ENOTFOUND) is infrastructure, never a prompt or spec
+  defect: re-dispatch the block verbatim once before any triage — do not
+  rewrite prompts, downgrade models, or conclude the task was too big.
+- **Fault-injection DoDs (a RED proof, a mutation probe) invert the first
+  move:** recovery starts by RUNNING the gate, not by reading `git status`. In
+  that window the tree is *deliberately* broken and file-level inspection calls
+  it complete — one stall left every expected file modified with the suite red
+  on exactly the spec's own injected failure, and a commit there would have
+  shipped it. A red tree whose ONLY failure is the injected one means "stalled
+  mid-proof, restore and finish"; that test's identity localizes the stall and
+  goes back to the resumed agent as its own RED evidence.
+
+Before dispatching a spec written ahead of time, reconcile it against the
+previous task's actual diff: `git diff --stat` spots file-level drift; if that
+task touched files your spec anchors to, send a scout to re-verify the anchors
+first. The same between-dispatch `git status` triages foreign modifications: a
+tracked file changed by neither you nor the finished executor (a concurrent
+session, the user editing live) is quarantined — never staged, committed, or
+reverted — and named in an explicit exclusion line in subsequent envelopes.
 
 **The notification-driven chain (default dispatch loop).** A full pipeline
 runs "without pauses" on built-in background agents alone: write ALL specs up
@@ -724,27 +679,29 @@ stays the clean record of "what was ordered".
 The last task of the pipeline is a review spec of its own: one pass (Sonnet;
 Opus if the change is architecture-critical) over the full diff from the start
 commit. You set the review axes in the spec — e.g. handler correctness,
-resource leaks. Two axes are standing: cross-task interaction — each task's
-new artifacts against each sibling task's changed paths; N green per-task
-verifications cannot see an interaction bug, and this axis has caught a
-round's only MAJOR — and, before a demo or ship round, an adversarial pass on
-async/UI-state seams (missing timeouts, identity of keyed selections across
-list replacement, guard-ordering vs feature flags) by a second independent
-reviewer or an out-of-family model: a single final review demonstrably misses
-these. A third standing axis whenever the diff adds tests that execute the
-project's own engine or runner: each new test must build its own temp fixture (its own
-freshly-initialized repo/state) and never resolve the enclosing repo's root —
-fixture-less engine tests silently rewrite the live repo's state, refs, and
-journals on every in-repo test run; while such tests can run, trust only the
-process tree for liveness and the reflog for forensics. A fourth standing axis
-covers every destructive or terminal state transition in the diff: is the
-recovery path established BEFORE the destruction commits, and is the terminal
-state still reachable by the sweep meant to retry it? Three independent reviews
-in two repos hit this shape in one session — a retry deleted its inputs then
-best-effort re-queued them; a work item was marked dropped without checking the
-locked period would not be emptied; a failed job was marked errored, which
-removed it from the only sweep that could retry it. All three passed their
-happy-path tests.
+resource leaks. Four axes are standing:
+
+- **Cross-task interaction** — each task's new artifacts against each sibling
+  task's changed paths. N green per-task verifications cannot see an
+  interaction bug; this axis has caught a round's only MAJOR.
+- **Async/UI-state seams**, before any demo or ship round — missing timeouts,
+  identity of keyed selections across list replacement, guard-ordering vs
+  feature flags — run by a second independent reviewer or an out-of-family
+  model: a single final review demonstrably misses these.
+- **Engine/runner tests**, whenever the diff adds tests that execute the
+  project's own engine: each must build its own temp fixture (a freshly
+  initialized repo/state) and never resolve the enclosing repo's root —
+  fixture-less engine tests silently rewrite the live repo's state, refs and
+  journals on every in-repo run; while they can run, trust only the process
+  tree for liveness and the reflog for forensics.
+- **Destructive and terminal state transitions** — is the recovery path
+  established BEFORE the destruction commits, and is the terminal state still
+  reachable by the sweep meant to retry it? Three independent reviews in two
+  repos hit this shape in one session (a retry deleted its inputs then
+  best-effort re-queued them; an item was marked dropped without checking the
+  locked period would not be emptied; a failed job was marked errored, which
+  removed it from the only sweep that could retry it) — all three passed their
+  happy-path tests.
 
 Feed the reviewer the session's own live MEASUREMENTS in its dispatch (holder
 counts, affected rows, production figures you took). Severity is a function of
@@ -759,10 +716,9 @@ not run them. Before dispatching rework that would rewrite shipped behavior,
 run ONE adversarial pass told to REFUTE each finding with executed evidence,
 and arbitrate from that pass, not from the review digest. One such pass over
 five findings confirmed three with hard numbers, re-framed a "vacuous test" as
-merely under-powered (the pre-change code failed the same assertions), and
-turned a MAJOR into correct-behavior-not-a-defect once its end-to-end effect
-was seen. The pass costs one agent; acting on a wrong finding costs a rework
-round plus the regression it introduces.
+merely under-powered, and turned a MAJOR into correct-behavior-not-a-defect
+once its end-to-end effect was seen. The pass costs one agent; acting on a
+wrong finding costs a rework round plus the regression it introduces.
 
 You arbitrate every finding:
 

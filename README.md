@@ -35,7 +35,7 @@ The skill also supports Opus 4.8 as the head via explicit invocation
 | Path | Purpose |
 |---|---|
 | `SKILL.md` | The skill: hard rules, model routing, spec template, pipeline, feedback loop |
-| `references/` | Situational reference material (Codex rules, loop mode) — read only when that situation arises |
+| `references/` | Situational material read at the matching decision point: spec/DoD traps, model roles, Codex rules, loop mode, consolidation |
 | `scripts/publish-check.sh` | Public-safety gate: tracked-file allowlist + secret/path leak scan |
 | `feedback/` (local only, gitignored) | Raw session lessons; never published |
 | `CHANGELOG.md` | Versioned history of rule changes |

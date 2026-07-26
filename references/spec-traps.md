@@ -2,9 +2,10 @@
 
 Read this file before writing any spec or verifier prompt (SKILL.md §2 points
 here). Every rule below was promoted from logged failures; consolidations
-append here so SKILL.md's always-loaded weight stays flat. The three sections
-mirror SKILL.md's spec principles: secondhand claims ("Verify, don't
-inherit"), category enumeration ("Enumerate the category"), and DoD gates.
+append here so SKILL.md's always-loaded weight stays flat. The sections mirror
+SKILL.md's spec principles: secondhand claims ("Verify, don't inherit"),
+category enumeration ("Enumerate the category"), divided ownership, and DoD
+gates.
 
 ## Secondhand claims — surfaces that keep burning sessions
 
@@ -126,7 +127,13 @@ location, and current content:
   at all" has been simply wrong, and believing it would have forced a needless
   workaround. Order the executor to read the INSTALLED package's own typings
   and paste the evidence, and prescribe a preference order of mechanisms rather
-  than one assumed-supported mechanism.
+  than one assumed-supported mechanism. Verbatim third-party surface a spec
+  DICTATES (option keys, method names, error statics) is the same claim about
+  the installed version: recon quotes that version's signature for exactly that
+  call, or the spec states the GOAL and lets the implementer bind the API. A
+  prescribed conflict-clause option key belonged to a sibling method in the
+  pinned release — as written it would either fail to compile or silently drop
+  the predicate that made the write idempotent.
 - A dry-run / no-op flag is unverified until its GUARD EXPRESSION is read: a
   boolean input compared to a string literal (`inputs.dry_run != 'true'`)
   silently disables the guard, and the "dry" run pushed straight to prod with
@@ -181,6 +188,28 @@ location, and current content:
   verdict table over EVERY entry, not a spot check of the entries that motivated
   the change. Both failures happened in one session, the second after the spec
   had been amended to fix the first.
+- A regression guard is a claim that something WORKS TODAY. Every expected-pass
+  example in such a list is RUN at the baseline commit during recon and reported
+  with its literal verdict; an example that fails at baseline is dropped or
+  becomes its own task, never a guard. One phrasing invented from plausibility
+  turned an untouched pre-existing gap into a verifier FAIL and cost a round to
+  tell the two apart.
+- An owner-facing REGISTRY document (a session registry, handoff doc, ticket,
+  task list) is secondhand at the level of a scout digest: recon its anchors AND
+  its vocabulary against code before any spec inherits them. One carried four
+  factual errors into speccing range — line anchors for a gate that in fact
+  covered deletion only, a status label existing nowhere in the code, a webhook
+  attributed to the wrong repo, stale migration numbers.
+- When two scouts contradict each other, re-measure before publishing either —
+  and re-check any fact already written into a deliverable earlier in the
+  session against every later report covering the same ground. A gate attributed
+  to one migration number was frozen into an owner-facing addendum before the
+  second scout's deciding quote arrived with a different one, forcing a
+  correction edit.
+- Paths and identifiers enter a spec by PASTE from the scout report, never
+  retyped. A plausible-but-wrong parent directory (same file name, same line
+  number, same field content) is exactly the token that gets mis-recalled, and
+  the executor pays for it at dispatch time.
 - WHEN a destructive mechanism fires is never inferred from adjacent facts.
   "Deletions run only at the end of a successful scan" held for one removal
   class while policy-driven removals applied inline mid-run — the reassurance
@@ -197,7 +226,11 @@ location, and current content:
   per-member carve-out — a hand-narrowed Steps list silently contradicts the
   spec's own category.
 - The rule holds inside one file: enumerate every read/render of the value in
-  the touched file, never only the line a scout quoted.
+  the touched file, never only the line a scout quoted. It binds IDENTIFIERS as
+  well as rendered values — before ordering a delete, rename, or hoist, grep the
+  identifier file-wide at spec-write time and cite every usage site; a spec that
+  cited only the two declaration lines of a pair of function-local constants
+  would have left two later calls of them as a ReferenceError.
 - The rule binds the head in direct-edit (waiver) mode too: define each
   cleanup category as a runnable grep (a meta-verb alternation, a slang list)
   and run it BEFORE any verifier — reading-based enumeration misses instances.
@@ -330,12 +363,50 @@ location, and current content:
   to a single builder leaves the siblings contradicting it: a toast kept
   soliciting a comment the flow no longer captured, a UX dead end that passed
   its per-task verifier.
+- Adding a PERSISTED field is a round-trip category, not a write-path category:
+  enumerate every writer AND every query that lists columns for that table,
+  repo-wide by grep, and put one test through the query-BUILDING layer into the
+  DoD. Fixtures construct the object with the field present by type definition
+  and bypass the query layer entirely, so a green suite proves the type
+  compiles, not that the value survives persistence: a column shipped with a
+  migration, both row types, converters, UI, filters and 24 green tests, was
+  absent from all three SELECT column lists, and simply never came back after a
+  reload.
+- A new CHILD table is a new member of the parent's children category, and that
+  category's existing cascades are its consumers: Steps enumerate every existing
+  soft-delete, archive, purge and ops path over that parent's children and add
+  the new table to each, with a test per path. Skipping it leaves the new rows
+  live under a soft-deleted parent — the same orphan shape an earlier probe had
+  already measured in that repo.
+- The no-unconsumed-surface rule binds at FIELD granularity, not only at module
+  or query granularity: for every field a spec adds to a validator, type, or
+  metric input, Decisions name its producer AND its consumer task, and a field
+  whose producer is deferred to a sibling task is written into that sibling's
+  spec as a required step. Two deferrals nobody carried forward reached the final
+  review as dead surface in a single package.
 - When the category is used to GENERATE inputs (synthetic queries, property-test
   fixtures), check the generated members against every higher-priority
   dispatch/routing rule before freezing the property: one generated string that
   happened to equal a real record's title was intercepted by an exact-title
   route, making the property unsatisfiable as written. Either exclude the
   colliding members or mandate an intent guard in the test up front.
+
+## Divided ownership — two owners, one behavior
+
+- When a spec prescribes a post-success UI state AND a completion callback to
+  the parent, it states the MOUNT LIFETIME explicitly: which component owns
+  unmount, and that the result message survives it. Default to giving the parent
+  no unmount hook. A component ordered to collapse itself while its parent was
+  ordered to unmount it raced its own result rendering — a conflicting resubmit
+  left the step unchanged and the block simply vanished. Both final reviewers
+  found it independently; every per-task verifier passed it.
+- Reusing a user-facing component on a NEW surface silently reuses its COPY,
+  which encodes the first surface's time scale and question framing. The reuse
+  spec adds a step diffing every shared string against the new surface's own
+  vocabulary, parameterizes the ones that differ, and greps the destination
+  screen for near-duplicate questions. A node built for a daily surface kept
+  naming the day on a weekly one and re-asked a question that screen already
+  asked.
 
 ## DoD gates
 
@@ -448,6 +519,30 @@ location, and current content:
 - Every full-suite verification tees to a log file. A one-off failure whose
   identity is lost to summary-only greps escapes unnamed session after session,
   and an unnamed flake cannot be excluded from the next gate.
+- A DoD grep with an expected COUNT — especially zero — is a claim that the
+  token is unique to this package. Run it at spec-write time against the current
+  tree and pin the expectation to the measured baseline, or scope the path and
+  pattern to the package under change. An unmeasured zero-match gate on a common
+  prop name was unsatisfiable: an unrelated pre-existing component owns the same
+  prop plus two call sites, so meeting the gate meant renaming a foreign
+  component's API — a refactor the same spec's Boundaries forbade. The fixer
+  correctly refused and rescoped the grep.
+- Reconciling a gate against the spec's own Steps is a PRE-DISPATCH PASS, not a
+  memory check: re-read Steps for anything that contradicts each gate (a test
+  asserting the banned token's absence, a conditional step touching a
+  DoD-forbidden file) with the gate text in front of you. The token-ban-grep vs
+  negative-assertion contradiction is documented above and still shipped again —
+  a rule known but unchecked is a rule not applied.
+- A test double that RECORDS a write without APPLYING it makes every round-trip
+  bug in that channel invisible, and the tests written against it feel thorough
+  — the same family as the in-memory-DB rule below. Before ordering two-way sync
+  with any external channel (URL/router, storage, clipboard, DB), establish
+  whether the repo's existing double closes the loop; if it only records, the
+  spec mandates a loop-closing double and the DoD says so. A router mock that
+  recorded the navigation call without updating what the read-back hook returns
+  shipped a panel that reopened itself on every close, past three new tests and
+  a full green suite; the reviewer proved it by copying the test file aside and
+  making the mock apply the URL — two immediate failures.
 - A green in-memory DB double proves nothing about error recovery inside a
   transaction: a common fake does not model transaction abort, so a
   catch-then-requery is green in tests and unreachable on the real engine
@@ -531,7 +626,13 @@ location, and current content:
   executor can check those preconditions still hold. An idiom sound only
   because it runs OUTSIDE a transaction and issues zero queries after failure
   became a latent bug the moment it was copied inside a BEGIN with recovery
-  queries added.
+  queries added. Such an instruction also NAMES the property being borrowed
+  (rollback mechanics, retry shape) and states the new code's own failure
+  contract separately, because the two can conflict: "roll back exactly the way
+  the code next to it does" carried the neighbour's swallowed repository error
+  into new code, so the caller's catch never fired and the UI showed success on
+  a write that had been undone. A neighbour's latent defect is invisible to the
+  per-task verifier, since the spec itself sanctioned the shape.
 - Anchor re-verification covers the DOMAIN VOCABULARY of acceptance criteria,
   not just file:line anchors: every status, enum member, and field name an
   acceptance bullet names must grep to a real declaration. One acceptance
@@ -615,6 +716,48 @@ location, and current content:
   number: profiling overlays, per-event logging, and an open inspector inflate
   the very numbers used to judge the fix. Measure with instrumentation off,
   against a recorded baseline, removing one suspect at a time.
+- **Synthesis grounding (full rule; SKILL.md keeps the headline).** When the
+  artifact is a synthesis from sources (guide, digest, summary of advice), the
+  spec names the deepest available source of truth (transcript over retelling,
+  original over derived corpus) and the DoD verifies claims against it verbatim:
+  claims carrying a pointer (timecode, link, file:line) are checked AT the
+  pointer; a search-based sample covers the rest. The verifier diffs claim
+  against quote, watching the connectives and quantifiers added during
+  compression ("when", "always", "therefore", "most") — distortion is born in
+  connective tissue the source never had. Agreement between two derived copies
+  proves nothing; an unexecuted pointer is not evidence. Confirm the assumed
+  source IS the source before synthesizing: dispatch relevance-check scouts
+  across ALL candidate sources in parallel, each told to confirm or refute
+  relevance first and stop early if irrelevant — a plausibly-named file can be
+  the wrong corpus.
+- **Visual DoD (full rule; SKILL.md keeps the headline).** A visual change's DoD
+  compares a live headless screenshot against the design target (or pre-change
+  baseline) and names the specific differences to check — spacing, color, copy,
+  state — never "looks right". A Fable-class head reads dense raw screenshots
+  directly; a non-Fable head delegates to a vision-capable subagent instructed to
+  crop and zoom into unclear regions. A pass without a rendered comparison is
+  unverified, like a claim without a quote. Not only fidelity: typecheck, build
+  and HTTP-200 stay green while the rendered page crashes at runtime (a
+  hooks-order violation, a hydration error), so any UI-behavior change needs a
+  rendered-browser check, and any long-running external-process integration (a
+  spawned CLI, a dev server) keeps a live smoke stage — static review does not
+  close runtime acceptance criteria. Cheap default: `npx`-cached Playwright (the
+  cached ms-playwright Chromium, not a system-Chrome `channel` — a sandboxed
+  shell SIGKILLs the system browser) against the dev server, re-driven
+  independently by the verifier. Before using `curl` as the smoke check, confirm
+  the rendering model: a server-rendered route executes the real render plus its
+  DB queries, so a 200 with the expected content is a strong crash check; a
+  client-rendered app returns near-empty HTML and proves nothing — drive a
+  headless browser. Either way client-prefilled values and client-only
+  interactivity never appear in server HTML — verify those by reading the wiring,
+  not the curl body. Geometry is measured, never guessed: every visual DoD sets a
+  usability floor (minimum fully-visible items or px window at the initial state
+  — with fixed siblings the leftover width is computable at spec time, so compute
+  it); a height-compaction spec cites a measured per-section height map of the
+  offending container, never a viewport-cropped screenshot (the real hog can sit
+  below the fold); a grid/column reorder pins the class-string→track mapping or
+  asserts rendered widths — DOM-order assertions pass in jsdom while the wrong
+  column gets the track.
 - A percentage-based deletion or stop threshold cannot distinguish
   absence-driven removals (dangerous: an empty upstream response) from
   policy-driven removals (intended: a gate tightened). When such a rule fires,

@@ -1,5 +1,65 @@
 # Changelog
 
+## 2.20.0 — 2026-07-26
+
+Consolidation of the 16 entries logged since 2.19.0 (2026-07-25..26, three
+projects): 15 applied, 1 archived as a confirmation of a rule already in force,
+log drained to zero. No literal `issue_key` repeat, so clustering ran by FAILURE
+FAMILY again. Paired with a compression round: SKILL.md 56.5 KB → 53.1 KB
+(−6%) with every new rule routed to `references/`, spec-traps.md 43.6 → 54.1 KB,
+new `references/model-roles.md` (2.5 KB).
+
+Headline promotion — **a spec may not freeze a claim it never measured.** Six
+entries, three projects: a regression guard listing an expected-pass phrasing
+nobody ran at the baseline (it failed there too, turning an untouched
+pre-existing gap into a verifier FAIL); a verbatim third-party conflict-clause
+option key that belongs to a sibling method in the pinned release; a DoD grep
+demanding zero matches for a prop name an unrelated component already owns,
+making the gate satisfiable only by violating the spec's own Boundaries; an
+owner-facing registry document carrying four wrong anchors into speccing range;
+two scouts disagreeing on which migration owns a gate, with the wrong one
+already published in an addendum; and a hoist ordered against two cited
+declaration lines while two later usages of the same identifiers went
+unenumerated. Every number, option key, path, and behavior a spec states is now
+produced by a command run at spec-writing time — or restated as a goal for the
+implementer to bind — and paths enter specs by paste, never retyped.
+
+Second family — **a new member of a category is not wired into the category's
+existing consumers.** A persisted column shipped with a migration, both row
+types, converters, UI and 24 green tests but was absent from all three SELECT
+column lists, so the value never came back after a reload (fixtures build the
+object by type definition and bypass the query layer): adding a persisted field
+is a round-trip category, enumerating readers as well as writers, with one test
+through the query-BUILDING layer. A new child table was never walked against the
+parent's existing soft-delete path, leaving live rows under a deleted parent.
+And the no-unconsumed-surface rule now binds at FIELD granularity, with the
+producer task named for anything deferred to a sibling spec.
+
+Third family — **one behavior, two owners, no tie-break** (new spec-traps
+section). A component ordered to collapse itself while its parent was ordered to
+unmount it raced its own result rendering; a component built for a daily surface
+was reused on a weekly one and kept the first surface's time scale in its copy.
+A spec handing two components authority over one lifecycle or one string now
+states which wins.
+
+Also promoted: a test double that RECORDS a write without APPLYING it (a router
+mock that never updated the read-back) hides every round-trip bug in that
+channel; "reuse the neighbouring pattern" names the property being borrowed AND
+states the new code's own failure contract, since copying a neighbour propagates
+its swallowed error; gate/Steps reconciliation is an explicit pre-dispatch pass,
+because the token-ban-grep vs negative-assertion contradiction shipped again
+while already documented. Pipeline mechanics (SKILL.md): the stop-and-ask on a
+foreign writer re-syncs stale MISSION context, not only file conflicts — one
+such question surfaced a full scope pivot.
+
+Compression: the full synthesis-grounding and visual-DoD rules moved verbatim
+into spec-traps § DoD gates (SKILL.md keeps the headline plus a pointer),
+per-model strengths and refusal behavior moved to `references/model-roles.md`
+(the routing table and the Fable-refusal reroute stay inline), and the §4
+recovery paragraph became a five-case bullet list. Clause-level audit of the
+rewrite restored one dropped category example and one scoping clause; no other
+directive changed.
+
 ## 2.19.0 — 2026-07-25
 
 Consolidation of the 25 entries logged since 2.18.0 (2026-07-24..25, five
