@@ -38,6 +38,12 @@ A loop needs all five, or it either never stops or never learns:
    model that never tires never stops on its own, and this is the most
    expensive model to leave running.
 
+A standing loop must REMOVE decisions from the owner, not add an object to
+supervise. If its rounds produce output nobody reads or acts on, the answer is
+to delete the loop, not to tune it — ask that question at every review, and
+report the answer honestly: an automation kept alive out of sunk cost consumes
+the exact resource (attention) it was built to free.
+
 ## Tier routing and dry runs
 
 Route every round through the Autonomy tiers: green rounds run unattended,
