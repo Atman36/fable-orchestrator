@@ -1,5 +1,45 @@
 # Changelog
 
+## 2.22.0 — 2026-08-03
+
+Consolidation of the 37 entries logged since 2.21.0 (2026-07-26..31, five
+projects): 13 applied, 22 archived as confirmations of rules already in force,
+2 rejected as narrow single-session tactics; log drained to zero. The user also
+supplied *The Rewrite Method* as an explicit source: two non-duplicate principles
+were promoted, while its independent-review verdict was adapted to preserve the
+orchestrator's rule that judgment stays with the head.
+
+- **Recovery matches the actual failure.** A reclaimed transcript no longer
+  makes same-agent resume a plan dependency: a fresh successor audits on-disk
+  work against the self-contained spec before editing. User-stopped work is a
+  decision fork, not an automatic retry. After a host-level resource death,
+  fan-out stops in favor of one synchronous agent, direct deterministic gates,
+  and durable per-task state.
+- **Read-only includes untracked files.** Mutating probes get an explicit temp
+  store outside the repo; the orchestrator re-checks `git status --porcelain`
+  instead of trusting the scout's claim that it wrote nothing.
+- **Venue claims have evidence and an expiry.** Downstream DoDs may not weaken
+  themselves on an executor's environment diagnosis; a fresh verifier measures
+  it. Literal module paths are launch-tested, multi-dispatch venues do not live
+  under temporary/session storage, and console-noise gates compare message
+  classes against a measured baseline.
+- **User flows are verified as a stranger would run them.** The DoD covers the
+  production-relevant configuration/principal, cold start, plausible wrong
+  order, and sibling paths of the same bug class. Acceptance inspects the
+  resulting artifact's content/state, never only a success label or exit code.
+- **UI specs reconcile the design with reality.** Mockup item inventories are
+  diffed against live routes/columns/tabs; impossible fixed-container fits are
+  measured and escalated; permission-gated controls specify loading, granted,
+  and denied states.
+- **Stage boundaries distinguish inputs from outputs.** Persisted state fed
+  back into a processing stage replays only true inputs, not the stage's own
+  derived outputs.
+
+Compression: repeated recovery/reviewer prose was tightened while the new
+pipeline rules were folded in; SKILL.md 54,614 → 54,530 bytes. Detailed
+spec/DoD lessons were routed to `references/spec-traps.md` so the always-loaded
+file did not grow.
+
 ## 2.21.0 — 2026-07-26
 
 Four rules promoted from a user-supplied source (a curated set of AI-management

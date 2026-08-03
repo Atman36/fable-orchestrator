@@ -82,6 +82,10 @@ location, and current content:
   id's transform as it crosses a layer (a raw record id hashed into an opaque
   one) — verify in recon or prescribe the goal and let the implementer validate
   against the real runtime.
+- An executor's explanation that the venue cannot exercise a behavior is a
+  secondhand claim, not permission to weaken downstream DoDs. A fresh verifier
+  measures the capability neutrally, including sampling resolution for
+  timing-sensitive probes; sibling specs inherit only that measured result.
 - A dossier/handoff claim ages: 'done' work inherited uncommitted gets its
   tests actually run before you commit it, and dossier 'open items' get
   re-checked against commits newer than the entry before you spec a fix.
@@ -390,6 +394,9 @@ location, and current content:
   happened to equal a real record's title was intercepted by an exact-title
   route, making the property unsatisfiable as written. Either exclude the
   colliding members or mandate an intent guard in the test up front.
+- When stored state re-enters a processing stage, classify every field as that
+  stage's INPUT or OUTPUT and replay only inputs; feeding derived outputs back
+  as discovery data can make restrictive classifications impossible to heal.
 
 ## Divided ownership — two owners, one behavior
 
@@ -410,11 +417,11 @@ location, and current content:
 
 ## DoD gates
 
-- A DoD reusing a repo-wide gate (lint, typecheck, a tree-wide pattern scan)
-  snapshots the gate's pre-existing state and asserts no NEW violation from
-  the touched files, never absolute green — a pre-existing failure elsewhere
-  (including the user's own uncommitted WIP) makes a global-green DoD
-  unmeetable without violating Boundaries.
+- A DoD reusing a repo-wide gate (lint, typecheck, pattern scan, browser
+  console/log noise) snapshots its pre-existing state and asserts no NEW
+  violation from the touched files, never absolute green. For logs, capture
+  both counts and distinct message texts per route; "no new class" is stronger
+  than an unmeetable zero over known noise.
 - Reconcile every DoD check against the spec's own Boundaries before dispatch:
   a negative grep over a directory must be satisfiable by every step touching
   it; a token-ban grep must not target a file whose spec-mandated content
@@ -478,7 +485,8 @@ location, and current content:
   against the real dispatch/selector logic it routes through (mode flags, env
   precedence) and the actual file layout (a blank line eats a `grep -A`
   budget), or state the content assertion and let the verifier choose the
-  command.
+  command. A reachable CLI does not prove an importable module path; dry-run
+  the exact resolution/launch command before hardcoding either.
 - A gate on a deferred/scheduled action (a timer, a queued callback): confirm
   the gate is re-checked at fire time — not only at scheduling time — with a
   race test that flips the condition inside the window; when failure has
@@ -610,8 +618,8 @@ location, and current content:
   ignoring the outcome the path of least resistance: an access-granting UI
   printed a success toast carrying a DIFFERENT person's data and wrote a false
   audit event. The sole context that may continue catches it explicitly.
-- A permission-gated UI spec states EVERY control's state in the ungated
-  variant — hidden vs disabled vs read-only, save footers and bulk actions
+- A permission-gated UI spec states loading, granted, and denied behavior for
+  EVERY control — hidden vs disabled vs read-only, save footers and bulk actions
   included; kin of the failure-branch-UX rule.
 - When Steps contain both a costly external call and a cheap terminal guard,
   order the guard FIRST and explicitly: executors follow Steps literally. Any
@@ -677,6 +685,14 @@ location, and current content:
   equally fatal — a baseline build off a dirty tree compiled another session's
   uncommitted fix for the very defect being baselined and reported it absent,
   which as a "before" measurement would have been a false before/after claim.
+  Venue facts also expire: re-prove them for each dispatch, and never place a
+  multi-dispatch venue under `/tmp` or session scratch that an OS cleanup can
+  erase; use durable cache storage plus an explicit failure escalation.
+- A user-flow DoD is a scenario matrix, not one happy-path script. Include the
+  production-relevant configuration and principal, cold start, plausible
+  wrong-order actions, and sibling paths of the same bug class. Assert the
+  resulting artifact's content/state directly; a success label, status enum,
+  exit code, or "done" message is not proof that the requested effect survived.
 - A fix answering an owner's complaint about a surface they cannot see is
   verified against the branch THEY hit — their role, their data distribution —
   not against the generic case, and the report states the branch condition. A
@@ -750,7 +766,11 @@ location, and current content:
   client-rendered app returns near-empty HTML and proves nothing — drive a
   headless browser. Either way client-prefilled values and client-only
   interactivity never appear in server HTML — verify those by reading the wiring,
-  not the curl body. Geometry is measured, never guessed: every visual DoD sets a
+  not the curl body. A mockup is a claim about its item inventory: diff its
+  routes/columns/tabs against the live category and decide every mismatch before
+  reproducing it. If both a container and its contents are fixed, the executor
+  measures and escalates an impossible fit instead of silently shrinking an
+  accepted element. Geometry is measured, never guessed: every visual DoD sets a
   usability floor (minimum fully-visible items or px window at the initial state
   — with fixed siblings the leftover width is computable at spec time, so compute
   it); a height-compaction spec cites a measured per-section height map of the

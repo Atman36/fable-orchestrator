@@ -292,12 +292,12 @@ First, skim `feedback/SUMMARY.md` next to this skill file (≤30 lines): past
 lessons about this project or task class adjust routing and spec emphasis now,
 not after the next failure.
 
-One scout per concern — e.g. one for the backlog, one for the codebase map.
-Each gets a concrete question and a report format: files, lines, contracts,
-duplicates, traps. Read-only, change nothing — a scout authorized to live-drive
-a server can still mutate persistent state through a POST or a store write, so
-point any mutating probe at a temp store (an env override to scratchpad) or keep
-it GET-only. For a consistency or terminology sweep, give parallel scouts a
+One scout per concern — e.g. backlog and codebase map — with a concrete
+question and report format: files, lines, contracts, duplicates, traps.
+Read-only means no writes anywhere under the repo, tracked or not. A live probe
+can still mutate through POST/store calls; keep it GET-only or give it an
+explicit `mktemp` store outside the repo, then re-check `git status --porcelain`.
+For a consistency or terminology sweep, give parallel scouts a
 shared fixed key schema so their outputs are diffable by key. For a consult
 question about a branch or logic the user describes as already existing, the
 dispatch starts with `git diff main...HEAD` — a zero-commit branch reframes
@@ -573,17 +573,13 @@ runners first**: kernel-path reconciliation, allowed-path unions incl.
 consumer-test cascades, gate exit codes, rollback-artifact and kill-triage
 rules.
 
-Continue vs. spawn: reuse an existing executor (follow-up message) when the
-next slice touches the same files and its accumulated context is an asset —
-rework, an adjacent fix. Spawn fresh when the slice is independent,
-parallel-safe, or the old context is the suspected problem.
-Resume-from-transcript is safe for a Q&A follow-up but risky for write work —
-a resumed agent can stall with no output; on a stall, audit its git traces
-first (partial work is often correct and finishable), then respawn a FRESH
-executor with the decision inlined rather than nudging the stalled one.
-Consecutive watchdog stalls across different agents or models point at
-infrastructure, not the task — make the next attempt a synchronous
-(foreground) dispatch.
+Reuse an executor when the next slice touches the same files and its context is
+an asset; spawn fresh for independent work or suspected context failure. Never
+depend on resume availability: the harness may reclaim a finished or killed
+transcript. A fresh successor first audits on-disk work against the
+self-contained spec and reports DONE vs MISSING before editing. Consecutive
+watchdog stalls across agents/models mean infrastructure; dispatch the next
+attempt synchronously.
 
 ### 4. While executors work — don't wait
 
@@ -607,7 +603,10 @@ envelope line — expect that stall mode, and split recovery by case:
 - **API/network death** (a terminal-error notification DID arrive) — audit the
   git traces FIRST; substantial correct work plus a network-class error means a
   SendMessage resume of the SAME agent, which recovers it with context intact.
-  A fresh finisher only if that resume stalls, never as the first move.
+  If resume is unavailable or stalls, send a fresh audit-first finisher.
+- **User stopped the executor** — this is a decision fork, not a retry. Ask one
+  narrow continue/defer/change-approach question before any respawn; keep the
+  spec so deferral loses no planning work.
 - **A whole dispatch block dying within seconds on the same transport error**
   (ConnectionRefused, ENOTFOUND) is infrastructure, never a prompt or spec
   defect: re-dispatch the block verbatim once before any triage — do not
@@ -620,6 +619,10 @@ envelope line — expect that stall mode, and split recovery by case:
   shipped it. A red tree whose ONLY failure is the injected one means "stalled
   mid-proof, restore and finish"; that test's identity localizes the stall and
   goes back to the resumed agent as its own RED evidence.
+
+After the first host-level resource death (OOM, disk exhaustion), stop fan-out:
+run one synchronous agent at a time, execute deterministic gates directly, and
+persist accepted state after each task rather than trusting scratch space.
 
 Before dispatching a spec written ahead of time, reconcile it against the
 previous task's actual diff: `git diff --stat` spots file-level drift; if that
@@ -698,10 +701,10 @@ stays the clean record of "what was ordered".
 
 ### 6. Final review
 
-The last task of the pipeline is a review spec of its own: one pass (Sonnet;
-Opus if the change is architecture-critical) over the full diff from the start
-commit. You set the review axes in the spec — e.g. handler correctness,
-resource leaks. Four axes are standing:
+The last task is a review spec: one pass (Sonnet; Opus if architecture-critical)
+over the full diff from the start commit. Cast the reviewer as the relevant
+domain adversary: seek falsifiable risks, not praise, and keep executor reasoning
+out of its context. You set task-specific axes; four are standing:
 
 - **Cross-task interaction** — each task's new artifacts against each sibling
   task's changed paths. N green per-task verifications cannot see an
@@ -709,7 +712,7 @@ resource leaks. Four axes are standing:
 - **Async/UI-state seams**, before any demo or ship round — missing timeouts,
   identity of keyed selections across list replacement, guard-ordering vs
   feature flags — run by a second independent reviewer or an out-of-family
-  model: a single final review demonstrably misses these.
+  model; one review demonstrably misses these.
 - **Engine/runner tests**, whenever the diff adds tests that execute the
   project's own engine: each must build its own temp fixture (a freshly
   initialized repo/state) and never resolve the enclosing repo's root —
@@ -718,12 +721,8 @@ resource leaks. Four axes are standing:
   tree for liveness and the reflog for forensics.
 - **Destructive and terminal state transitions** — is the recovery path
   established BEFORE the destruction commits, and is the terminal state still
-  reachable by the sweep meant to retry it? Three independent reviews in two
-  repos hit this shape in one session (a retry deleted its inputs then
-  best-effort re-queued them; an item was marked dropped without checking the
-  locked period would not be emptied; a failed job was marked errored, which
-  removed it from the only sweep that could retry it) — all three passed their
-  happy-path tests.
+  reachable by its retry sweep? Happy-path tests miss retries that delete their
+  inputs or statuses that remove an item from its only recovery path.
 
 Feed the reviewer the session's own live MEASUREMENTS in its dispatch (holder
 counts, affected rows, production figures you took). Severity is a function of
