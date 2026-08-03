@@ -38,6 +38,12 @@ This skill is a toolbox, not a script. First understand what the user actually
 needs — the intent, not the literal wording — then choose the lightest
 machinery that delivers the result *verified*:
 
+Budget context in this order: task contract and user intent; project
+invariants; directly affected code or contracts; relevant tests and
+verification evidence; recent decisions and supporting docs. Expand only to
+resolve a named uncertainty, and keep bulky raw output in reports with a
+decision-relevant summary in context.
+
 - Trivial, unambiguous edit → spec written directly into the dispatch prompt,
   one executor, one verifier. No board, no recon.
 - Single non-trivial task → recon, one spec file, executor, verifier.
@@ -155,7 +161,7 @@ fork that halts the pipeline for one narrow question. Standing gates:
 | Executors (code changes) | Sonnet | default |
 | Verifiers (run the DoD check) | Haiku, Sonnet if the scenario is complex | low/medium |
 | Final review, architecture-critical verification | Opus | high |
-| Out-of-family second opinion; live GUI/browser driving | Codex CLI (`codex exec`) — read `references/codex.md` first | — |
+| Out-of-family second opinion; live GUI/browser driving | Codex CLI: Luna for clear high-volume work; Terra for everyday production work; Sol for complex/high-risk work; Spark for live user-supervised micro-iterations | Lowest that passes the evidence gate |
 
 Rows are defaults, not caps. When a cheaper model's output falls short, re-run
 on a smarter model without asking; judge the output, not the price. For
@@ -179,8 +185,8 @@ rule); project rules win.
 ### Model roles
 
 Default pipeline shape: **the head invents → Opus verifies and plans → Sonnet
-builds → GPT-5.6 independently critiques → Haiku clears the routine.**
-Fable architects, Opus reviews and carries risk, Sonnet builds, GPT-5.6 gives
+builds → Codex independently critiques → Haiku clears the routine.**
+Fable architects, Opus reviews and carries risk, Sonnet builds, Codex gives
 the out-of-family critique, Haiku does the mechanical work. **Per-model
 strengths, limits and refusal behavior are in `references/model-roles.md` —
 read it before routing anything off the table above.** One routing consequence
@@ -190,14 +196,23 @@ architecture/spec work in those domains is routed straight to Opus.
 
 ### Codex — exception channel, not a workhorse
 
-Codex CLI (GPT-5.6) runs on the user's metered ChatGPT quota. Claude
-subagents stay the default for all reading, coding, and verification; route to
-Codex only for live GUI/browser driving, an out-of-family second opinion, or
-an explicit user request. **Before ANY `codex exec` call, read
-`references/codex.md` in this skill's directory** — it holds the mandatory
-sandbox/approval flags, the stdin trap, quota checks, and failure handling;
-invoking Codex without them hangs the call or silently inherits a dangerous
-ambient sandbox mode.
+Codex CLI runs on the user's metered ChatGPT quota. Claude subagents stay the
+default for all reading, coding, and verification; route to Codex only for
+live GUI/browser driving, an out-of-family second opinion, or an explicit user
+request. Within that exception channel, use `gpt-5.6-luna` for clear,
+repeatable high-volume work; `gpt-5.6-terra` for everyday production and
+read-heavy work; `gpt-5.6-sol` for complex, ambiguous, high-value, security,
+research, and polished final review; and `gpt-5.3-codex-spark` only for live,
+user-supervised micro-iterations.
+
+Model, reasoning effort, and speed are separate choices: use the lowest effort
+that passes the evidence gate; Standard speed by default; Fast mode only for a
+named latency need with acceptable credit cost, and never for Spark. **Before
+ANY `codex exec` call, read both `references/model-roles.md` and
+`references/codex.md` in this skill's directory** — the latter holds exact
+model commands, mandatory sandbox/approval flags, the stdin trap, quota
+checks, and failure handling; invoking Codex without them hangs the call or
+silently inherits a dangerous ambient sandbox mode.
 
 ## Task board
 

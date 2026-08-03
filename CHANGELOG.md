@@ -1,5 +1,27 @@
 # Changelog
 
+## 2.23.0 — 2026-08-03
+
+Two reusable operating gaps were closed without duplicating the source
+checklist. Five fresh baseline routing trials had all found the prior Codex
+guidance ambiguous: GPT-5.6 was one undifferentiated route, with no task,
+cost, latency, risk, or Standard/Fast distinction.
+
+- **Context now has an explicit budget.** Load the task contract and user
+  intent first, followed by project invariants, directly affected code or
+  contracts, relevant tests and verification evidence, and recent decisions
+  and supporting docs. Expand only to resolve a named uncertainty; summarize
+  bulky raw output instead of carrying it through the pipeline.
+- **Codex routing is tiered and measurable.** Luna handles clear, repeatable,
+  high-volume work; Terra everyday production and read-heavy work; Sol complex,
+  ambiguous, high-value and high-risk work; Spark only live user-supervised
+  micro-iterations. Model, reasoning effort, and speed are separate choices;
+  Standard is the default and Fast mode requires a named latency reason and an
+  acceptable 2.5x credit cost for about 1.5x speed. The detailed task map now
+  has one source; Spark requires current-catalog availability with Luna Standard
+  as its default fallback, while effort follows each model's support (`max` is
+  reserved for measured single-agent need and `ultra` is never auto-routed).
+
 ## 2.22.0 — 2026-08-03
 
 Consolidation of the 37 entries logged since 2.21.0 (2026-07-26..31, five

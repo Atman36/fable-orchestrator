@@ -1,4 +1,4 @@
-# Model roles — strengths, limits, refusal behavior (as of 2026-07)
+# Model roles — strengths, limits, refusal behavior (as of 2026-08)
 
 Read this before routing anything off the default table in SKILL.md § Model
 routing: an unusual role, an escalation, a first-touch decision in a sensitive
@@ -6,7 +6,7 @@ domain, or a model you have not used this session. The table stays the default;
 this file is why the table looks the way it does.
 
 Default pipeline shape: **the head invents → Opus verifies and plans → Sonnet
-builds → GPT-5.6 independently critiques → Haiku clears the routine.**
+builds → Codex independently critiques → Haiku clears the routine.**
 
 - **Fable 5 — architect & inventor.** Hardest, newest, most ill-defined work:
   inventing products/systems, agent architectures, unexpected approaches,
@@ -27,11 +27,26 @@ builds → GPT-5.6 independently critiques → Haiku clears the routine.**
   inflates token counts (~30% vs Sonnet 4.6); low/medium effort can under-think
   hard problems — escalate architecture, compliance-sensitive and cross-service
   work instead of trusting the default.
-- **GPT-5.6 (via Codex CLI; default `gpt-5.6-sol`, 2026-07) — analyst.**
-  Research, option comparison, rigorous analysis, requirements work, synthesis
-  over large corpora, independent out-of-family critique of Claude-made plans
-  and diffs; strong at heavy bounded execution. Metered quota — the Codex rules
-  in `references/codex.md` apply to every call.
+- **Codex family (via Codex CLI) — out-of-family route.** Metered quota — the
+  invocation, cost, and safety rules in `references/codex.md` apply to every
+  call. Choose by the task's clarity, latency, volume, and cost of error:
+  - **`gpt-5.6-sol` — strongest tier.** Complex or ambiguous high-value coding,
+    security, research, computer use, architecture-critical critique, and
+    polished final review where the cost of a miss dominates latency and quota.
+  - **`gpt-5.6-terra` — balanced workhorse.** Everyday production tasks,
+    ordinary coding, read-heavy analysis, and supporting-document work where
+    capable, steady execution matters more than maximum depth.
+  - **`gpt-5.6-luna` — fastest, lowest-cost GPT-5.6 tier.** Clear, repeatable,
+    high-volume extraction, classification, routing, mechanical checks, and
+    focused coding with a precise acceptance gate.
+  - **`gpt-5.3-codex-spark` — near-instant research preview.** Live,
+    user-supervised micro-iterations only. It is separate from Fast mode and is
+    never an autonomous acceptor, final reviewer, security reviewer,
+    architecture decision-maker, or executor of an irreversible action.
+  - **Compatibility only.** GPT-5.5 is used only when explicitly pinned or
+    required for compatibility. GPT-5.4 and GPT-5.4 Mini retire from Codex with
+    ChatGPT sign-in on 2026-08-31; assign them no new routing role, and prefer
+    Terra or Luna for work they previously handled.
 - **Haiku 4.5 — fast junior.** Classification, extraction, simple edits, short
   summaries, routing, mechanical checks. NOT for architecture, complex
   debugging, large ambiguous tasks, or expensive-mistake decisions; drifts from
