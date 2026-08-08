@@ -1,5 +1,36 @@
 # Changelog
 
+## 2.24.0 — 2026-08-08
+
+Consolidation of the highest-signal pending feedback plus the current OpenAI
+orchestration guidance. The always-loaded file gained only control-plane rules;
+task-specific traps went to references.
+
+- **Orchestration shape is explicit.** The head now defaults to manager-style
+  orchestration: specialists are bounded helpers, while the head owns state,
+  synthesis, and the final answer. Handoff-style routing is reserved for the
+  rare case where a specialist should own the rest of the turn, with a named
+  return condition. Deterministic flows belong in PLAN.md statuses; model-led
+  planning is for the open-ended part.
+- **Long work is task-state-driven.** Backlog execution treats tasks, statuses,
+  artifact paths, and next transitions as the control plane; transcripts and
+  PRs are transport. Report finalization stalls now have a bounded artifact
+  deadline and a fresh-verifier escape path instead of indefinite polling.
+- **Operational gates are first-class spec content.** Implementation plans that
+  touch deployment, live data, auth, billing, dependency installs, release
+  sequencing, or rollout must name owner, target environment, quota/resource
+  limit, rollback path, staging proof, release gate, and close-out evidence.
+- **Codex/Spark failure modes are pinned.** Linked-worktree Git metadata
+  failures do not justify weakening the sandbox; Codex authors and verifies,
+  then the orchestrator commits after review. `codex exec resume` is banned
+  when sandbox/approval settings cannot be pinned. Spark work is split by one
+  invariant or artifact, stops after RED in strict TDD, and reroutes after one
+  compaction, broad scan, or missing artifact.
+- **Two repeated DoD traps were promoted.** No-network tasks preflight nested
+  `npx` calls and treat install warnings as stop conditions. Exact-answer,
+  routing, and language-boundary changes require adversarial positive,
+  negative, blank, duplicate, and Unicode-boundary controls.
+
 ## 2.23.0 — 2026-08-03
 
 Two reusable operating gaps were closed without duplicating the source

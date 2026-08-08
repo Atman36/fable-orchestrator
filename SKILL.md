@@ -59,6 +59,24 @@ When the task is to test or evaluate a tool, run it in its own native mode and
 observe — manual supervision that hides the behavior under test defeats the
 goal.
 
+### Orchestration shape
+
+Default to manager-style orchestration: the head owns the user-facing answer,
+keeps the task state, and calls specialists for bounded evidence or edits.
+This matches the "agents as tools" pattern: specialists help, but they do not
+take over judgment, synthesis, or the final answer. A handoff-style route is
+rare here; use it only when the specialist should own the remainder of the
+turn directly (for example, a live supervised micro-iteration), and name the
+return condition before dispatch.
+
+Use deterministic orchestration where the flow is known: chain tasks through
+PLAN.md statuses, run independent file-disjoint work in parallel, and use an
+evaluator/verifier loop only against a fixed falsifiable check. Use
+model-led planning only for the open-ended part: discovering options,
+clarifying the goal, or finding the next bounded subtask. Mix the two
+deliberately; do not let a model improvise a state machine that PLAN.md can
+represent.
+
 **An assessment is a complete deliverable.** Fable is more proactive than
 Opus 4.8 — left unconstrained it infers a change and starts building it.
 Separate a request to *act* from a request to *understand*: when the user is
@@ -238,6 +256,13 @@ facts a tool result verified this session — an in-flight task gets an
 in-progress marker, and a count crossing into a tracked file is recomputed
 from a pasted command output, never carried from a digest.
 
+For long-running or backlog work, the task is the unit of control, not the
+agent session, transcript, or PR. PLAN.md is the state machine: every active
+task has an owner/run, a status, an artifact path, and a next transition.
+Session transcripts are transport; if the transcript disappears but the task
+artifact exists, continue from the artifact and state, not from memory of the
+chat.
+
 **Report protocol:**
 
 - Every subagent writes its full report to `<taskdir>/reports/<agent>.md`
@@ -272,6 +297,11 @@ from a pasted command output, never carried from a digest.
 - An external-CLI/non-Claude step treats its required artifact file as a hard
   completion gate (failure unless the file exists, checked per step, no
   out-of-repo paths) — such agents can exit 0 without writing anything.
+- If a reviewer or executor has emitted the needed evidence/verdict but stalls
+  on report formatting, give one bounded artifact deadline, then interrupt or
+  resume once. Do not serially poll a stuck transcript for prose. If the
+  required report still does not materialize, preserve the candidate findings
+  and send a fresh narrow verifier against the artifact and spec.
 - Explore-type scouts cannot Write even to a scratchpad — dispatch
   general-purpose when a written report file matters, or accept chat text.
 - Label every dispatch — Agent `description` and report filename — as
@@ -365,6 +395,14 @@ Every spec is self-contained. Template:
                deciding. The envelope's generic "stop if unsure" is not a
                substitute — an unnamed stop point gets resolved by guessing.
 ```
+
+Implementation and operations plans need the same explicit gates as code
+specs. If a task touches deployment, live data, auth, billing, dependency
+installs, release sequencing, or staged rollout, Context/DoD/Escalate name the
+operator or owner, target environment, quota or resource limit, rollback path,
+staging proof, release gate, and the exact evidence that closes each gate.
+An "approve before launch" sentence is not enough; the executor needs the
+specific stop point and the verifier needs a fact it can check.
 
 Resolve forks **yourself**, without blocking the pipeline on questions. Record
 every decision in the spec so the user can audit and override it. The one

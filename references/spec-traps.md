@@ -478,6 +478,14 @@ location, and current content:
   never into a green checkmark. When a spec ruling is a CONJUNCTION (A and B ⇒
   refuse), the DoD demands a test hitting exactly that conjunction, not each
   side separately.
+- Exact-answer, classifier, routing, and language-boundary changes need
+  adversarial controls, not only happy paths. The DoD includes: positive cases
+  for each intended spelling/script, negative cases where the token is only a
+  topic mention or is negated, absence/blank controls, duplicate/ambiguous
+  identity controls, and boundary cases using the runtime's real Unicode rules
+  (`\p{L}`/`\p{N}` lookarounds for Cyrillic/Russian classifiers instead of
+  ASCII `\b`). A route keyed by "exact match" also tests the collision where
+  generated or stored text equals a real title/command.
 - A DoD grep asserting a change in a specific file presumes that file must
   change — for a conditional step, assert the resulting behavior, not the
   diff's location.
@@ -487,6 +495,12 @@ location, and current content:
   budget), or state the content assertion and let the verifier choose the
   command. A reachable CLI does not prove an importable module path; dry-run
   the exact resolution/launch command before hardcoding either.
+- Npm scripts hide network and install behavior behind nested `npx` calls.
+  For no-network/no-install tasks, inspect the exact script chain before the
+  first run, prove each `npx` binary is project-pinned or already cached, and
+  set the offline/no-install environment in the literal DoD command. Any
+  "will be installed" warning is a stop condition even if the command exits
+  zero.
 - A gate on a deferred/scheduled action (a timer, a queued callback): confirm
   the gate is re-checked at fire time — not only at scheduling time — with a
   race test that flips the condition inside the window; when failure has

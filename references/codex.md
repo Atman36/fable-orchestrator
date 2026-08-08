@@ -70,6 +70,16 @@ no new work, and prefer Terra or Luna for their former roles.
   'service_tier="default"' --sandbox workspace-write -c approval_policy=never
   -C <worktree> "<task>"` — a task that must land directly on main is never
   routed to Codex.
+- Linked worktrees can put `.git` metadata outside the sandbox root. When
+  workspace-write cannot create Git lock/index files there, do not weaken the
+  sandbox to expose shared metadata. Treat Codex's job as authoring plus
+  verification, inspect the diff from the orchestrator, and make the commit
+  from the main session after review.
+- Do not use `codex exec resume` unless the CLI can pin the original sandbox
+  and approval policy on resume. If resume would inherit ambient
+  `danger-full-access` or unknown settings, stop the resumed call before tools
+  run and start a fresh invocation with the reviewed findings in a
+  self-contained prompt.
 - Trap: the post-subcommand `codex exec -a/--ask-for-approval` form is rejected
   by the arg parser (open openai/codex#26602, still broken on 0.142.5) — use
   `-c approval_policy=never` or the pre-subcommand `codex -a never exec …`.
@@ -93,6 +103,14 @@ acceptance by a separate verifier, and — author = executor — review by a
 Claude model, never by Codex itself. Read-only calls (second opinion, GUI
 observation) need no spec or verifier; a precise question and a required
 report format suffice.
+
+Spark is a micro-iteration tool, not a broad executor. Split behavior-dense
+work by one invariant, one test anchor, or one small artifact per call. For
+strict TDD, make Spark stop after the RED command and report the literal
+failure before any production edit. Stop and reroute after one compaction,
+broad-scan violation, missing durable artifact, or source edit before required
+RED proof. In large test files, give exact test-name anchors and one test case
+per call.
 
 ## Quota discipline
 
