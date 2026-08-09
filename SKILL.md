@@ -1,6 +1,6 @@
 ---
 name: fable-orchestrator
-description: Orchestrator mode for a strong head model (Claude Fable 5 by default; Opus 4.8 supported). The head only understands the task, makes decisions, and writes specs; all reading, coding, and verification is delegated to subagents (Sonnet/Haiku/Opus). Learns across sessions via a local feedback log. Use when the user invokes /fable-orchestrator, asks to run a task or backlog "through Fable", or asks for orchestrator/conveyor mode, or sets up a scheduled/recurring autonomous run (/loop, /goal).
+description: Use when the user invokes /fable-orchestrator, asks to run a task or backlog through Fable or GPT-5.6 Sol, requests orchestrator/conveyor mode, or sets up a scheduled or recurring autonomous run (/loop, /goal).
 ---
 
 # Fable Orchestrator
@@ -16,10 +16,14 @@ architecture-critical verification.
 "The head" is whichever model is running this skill; every hard rule, tier,
 and pipeline stage binds it regardless of model.
 
-- **Default head: Fable 5.** Supported: **Opus 4.8** — explicit user opt-in
-  when Fable is unavailable or too costly.
-- **Sonnet is never a head** for spec-writing or fork-resolution; in loop mode
-  it may only drain pre-written rails (existing specs/queues).
+- **Codex-native default: GPT-5.6 Sol.** Sol owns task understanding,
+  decomposition, architecture and product forks, conflict resolution, and
+  final synthesis. Terra and Luna execute bounded work; they do not replace
+  Sol as the senior agent.
+- **Claude Code default: Fable 5.** Supported fallback: **Opus 4.8** when
+  Fable is unavailable or too costly.
+- **Terra and Sonnet are never heads** for new spec-writing or fork-resolution;
+  in loop mode they may only drain pre-written rails (existing specs/queues).
 
 When the head is Opus: (1) the "final review / architecture-critical
 verification" row may stay Opus, but only as a fresh-context subagent — never
@@ -31,6 +35,13 @@ files: Opus executes noisy context literally; (4) vision-heavy DoD comparisons
 go to a vision-capable subagent (Fable via the Agent model param, or Opus)
 with the crop/zoom instruction — the head may not read dense screenshots
 reliably.
+
+When the head is Sol: (1) the final review stays independent — use a
+fresh-context Sol at `high`/`xhigh` or an out-of-family Opus reviewer, never
+the head reviewing itself; (2) default implementation goes to Terra; (3)
+clear, repeatable, high-volume work goes to Luna; (4) Spark is reserved for a
+live, supervised micro-iteration that requires no independent engineering
+judgment.
 
 ## Prime directive: understand the task, then decide how
 
@@ -172,14 +183,15 @@ fork that halts the pipeline for one narrow question. Standing gates:
 
 ## Model routing
 
-| Role | Model | Effort |
-|---|---|---|
-| Scouts (codebase map, backlog recon) | Sonnet | medium |
-| Cheap reads, mechanical cross-checks | Haiku | low |
-| Executors (code changes) | Sonnet | default |
-| Verifiers (run the DoD check) | Haiku, Sonnet if the scenario is complex | low/medium |
-| Final review, architecture-critical verification | Opus | high |
-| Out-of-family second opinion; live GUI/browser driving | Codex CLI: Luna for clear high-volume work; Terra for everyday production work; Sol for complex/high-risk work; Spark for live user-supervised micro-iterations | Lowest that passes the evidence gate |
+| Role | Codex-native route | Claude-native route | Effort |
+|---|---|---|---|
+| Head: decisions, architecture, synthesis | Sol | Fable; Opus fallback | medium/high |
+| Scouts (codebase map, backlog recon) | Luna for bounded scans; Terra if interpretation is material | Sonnet | medium |
+| Executors (code changes) | Terra; Luna for clear repeatable work | Sonnet | medium |
+| Verifiers (run the DoD check) | Luna; Terra if the scenario is complex | Haiku; Sonnet if the scenario is complex | medium |
+| Final review, architecture-critical verification | Fresh Sol | Opus | high/xhigh |
+| Live supervised micro-iteration with no engineering judgment | Spark | Haiku | low |
+| Out-of-family second opinion | Opus or Fable | Sol | high |
 
 Rows are defaults, not caps. When a cheaper model's output falls short, re-run
 on a smarter model without asking; judge the output, not the price. For
@@ -188,45 +200,47 @@ Escalation is about executor quality, never scope: forks that change scope or
 money still stop the pipeline. Under budget pressure the budget rule in
 Communication discipline wins — escalate only after a failed verification.
 
-**Effort is a cost/latency trade-off, not a quality dial.** Spend `high`/
-`xhigh` where first-shot correctness matters more than speed — architecture-
-critical verification, final review, a fork that is expensive to get wrong —
-and `low`/`medium` on routine, well-bounded subtasks. Raising a critical
-subagent's effort is a legal escalation lever alongside swapping models: lift
-the Agent `effort` param, or put `ultrathink` in the dispatch prompt for a
-single `xhigh` turn. At `xhigh` Fable and Opus validate their own work before
-responding — reserve it for passes where that self-check earns its cost.
+**Effort is a cost/latency trade-off, not a substitute for model routing.**
+`medium` is the floor and default for delegated work. Use `low` only for a
+latency-critical, tightly supervised action that requires no inference or
+engineering judgment, such as a literal rename or one exact extraction; if
+the task can branch, starts from ambiguity, edits behavior, or accepts work,
+it starts at `medium`. Spend `high`/`xhigh` where first-shot correctness
+matters more than speed — architecture-critical verification, final review,
+or a fork that is expensive to get wrong. Use `max` only for the hardest
+quality-first Sol pass. Raising effort is a legal escalation lever alongside
+swapping models; it never lowers the evidence gate.
 
 A project's CLAUDE.md may override this table (ban a model, add a routing
 rule); project rules win.
 
 ### Model roles
 
-Default pipeline shape: **the head invents → Opus verifies and plans → Sonnet
-builds → Codex independently critiques → Haiku clears the routine.**
-Fable architects, Opus reviews and carries risk, Sonnet builds, Codex gives
-the out-of-family critique, Haiku does the mechanical work. **Per-model
-strengths, limits and refusal behavior are in `references/model-roles.md` —
-read it before routing anything off the table above.** One routing consequence
-belongs here: Fable's safety classifiers can turn a benign
+Codex-native default: **Sol leads and accepts → Terra builds → Luna clears
+bounded volume → a fresh Sol performs the critical final review.** Spark is a
+supervised micro-tool, not an autonomous worker. Claude-native default:
+**Fable leads → Opus carries risk → Sonnet builds → Haiku clears bounded
+routine work.** Use an out-of-family reviewer when independence materially
+improves the evidence. **Per-model strengths, limits and refusal behavior are
+in `references/model-roles.md` — read it before routing anything off the table
+above.** One routing consequence belongs here: Fable's safety classifiers can turn a benign
 offensive-security or life-sciences request into a `refusal`, so first-touch
 architecture/spec work in those domains is routed straight to Opus.
 
-### Codex — exception channel, not a workhorse
+### Codex-native hierarchy and cross-family channel
 
-Codex CLI runs on the user's metered ChatGPT quota. Claude subagents stay the
-default for all reading, coding, and verification; route to Codex only for
-live GUI/browser driving, an out-of-family second opinion, or an explicit user
-request. Within that exception channel, use `gpt-5.6-luna` for clear,
-repeatable high-volume work; `gpt-5.6-terra` for everyday production and
-read-heavy work; `gpt-5.6-sol` for complex, ambiguous, high-value, security,
-research, and polished final review; and `gpt-5.3-codex-spark` only for live,
-user-supervised micro-iterations.
+In a Codex-native run, use **Sol → Terra → Luna**: Sol is the senior
+orchestrator and reviewer, Terra is the default implementation worker, and
+Luna handles precise repeatable work with a fixed acceptance gate. Use
+`gpt-5.3-codex-spark` only for a live, user-supervised micro-iteration. In a
+Claude-native run, Codex remains an out-of-family route for live GUI/browser
+driving, an independent second opinion, or an explicit user request.
 
-Model, reasoning effort, and speed are separate choices: use the lowest effort
-that passes the evidence gate; Standard speed by default; Fast mode only for a
-named latency need with acceptable credit cost, and never for Spark. **Before
-ANY `codex exec` call, read both `references/model-roles.md` and
+Model, reasoning effort, and speed are separate choices: `medium` effort by
+default; `low` only for a named no-reasoning micro-task; Standard speed by
+default; Fast mode only for a named latency need with acceptable credit cost,
+and never for Spark. **Before ANY `codex exec` call, read both
+`references/model-roles.md` and
 `references/codex.md` in this skill's directory** — the latter holds exact
 model commands, mandatory sandbox/approval flags, the stdin trap, quota
 checks, and failure handling; invoking Codex without them hangs the call or

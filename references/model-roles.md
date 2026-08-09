@@ -5,8 +5,11 @@ routing: an unusual role, an escalation, a first-touch decision in a sensitive
 domain, or a model you have not used this session. The table stays the default;
 this file is why the table looks the way it does.
 
-Default pipeline shape: **the head invents → Opus verifies and plans → Sonnet
-builds → Codex independently critiques → Haiku clears the routine.**
+Codex-native default: **Sol leads → Terra builds → Luna clears bounded volume
+→ a fresh Sol reviews critical output.** Claude-native default: **Fable leads
+→ Opus carries risk → Sonnet builds → Haiku clears bounded routine work.**
+Cross-family review is a deliberate independence tool, not the default worker
+route.
 
 - **Fable 5 — architect & inventor.** Hardest, newest, most ill-defined work:
   inventing products/systems, agent architectures, unexpected approaches,
@@ -27,22 +30,28 @@ builds → Codex independently critiques → Haiku clears the routine.**
   inflates token counts (~30% vs Sonnet 4.6); low/medium effort can under-think
   hard problems — escalate architecture, compliance-sensitive and cross-service
   work instead of trusting the default.
-- **Codex family (via Codex CLI) — out-of-family route.** Metered quota — the
+- **Codex family (native hierarchy or via Codex CLI).** Metered quota — the
   invocation, cost, and safety rules in `references/codex.md` apply to every
-  call. Choose by the task's clarity, latency, volume, and cost of error:
-  - **`gpt-5.6-sol` — strongest tier.** Complex or ambiguous high-value coding,
-    security, research, computer use, architecture-critical critique, and
-    polished final review where the cost of a miss dominates latency and quota.
-  - **`gpt-5.6-terra` — balanced workhorse.** Everyday production tasks,
-    ordinary coding, read-heavy analysis, and supporting-document work where
-    capable, steady execution matters more than maximum depth.
+  CLI call. Choose by the task's clarity, latency, volume, and cost of error:
+  - **`gpt-5.6-sol` — lead orchestrator and senior reviewer.** Own task
+    understanding, decomposition, architecture and product forks, conflict
+    resolution, complex or ambiguous high-value work, security, research, and
+    polished final review. Keep Sol out of routine implementation when Terra
+    can execute a clear contract; use a fresh Sol context for acceptance.
+  - **`gpt-5.6-terra` — default implementation workhorse.** Everyday
+    production tasks, ordinary coding, read-heavy analysis, complex debugging,
+    and supporting-document work. Escalate to Sol when the task changes
+    architecture, security posture, scope, or remains ambiguous after recon.
   - **`gpt-5.6-luna` — fastest, lowest-cost GPT-5.6 tier.** Clear, repeatable,
     high-volume extraction, classification, routing, mechanical checks, and
-    focused coding with a precise acceptance gate.
+    focused coding with a precise acceptance gate. Give Luna a narrow contract;
+    do not make it resolve product or architecture forks.
   - **`gpt-5.3-codex-spark` — near-instant research preview.** Live,
-    user-supervised micro-iterations only. It is separate from Fast mode and is
-    never an autonomous acceptor, final reviewer, security reviewer,
-    architecture decision-maker, or executor of an irreversible action.
+    user-supervised, no-reasoning micro-iterations only: one literal rename,
+    prop, type error, CSS adjustment, or similarly exact patch with an explicit
+    check. It is separate from Fast mode and is never an autonomous acceptor,
+    final reviewer, security reviewer, architecture decision-maker, or
+    executor of an irreversible action.
   - **Compatibility only.** GPT-5.5 is used only when explicitly pinned or
     required for compatibility. GPT-5.4 and GPT-5.4 Mini retire from Codex with
     ChatGPT sign-in on 2026-08-31; assign them no new routing role, and prefer
