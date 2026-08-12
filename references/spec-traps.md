@@ -549,12 +549,6 @@ location, and current content:
   prop plus two call sites, so meeting the gate meant renaming a foreign
   component's API — a refactor the same spec's Boundaries forbade. The fixer
   correctly refused and rescoped the grep.
-- Reconciling a gate against the spec's own Steps is a PRE-DISPATCH PASS, not a
-  memory check: re-read Steps for anything that contradicts each gate (a test
-  asserting the banned token's absence, a conditional step touching a
-  DoD-forbidden file) with the gate text in front of you. The token-ban-grep vs
-  negative-assertion contradiction is documented above and still shipped again —
-  a rule known but unchecked is a rule not applied.
 - A test double that RECORDS a write without APPLYING it makes every round-trip
   bug in that channel invisible, and the tests written against it feel thorough
   — the same family as the in-memory-DB rule below. Before ordering two-way sync
@@ -707,6 +701,26 @@ location, and current content:
   wrong-order actions, and sibling paths of the same bug class. Assert the
   resulting artifact's content/state directly; a success label, status enum,
   exit code, or "done" message is not proof that the requested effect survived.
+  For the same matrix cell, sibling entry surfaces compare authorization,
+  known-error delivery, user-visible response, durable state, and idempotent
+  settlement.
+- For a closed union, derive members from the production public contract,
+  exercise behavior at the real producer boundary, assert the exact member set,
+  and mutation-test removal of one member. A table that fabricates or shadows
+  the value under test is not exhaustive evidence.
+- Each terminal transition binds the guarded state change and every required
+  secondary effect in one behavioral test; mutation-removing each effect must
+  fail. Independent marker/presence tests do not prove the binding, and success
+  is reported only after guarded settlement.
+- Static, source, and in-memory checks cannot certify exact migration execution.
+  Before live authorization, execute the exact artifact on faithful PostgreSQL
+  inside a transaction, run its checker, and roll back; this is required for
+  catalog types, parameter inference, locks, triggers, and failure semantics.
+  If no agent venue exists, require a literal transactionally rolled-back
+  operator dry run and keep live apply blocked.
+- Every independent checker category gets its own self-contained persistent,
+  exact, bidirectional predicate, exact key/cardinality gate, and mutation.
+  Durable checkers may not depend on temporary migration objects.
 - A fix answering an owner's complaint about a surface they cannot see is
   verified against the branch THEY hit — their role, their data distribution —
   not against the generic case, and the report states the branch condition. A

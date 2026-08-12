@@ -27,12 +27,15 @@ service speed are separate decisions.
 - `gpt-5.3-codex-spark`: live supervised micro-edits that require no
   independent reasoning; never a long-running autonomous worker.
 
-The detailed task mapping is single-sourced in `model-roles.md`. Refresh the
-current model catalog before the first Codex routing of a session. Spark is
-selectable only when the refreshed catalog lists `gpt-5.3-codex-spark`; if
-absent, use Luna Standard (`gpt-5.6-luna`) for a clear supervised
-micro-iteration, or the existing Claude fallback when Luna is unsuitable or
-unavailable.
+The built-in subagent catalog and CLI catalog are separate. Refresh the active
+catalog before the first Codex routing of a session, then inspect the catalog
+for the route actually used before every pinned dispatch. If the exact
+user-pinned model is absent, preserve the task and spec and use the explicit
+CLI route for that model; if no model was pinned, use the nearest available
+role-equivalent route. An unavailable inherited model must not consume the
+first real dispatch. For example, if Spark is absent, use Luna Standard
+(`gpt-5.6-luna`) for a clear supervised micro-iteration, or the existing Claude
+fallback when Luna is unsuitable or unavailable.
 
 The GPT-5.6 reasoning ladder has five levels: `low`, `medium`, `high`, `xhigh`,
 and `max`. Spark supports only the levels exposed by the refreshed local model

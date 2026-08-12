@@ -1,5 +1,28 @@
 # Changelog
 
+## 2.25.0 — 2026-08-12
+
+Consolidation of 217 local feedback events plus a redundancy audit of the
+always-loaded skill. Project-specific observations stayed local; tracked rules
+contain only generalized control and acceptance predicates.
+
+- Removed repeated model hierarchy and effort guidance from `SKILL.md`; the
+  detailed source is now `references/model-roles.md` and `references/codex.md`.
+- Moved unique Opus-head constraints into the model reference and corrected the
+  final-review route to use fresh Sol for Codex-native work and Opus for
+  Claude-native work.
+- Added catalog-aware routing, truthful evidence-only completion and status
+  reporting, and a bounded handoff after repeated progress-only mechanical
+  cascades.
+- Classified auto-deploying default-branch merges as production actions.
+- Added non-vacuous closed-union evidence, sibling-surface parity, guarded
+  terminal-effect binding, faithful PostgreSQL execution, and exact persistent
+  migration-checker predicates.
+- Removed one DoD reconciliation paragraph fully subsumed by the earlier
+  pre-dispatch rule.
+- Made pruning a mandatory consolidation step so future reviews remove covered,
+  superseded, dated, and misplaced guidance before appending rules.
+
 ## 2.24.0 — 2026-08-08
 
 Consolidation of the highest-signal pending feedback plus the current OpenAI

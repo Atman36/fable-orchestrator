@@ -24,7 +24,11 @@ route.
   architecture review, debugging, autonomous agent work, carrying a complex
   project to done; reliable on long tasks, honest about uncertainty. The
   premium reviewer, the risk-tier route, the fallback when Fable refuses. Needs
-  clean scope — given noisy context it executes the noise literally.
+  clean scope — given noisy context it executes the noise literally. When Opus
+  is the head, use a fresh same-family context for final review only; an
+  architect consult returns options, trade-offs, and evidence, never the
+  decision; keep bulky raw output in report artifacts; send dense visual
+  comparisons to a vision-capable agent with crop/zoom instructions.
 - **Sonnet 5 — main builder.** The bulk of development: code, repo changes,
   tool use, executing a clear plan; the default executor. Its tokenizer
   inflates token counts (~30% vs Sonnet 4.6); low/medium effort can under-think

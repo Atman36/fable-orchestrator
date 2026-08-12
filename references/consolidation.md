@@ -24,6 +24,11 @@ verifier still validates the result.
   category-enumeration corollaries, DoD-gate rules) append to
   `references/spec-traps.md`, not to SKILL.md — that keeps the always-loaded
   file's weight flat.
+- **Prune before adding:** for every candidate, locate the current covering
+  clause first. Then audit the destination section for duplicate, superseded,
+  dated, or overly situational guidance; delete it or move it to the narrowest
+  reference before adding new text. A consolidation that only appends while an
+  equivalent rule already exists is incomplete.
 - **Count with a parser:** counts over `log.jsonl` come from a JSON parser
   (`python3 -c "..."`), never a grep for an exact `"key":"value"` string —
   JSON formatting varies across writers and a grep silently undercounts.
