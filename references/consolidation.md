@@ -32,6 +32,8 @@ verifier still validates the result.
 - **Count with a parser:** counts over `log.jsonl` come from a JSON parser
   (`python3 -c "..."`), never a grep for an exact `"key":"value"` string —
   JSON formatting varies across writers and a grep silently undercounts.
+  Preflight the chosen parser with `command -v`; use `python3` as the standard
+  fallback instead of piping into an unverified optional binary.
 - **Privacy scrub:** generalized wording only; no project names, private
   paths, client or employer specifics in tracked files.
 - **Disposition:** every reviewed entry becomes `applied@<version>` or

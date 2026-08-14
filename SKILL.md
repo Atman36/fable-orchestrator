@@ -563,11 +563,17 @@ Ordering is decided by **file intersection, not agent count**:
 
 Shared contracts count as intersection: two tasks touching the same schema,
 API, or generated artifact are sequential even when their files are disjoint.
+Shared compiler/build outputs and a mutable ambient `HEAD` also count as
+intersection: serialize those tasks or give them independent worktrees. Never
+amend ambient `HEAD` unless it still equals the intended task commit; otherwise
+create a task-only follow-on commit.
 
-Before fanning out worktree executors that install dependencies, check host
-free disk (`df -h`) — parallel `npm install`s can exhaust it; on low-disk
-hosts run them sequentially reusing existing `node_modules`, or clean a
-worktree's `node_modules` right after its verification. When a worktree task
+Before a tool upgrade or multi-file compiler/test/build dispatch, check host
+free disk (`df -h`) and require at least 2 GiB available; below that, stop for
+an owner-approved cleanup of one exact cache target. Parallel dependency
+installs need additional headroom; on low-disk hosts run them sequentially
+reusing existing `node_modules`, or clean a worktree's `node_modules` right
+after its verification. When a worktree task
 lands after a prerequisite commit, tell the executor to verify that commit is
 in its base (`git log` contains `<sha>`) and rebase onto main first if not.
 `isolation: "worktree"` cuts from the PUSHED remote ref, so unpushed local
@@ -666,8 +672,9 @@ trigger the rework ladder), log adverse events, dispatch the next pre-specced
 task, end the turn again. The head never sleeps, polls, or spawns waiter
 agents; wall-clock gaps collapse to one wake-up turn because every decision
 was made at spec-writing time. Follow-ups on a finished executor's own work go
-to the SAME agent via a resume message (it amends its commit if nothing landed
-after it); independent work in a DIFFERENT repo or disjoint file set may run
+to the SAME agent via a resume message (it amends only after verifying `HEAD`
+still equals its commit; otherwise it creates a follow-on commit); independent
+work in a DIFFERENT repo or disjoint file set may run
 in parallel with the chain.
 
 ### 5. Acceptance — a separate verifier
@@ -881,7 +888,10 @@ to `feedback/log.jsonl`:
 underlying issue so repeats become countable evidence. The field set is fixed:
 an entry written with a variant schema (`ts`/`note` in place of
 `date`/`observation`) drops out of the parser counts consolidation runs on, so
-its lesson never triggers a review. Every write into a SECTIONED document — a
+its lesson never triggers a review. Before append, validate `category` against
+the literal enum in the template; when no narrower label fits, use `pattern`
+and preserve the original event label inside `observation`. Every write into a
+SECTIONED document — a
 dossier, PLAN.md, SUMMARY.md — uses an anchored edit at the target heading; a
 shell append is positional and lands under whatever heading happens to be last,
 so `cat >>` is reserved for genuinely append-only files (`log.jsonl`,

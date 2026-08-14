@@ -571,6 +571,15 @@ location, and current content:
   test and is how a blocker survives review (3 hand-written departments where
   the parser emits 10, sensitivity hard-coded false on a title the parser
   flags). A test rename that drops a property name is a warning sign.
+- Evaluation case schemas partition every field into request input,
+  environmental fixture, or expected output. The provider/runner cannot read
+  expected labels, gold evidence, acceptable answers, or required facts while
+  producing observed output; mutation-changing each label must leave the
+  observed output unchanged. Every design-level hard gate exits as a process
+  failure with a typed report — never only a soft aggregate metric — and the
+  observer inspects all visible answer text, citations/links, and declared
+  prior-turn context. Human quality stays explicitly unreviewed until a human
+  supplies it; deterministic equality does not fabricate a quality score.
 - Any test edited OUTSIDE the spec's named files is reported per-file with the
   old and new assertion quoted, and the final review re-derives whether each
   edit preserved the property the test guarded. "Mechanically had to update
@@ -718,6 +727,11 @@ location, and current content:
   catalog types, parameter inference, locks, triggers, and failure semantics.
   If no agent venue exists, require a literal transactionally rolled-back
   operator dry run and keep live apply blocked.
+- A catalog check derives expected values from the same catalog representation
+  it reads, after applying the exact artifact. Source SQL text, normalized
+  fragments, or type-name strings are not substitutes for `pg_get_expr`, real
+  type OIDs, or other engine-produced values; execute the checker itself before
+  freezing hashes, signatures, or keysets.
 - Every independent checker category gets its own self-contained persistent,
   exact, bidirectional predicate, exact key/cardinality gate, and mutation.
   Durable checkers may not depend on temporary migration objects.

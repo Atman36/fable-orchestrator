@@ -1,5 +1,21 @@
 # Changelog
 
+## 2.26.0 — 2026-08-14
+
+Consolidation of 65 local feedback events. Most observations confirmed rules
+already in force or stayed project-specific; the promoted controls close only
+the uncovered failure families.
+
+- Treat shared compiler/build outputs and mutable `HEAD` as serialization
+  boundaries; amend only after verifying the intended commit is still `HEAD`.
+- Require 2 GiB free before tool upgrades or multi-file test/build work, with
+  owner-approved cleanup scoped to one exact cache target.
+- Add label-independent evaluation contracts and catalog-representation-derived
+  PostgreSQL checks.
+- Validate feedback categories before append so real events cannot silently
+  fall out of consolidation counts.
+- Preflight JSON parsers and use the documented host-standard fallback.
+
 ## 2.25.0 — 2026-08-12
 
 Consolidation of 217 local feedback events plus a redundancy audit of the
