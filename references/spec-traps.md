@@ -486,6 +486,12 @@ location, and current content:
   (`\p{L}`/`\p{N}` lookarounds for Cyrillic/Russian classifiers instead of
   ASCII `\b`). A route keyed by "exact match" also tests the collision where
   generated or stored text equals a real title/command.
+- A safety or recovery gate needs bidirectional behavioral proof: every denied
+  case causes zero guarded effects, and every authorized case traverses the
+  real production loader and performs each required effect. Put a
+  distinguishable sentinel at every boundary and mutation-test both the guard
+  and the effect; green refusal tests, synthetic callbacks, or fallback seams
+  do not prove that the authorized path is wired.
 - A DoD grep asserting a change in a specific file presumes that file must
   change — for a conditional step, assert the resulting behavior, not the
   diff's location.

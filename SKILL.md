@@ -67,6 +67,14 @@ clarifying the goal, or finding the next bounded subtask. Mix the two
 deliberately; do not let a model improvise a state machine that PLAN.md can
 represent.
 
+For a repeatable rail, put the deterministic stage boundary in a project CLI:
+`stage start` performs the canonical preflight and returns the state and exact
+close command the agent needs; `stage finish` validates a structured result and
+writes the required report or dashboard artifacts. Promote only operations
+observed repeatedly and requiring no judgment; interpretation, forks, and
+acceptance remain with the head. Do not introduce a generic flow CLI for a
+one-off task.
+
 **An assessment is a complete deliverable.** Fable is more proactive than
 Opus 4.8 — left unconstrained it infers a change and starts building it.
 Separate a request to *act* from a request to *understand*: when the user is

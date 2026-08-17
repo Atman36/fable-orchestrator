@@ -1,5 +1,18 @@
 # Changelog
 
+## 2.27.0 — 2026-08-17
+
+Consolidation of 39 local feedback events plus a user-supplied hybrid-rail
+pattern. The raw journal was drained after disposition; narrowly scoped and
+already-covered observations remain archived rather than expanding the skill.
+
+- Safety and recovery acceptance now proves both directions: denied cases have
+  zero guarded effects, and authorized cases traverse the real production path
+  with observable effects.
+- Repeatable rails may move repeated, judgment-free stage preflight and
+  close-out into a project CLI; agents receive canonical state at start and
+  submit structured results at finish.
+
 ## 2.26.0 — 2026-08-14
 
 Consolidation of 65 local feedback events. Most observations confirmed rules
