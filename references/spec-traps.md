@@ -439,7 +439,13 @@ location, and current content:
   the criteria list verbatim (or binds the doc itself) and derives its DoD
   from it line-by-line — every "must" line gets a mechanical check in each
   consuming spec; a paraphrase silently narrows acceptance, and with parallel
-  executors the gap ships category-wide.
+  executors the gap ships category-wide. For a multi-task business change,
+  one package contract (`MISSION.md` or the project's existing source) owns
+  the why, scope, canonical vocabulary, and stable acceptance IDs across
+  frontend/backend and repository lanes. Technical specs paste the criteria
+  they own and may refine design, but never redefine behavior. The final
+  review builds a criterion → consuming spec → DoD table and rejects orphaned,
+  contradictory, or silently duplicated ownership.
 - In a parallel dispatch over a shared checkout, scope every DoD command to
   the executor's own paths — a directory-wide glob ("exactly N files") sees
   sibling executors' output and fails, or worse passes, spuriously.
@@ -507,6 +513,14 @@ location, and current content:
   set the offline/no-install environment in the literal DoD command. Any
   "will be installed" warning is a stop condition even if the command exits
   zero.
+- A missing-credentials or no-outbound gate is not isolated by `env -u` alone:
+  test runners can reload project dotenv files and recover real credentials.
+  Read the runner's environment-loading path first, then launch from a cwd
+  outside project discovery or use an explicit test configuration that
+  disables every external adapter and pins poison endpoints. Send one
+  valid-shape request and assert zero outbound attempts. If the venue cannot
+  prove real credentials stay unreachable, mark the gate unverifiable there;
+  never probe by letting the project runner rediscover ambient secrets.
 - A gate on a deferred/scheduled action (a timer, a queued callback): confirm
   the gate is re-checked at fire time — not only at scheduling time — with a
   race test that flips the condition inside the window; when failure has

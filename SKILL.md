@@ -209,11 +209,19 @@ similar). **Never commit these files.**
 
 ```
 <taskdir>/
+  MISSION.md           # multi-task business change: shared intent, scope, vocabulary, acceptance IDs
   PLAN.md              # queue: id, title, files touched, deps, status
   specs/T<n>-<slug>.md # one spec per task
   reports/<agent>.md   # full subagent reports; a short digest comes back in chat
   NEXT-SESSION.md      # session handoff — see "Session handoff (NEXT-SESSION.md)"
 ```
+
+For a multi-task business change, `MISSION.md` is the single package contract
+across repository and frontend/backend lanes; an unrelated technical backlog
+may omit it. Per-task specs split technical execution, but paste the exact
+acceptance lines/IDs they own and never redefine the shared intent, scope, or
+vocabulary. The shared-contract rule in `references/spec-traps.md` governs
+coverage and final review.
 
 Statuses in PLAN.md: `todo → spec-ready → in-progress → verify → done | blocked`.
 

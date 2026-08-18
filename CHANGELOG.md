@@ -1,5 +1,26 @@
 # Changelog
 
+## 2.28.0 — 2026-08-18
+
+Consolidation of 15 local feedback events plus a user-supplied account of
+company-scale spec-driven agent development. The OpenSpec product and its file
+layout were deliberately not adopted; only format-independent controls entered
+the skill. Two cross-project environment-isolation events produced one new DoD
+gate, while 13 covered or project-specific observations were archived without
+expanding the rules.
+
+- Multi-task business changes now have one lightweight `MISSION.md` contract
+  for intent, scope, canonical vocabulary, and stable acceptance IDs across
+  frontend/backend or repository lanes. Technical task specs remain
+  self-contained and map owned criteria to their DoD rather than forking the
+  business contract.
+- Missing-credential and no-outbound checks now account for dotenv/`loadEnv`
+  rediscovery: use an isolated cwd or explicit adapter-off test configuration,
+  poison endpoints, and a zero-outbound assertion.
+- Consolidation now retires dated rules through representative before/after
+  evidence and converts a rule that fails repeatedly after documentation into
+  executable enforcement instead of another prose warning.
+
 ## 2.27.0 — 2026-08-17
 
 Consolidation of 39 local feedback events plus a user-supplied hybrid-rail

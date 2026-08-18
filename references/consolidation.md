@@ -28,7 +28,18 @@ verifier still validates the result.
   clause first. Then audit the destination section for duplicate, superseded,
   dated, or overly situational guidance; delete it or move it to the narrowest
   reference before adding new text. A consolidation that only appends while an
-  equivalent rule already exists is incomplete.
+  equivalent rule already exists is incomplete. Disposition already-covered
+  observations now; do not leave them pending for another wording pass.
+- **Retire with evidence:** treat model-, harness-, and tool-specific guidance
+  as versioned code, not permanent lore. When a current model or deterministic
+  mechanism may have made a rule obsolete, compare the rule against its
+  original failure artifacts plus a representative control (masked or
+  synthetic when needed), then remove it only if the same falsifiable gates
+  stay green without it. If a documented rule fails again in another session,
+  the next consolidation promotes the repeated operation into a script,
+  executable check, capability boundary, or typed state transition instead of
+  restating the prose; record an explicit limitation when no deterministic
+  enforcement is possible.
 - **Count with a parser:** counts over `log.jsonl` come from a JSON parser
   (`python3 -c "..."`), never a grep for an exact `"key":"value"` string —
   JSON formatting varies across writers and a grep silently undercounts.
