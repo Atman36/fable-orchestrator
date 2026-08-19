@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.29.0 — 2026-08-20
+
+Consolidation of 65 local feedback events. Repeated cross-session failures
+produced two narrow verification controls; covered, project-specific, and
+single-session observations were archived without adding speculative rules.
+
+- Scenario matrices now derive from real producers and await boundaries and
+  bind each relevant terminal branch to a named, executed test.
+- Verifiers receive literal RED or head-command evidence required by the DoD,
+  while executor conclusions remain withheld.
+
 ## 2.28.0 — 2026-08-18
 
 Consolidation of 15 local feedback events plus a user-supplied account of

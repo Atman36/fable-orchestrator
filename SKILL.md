@@ -698,7 +698,9 @@ in parallel with the chain.
 Per task, a verifier subagent with a clean context and a narrow prompt: "run
 the verification command/scenario from the DoD section of `<spec path>` in
 `<dir>`; also confirm via `git status --porcelain` and `git diff --stat` that
-only files the spec names were touched; return facts per item: pass / fail /
+only files the spec names were touched; authenticate each literal evidence
+artifact the DoD names without importing its author's conclusions; return
+facts per item: pass / fail /
 unverifiable here (what exactly could not be run and why), exact commands run,
 what you observed." It does not review code — it executes the check.
 Fresh-context verifiers beat self-critique; whoever built it never accepts it.
@@ -714,7 +716,10 @@ executor is using) — independence means "not whoever built it", not "must be
 a model"; spend model verifiers where observation or judgment is needed.
 Never forward the executor's reasoning or digest to a verifier or reviewer —
 it anchors them into the executor's logic; they get the spec, the artifact,
-and the check. And acceptance asks two questions: the verifier answers "was
+and the check. When the check requires authenticating prior RED output or a
+head-executed command, include the literal evidence artifact while withholding
+its conclusions; evidence required by the DoD is not executor reasoning. And
+acceptance asks two questions: the verifier answers "was
 it built right?" (the DoD ran green); you answer "was the right thing
 built?" — check the result against the user's original intent before marking
 done; a green DoD on the wrong deliverable is still a failure.

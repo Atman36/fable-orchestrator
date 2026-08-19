@@ -733,6 +733,15 @@ location, and current content:
   For the same matrix cell, sibling entry surfaces compare authorization,
   known-error delivery, user-visible response, durable state, and idempotent
   settlement.
+- Derive that matrix from every producer and await boundary, then map every
+  required cell to a named test the canonical runner actually executes. Cover
+  success, typed failure, rejection, ambiguous or lost response, replay/race,
+  cleanup, and visible terminal state when those branches exist. After a
+  confirmed earlier success, each later failure test asserts both its exact
+  terminal reason and the success state that must remain true; mutation-remove
+  each retained-state assertion before accepting broad green output. Record
+  the mapping as a branch-to-test table in the verification evidence; a blank
+  or unexecuted required cell is a failed gate, not a green caveat.
 - For a closed union, derive members from the production public contract,
   exercise behavior at the real producer boundary, assert the exact member set,
   and mutation-test removal of one member. A table that fabricates or shadows
