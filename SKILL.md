@@ -34,6 +34,32 @@ verification evidence; recent decisions and supporting docs. Expand only to
 resolve a named uncertainty, and keep bulky raw output in reports with a
 decision-relevant summary in context.
 
+**Minimum effective harness.** Start with the lightest agent, skill, MCP, and
+workflow stack that can satisfy the contract. Add infrastructure only when a
+repeated, evidenced failure justifies it. The goal is not maximum agent count;
+it is reliable decision throughput.
+
+**Compact context projection.** When the repository has an architecture map,
+system model, knowledge graph, or decision index, use it as the first
+navigation layer: modules, boundaries, contracts, data flows, and dependencies.
+Confirm its freshness against the live tree before relying on it; stale memory
+must not outrank source evidence.
+
+**Deterministic extraction.** When a trace shows the same judgment-free
+sequence repeatedly, promote it to a script, hook, CI gate, validator, or
+project CLI. Keep model reasoning for unknown paths, interpretation, and
+decisions. Do not add a generic workflow abstraction for a one-off task.
+
+User-reported failures and observations are evidence that the event occurred;
+do not spend a recon cycle merely confirming the user's report. Investigate
+cause and scope directly, and rerun the reported scenario when it produces
+regression evidence or post-change acceptance evidence.
+
+Autonomy is bounded by the quality of its falsifiable check. If no available
+check can distinguish an acceptable result from a bad one, stop at the named
+human decision boundary instead of declaring completion.
+
+
 - Trivial, unambiguous edit → spec written directly into the dispatch prompt,
   one executor, one verifier. No board, no recon.
 - Single non-trivial task → recon, one spec file, executor, verifier.
@@ -434,6 +460,16 @@ each of N+1's new early-return paths — the crash lives in the interaction
 neither spec enumerated alone. A new DB trigger or gate is such an artifact —
 walk it against every EXISTING writer of the gated table, ops and verify
 scripts included.
+
+**Make architecture executable.** When a boundary, dependency rule, schema
+invariant, or contract can be checked mechanically, prefer an architecture
+test, type constraint, static analyzer, or CI gate over prose in a spec.
+Instruction is a fallback for constraints the toolchain cannot enforce.
+
+**Clean cutover by default.** A contract replacement enumerates and migrates
+every consumer, then removes the obsolete surface. An alias, deprecated export,
+compatibility shim, or dual-write path requires an explicit staged-rollout
+decision, an owner, and a falsifiable removal gate.
 
 **Enumerate the category, never a hand-picked list.** When a fix applies to a
 category — every free-text field that enters a prompt, every user-visible
@@ -894,6 +930,13 @@ file: `feedback/log.jsonl` (append-only raw events), `feedback/SUMMARY.md`
 entries). `feedback/` is gitignored: raw lessons may contain project specifics
 and never leave this machine — only distilled, generalized rules enter the
 public SKILL.md.
+
+Treat traces as improvement data, not context to retain wholesale. Preserve
+the decision, tool outcome, error, and repeated sequence needed to explain a
+failure; omit routine transcript bulk. A repeated sequence first becomes a
+realistic eval, then — when the successful path is judgment-free — a
+deterministic helper or gate. A prompt or workflow that has not passed that
+eval remains a hypothesis.
 
 ### Capture
 
