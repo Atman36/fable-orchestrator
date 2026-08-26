@@ -1,5 +1,27 @@
 # Changelog
 
+## 2.31.0 — 2026-08-26
+
+Consolidation of 79 local feedback events. Existing orchestration and
+spec-trap controls already cover the generalized failures; tool-specific,
+project-specific, singleton, and single-session observations were archived
+without expanding the skill.
+
+## 2.30.0 — 2026-08-22
+
+Consolidation of 130 pending feedback lines. Four truncated JSON records were
+repaired, 14 variant categories were normalized, 17 events produced narrow
+controls, and 113 covered, situational, project-specific, or singleton events
+were archived without expanding the skill.
+
+- Finished executors get one bounded resume attempt; correction ledgers stay
+  open through every acceptance item, and exhausted work stops without
+  accepting red code or discarding a shared-checkout diff.
+- Recovery verification now crosses entry paths, destructive callsites, and
+  injected failure layers while proving cleanup and terminal-output redaction.
+- Feedback capture now uses a schema-validating, locked append helper instead
+  of read-modify-write over the process-shared JSONL file.
+
 ## 2.29.0 — 2026-08-20
 
 Consolidation of 65 local feedback events. Repeated cross-session failures

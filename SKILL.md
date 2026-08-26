@@ -50,11 +50,6 @@ sequence repeatedly, promote it to a script, hook, CI gate, validator, or
 project CLI. Keep model reasoning for unknown paths, interpretation, and
 decisions. Do not add a generic workflow abstraction for a one-off task.
 
-User-reported failures and observations are evidence that the event occurred;
-do not spend a recon cycle merely confirming the user's report. Investigate
-cause and scope directly, and rerun the reported scenario when it produces
-regression evidence or post-change acceptance evidence.
-
 Autonomy is bounded by the quality of its falsifiable check. If no available
 check can distinguish an acceptable result from a bad one, stop at the named
 human decision boundary instead of declaring completion.
@@ -100,6 +95,11 @@ writes the required report or dashboard artifacts. Promote only operations
 observed repeatedly and requiring no judgment; interpretation, forks, and
 acceptance remain with the head. Do not introduce a generic flow CLI for a
 one-off task.
+
+User-reported failures and observations are evidence that the event occurred;
+do not spend a recon cycle merely confirming the user's report. Investigate
+cause and scope directly, and rerun the reported scenario when it produces
+regression evidence or post-change acceptance evidence.
 
 **An assessment is a complete deliverable.** Fable is more proactive than
 Opus 4.8 — left unconstrained it infers a change and starts building it.
@@ -658,11 +658,18 @@ watchdog stalls across agents/models mean infrastructure; dispatch the next
 attempt synchronously.
 
 A progress-only return is not a completion boundary. Resume the same executor
-with the exact remaining file/error ledger and next fixed gate; do not pay for
-rediscovery. If the same mechanical cascade returns progress-only three times
+with the exact remaining acceptance-ID/file/error ledger and next fixed gate;
+do not pay for rediscovery. Keep that correction ledger open across follow-ups:
+completion requires every item checked against current files and mapped to a
+named executed test or explicit evidence that no code or test change was
+needed. If the same mechanical cascade returns progress-only three times
 without a contract contradiction, treat it as an executor-capacity failure and
-hand that ledger to a fresh audit-first executor. A large compiler-reported
-fixture cascade is expected completion work, not by itself a blocker.
+hand that ledger to a fresh audit-first executor. If that bounded fresh attempt
+still cannot produce green code, stop: discard only the task slice in its
+isolated worktree, otherwise preserve the shared-checkout diff, and mark the
+task blocked/not delivered. Never accept red code or continue unbounded churn.
+A large compiler-reported fixture cascade is expected completion work, not by
+itself a blocker.
 
 ### 4. While executors work — don't wait
 
@@ -723,9 +730,12 @@ notification is the scheduler: each wake-up turn = accept the report (or
 trigger the rework ladder), log adverse events, dispatch the next pre-specced
 task, end the turn again. The head never sleeps, polls, or spawns waiter
 agents; wall-clock gaps collapse to one wake-up turn because every decision
-was made at spec-writing time. Follow-ups on a finished executor's own work go
-to the SAME agent via a resume message (it amends only after verifying `HEAD`
-still equals its commit; otherwise it creates a follow-on commit); independent
+was made at spec-writing time. Follow-ups on a finished executor's own work
+first go to the SAME agent through one explicit resume message. If that message
+does not create a running job, stop messaging; preserve the spec, HEAD/diff,
+and failure ledger for a fresh audit-first finisher. A resumed agent amends
+only after verifying `HEAD` still equals its commit; otherwise it creates a
+follow-on commit. Independent
 work in a DIFFERENT repo or disjoint file set may run
 in parallel with the chain.
 
@@ -941,25 +951,30 @@ eval remains a hypothesis.
 ### Capture
 
 The moment a trigger fires — verifier rejection, user correction, routing
-escalation, spec defect, blocked task, or a reusable pattern — append one line
-to `feedback/log.jsonl`:
+escalation, spec defect, blocked task, or a reusable pattern — append one
+record through the bundled validator:
+
+```text
+python3 <this-skill-dir>/scripts/feedback-log.py append --record-json '<one-line JSON>'
+```
+
+The JSON shape is:
 
 ```json
 {"date":"YYYY-MM-DD","project":"<slug>","task":"T<n>","category":"verifier_rejection|user_correction|routing|spec_defect|blocked|pattern","issue_key":"<stable-slug>","observation":"<what happened>","lesson":"<what should change>","rule":"<optional: concrete rule text>","status":"new"}
 ```
 
+The helper rejects malformed records and variant categories, locks the shared
+file, appends one canonical line, flushes it, and verifies the write. Never
+edit or replace `log.jsonl` from a read snapshot: concurrent orchestrators
+share it, so read-modify-write can truncate peer events.
+
 `issue_key` is the clustering handle — reuse the same slug for the same
-underlying issue so repeats become countable evidence. The field set is fixed:
-an entry written with a variant schema (`ts`/`note` in place of
-`date`/`observation`) drops out of the parser counts consolidation runs on, so
-its lesson never triggers a review. Before append, validate `category` against
-the literal enum in the template; when no narrower label fits, use `pattern`
-and preserve the original event label inside `observation`. Every write into a
-SECTIONED document — a
-dossier, PLAN.md, SUMMARY.md — uses an anchored edit at the target heading; a
-shell append is positional and lands under whatever heading happens to be last,
-so `cat >>` is reserved for genuinely append-only files (`log.jsonl`,
-`archive.jsonl`).
+underlying issue so repeats become countable evidence. When no narrower
+category fits, use `pattern` and preserve the original event label inside
+`observation`. Every write into a SECTIONED document — a dossier, PLAN.md,
+SUMMARY.md — uses an anchored edit at the target heading; positional append is
+reserved for the validated feedback helper.
 
 ### Review trigger
 

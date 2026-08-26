@@ -742,6 +742,13 @@ location, and current content:
   each retained-state assertion before accepting broad green output. Record
   the mapping as a branch-to-test table in the verification evidence; a blank
   or unexecuted required cell is a failed gate, not a green caveat.
+- For recovery and cleanup matrices, enumerate every producer, outer
+  catch/entry path, destructive callsite, and injectable failure layer
+  separately. Match each assertion to the actual injection (for example,
+  helper exception versus child-process nonzero), prove cleanup and temporary
+  resource state, and trace redaction through producer → logger → terminal
+  output. A sibling callsite or lower-layer rejection is not coverage for the
+  named branch.
 - For a closed union, derive members from the production public contract,
   exercise behavior at the real producer boundary, assert the exact member set,
   and mutation-test removal of one member. A table that fabricates or shadows

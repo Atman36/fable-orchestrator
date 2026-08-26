@@ -4,7 +4,7 @@
 set -eu
 cd "$(dirname "$0")/.."
 fail=0
-allow='^(SKILL\.md|README\.md|CHANGELOG\.md|LICENSE|\.gitignore|scripts/publish-check\.sh|references/[a-z0-9-]+\.md)$'
+allow='^(SKILL\.md|README\.md|CHANGELOG\.md|LICENSE|\.gitignore|scripts/(publish-check\.sh|feedback-log\.py)|references/[a-z0-9-]+\.md)$'
 for f in $(git ls-files); do
   if ! printf '%s\n' "$f" | grep -Eq "$allow"; then
     echo "BLOCK: '$f' is not in the public allowlist" >&2
