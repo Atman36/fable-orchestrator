@@ -14,6 +14,10 @@ verifier still validates the result.
 
 - **Promotion gate:** promote a cluster only at ≥2 observations from ≥2
   sessions; a single anecdote is promoted only on explicit user request.
+  Count distinct originating `session_id` values, not tasks, workers, dates,
+  or copies of the same journal. Legacy entries without IDs need independent
+  originating-session evidence; do not backfill guessed provenance. A
+  correction, refutation, or retry of one incident is not a new occurrence.
 - **Smallest surface wins:** routing lesson → routing-table row; spec-quality
   lesson → spec template or readiness test; verification lesson → DoD/verifier
   rules; scope lesson → Boundaries defaults; project-specific trap → that

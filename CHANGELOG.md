@@ -1,5 +1,39 @@
 # Changelog
 
+## 2.33.0 — 2026-09-05
+
+Consolidation of 210 pending events from two local feedback journals, plus one
+fresh isolated compiler/test-discovery replay recorded during this update.
+Existing rules remain the authority for covered failures; project-specific
+and insufficiently independent observations are retained in the local archive.
+
+- Reconcile report ownership with native read-only capabilities: the head
+  persists complete finals without granting workers unnecessary write tools.
+- Replace label-based reconnaissance assumptions with effect and path
+  boundaries, including query caches and unavailable shell operations.
+- Keep source-shaped review bundles out of compiler/test discovery; verify
+  actual collected paths without excluding failing product files.
+- Feedback accepts optional, validated `session_id` provenance. Consolidation
+  no longer treats task/worker counts or corrected claims as distinct sessions;
+  older writers remain usable without fabricated provenance.
+
+## 2.32.0 — 2026-09-04
+
+Consolidation of 254 pending feedback events across the Claude and shared
+Fable journals. Repeated cross-session clusters added narrow controls; covered,
+project-specific, and singleton events were archived without expanding the
+always-loaded surface.
+
+- Worker release now requires exact report-path equality plus a readable
+  artifact; status-only and alternate-document handoffs remain non-delivery.
+- Build dispatches measure disk after runtime rehydration and verify any
+  explicitly authorized exact-path cache cleanup by effect.
+- Push/replay sequencing binds snapshots, runners, and authorization to the
+  exact tested runtime and `HEAD`.
+- Spec gates now cover workspace type diagnostics after focused tests, shared
+  consumer/helper migrations, keyed UI state transitions, cross-stage identity
+  provenance, and adversarial sibling grammar branches.
+
 ## 2.31.0 — 2026-08-26
 
 Consolidation of 79 local feedback events. Existing orchestration and

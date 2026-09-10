@@ -14,7 +14,7 @@ and pipeline stage binds it regardless of model.
   decomposition, architecture and product forks, conflict resolution, and
   final synthesis. Terra and Luna execute bounded work; they do not replace
   Sol as the senior agent.
-- **Claude Code default: Fable 5.** Supported fallback: **Opus 4.8** when
+- **Claude-family default: Fable 5.** Supported fallback: **Opus 4.8** when
   Fable is unavailable or too costly.
 - **Terra and Sonnet are never heads** for new spec-writing or fork-resolution;
   in loop mode they may only drain pre-written rails (existing specs/queues).
@@ -169,6 +169,10 @@ fork that halts the pipeline for one narrow question. Standing gates:
   merge is a red production action. Feature-branch push, pull-request merge,
   and production rollout remain separate authorization gates even when the
   platform connects them automatically.
+- If a verifier or paid replay depends on the currently deployed pre-change
+  runtime, seal that evidence artifact before any push that can replace it.
+  Bind replay runners, snapshots, and their authorization to the exact tested
+  `HEAD`; a later relevant commit invalidates the venue and approval.
 - An irreversible or destructive fork (deletes, history rewrite, force ops, a
   public-publish action) is never pre-authorized inside a spec — get the
   user's confirmation in the *current* session before dispatch, even if a
@@ -217,8 +221,8 @@ Escalation is about executor quality, never scope: forks that change scope or
 money still stop the pipeline. Under budget pressure the budget rule in
 Communication discipline wins — escalate only after a failed verification.
 
-A project's CLAUDE.md may override this table (ban a model, add a routing
-rule); project rules win.
+A project's `AGENTS.md` or `CLAUDE.md` may override this table (ban a model,
+add a routing rule); project rules win.
 
 Read `references/model-roles.md` before routing off the table above. **Before
 ANY `codex exec` call, read both
@@ -269,10 +273,12 @@ chat.
 
 **Report protocol:**
 
-- Every subagent writes its full report to `<taskdir>/reports/<agent>.md`
-  (exact path in the dispatch prompt) and returns a ≤15-line digest plus the
-  path. The digest must be self-sufficient for judgment — quotes, numbers,
-  verdicts inline; deciding "by pointer" without seeing the fact is forbidden.
+- Name the report writer in the dispatch. A write-capable worker writes the
+  full report to the exact absolute `<taskdir>/reports/<agent>.md` path; a
+  native read-only worker returns the complete report and the head persists
+  it verbatim there. Never grant write tools merely to obtain a report.
+  The ≤15-line digest includes the path, quotes, numbers, and verdicts needed
+  for judgment; deciding "by pointer" without seeing the fact is forbidden.
 - Idle notification with no final message → read the report file before
   re-asking the agent.
 - A stop notification is not completion and its digest is not evidence: a
@@ -298,16 +304,20 @@ chat.
   every dispatch, chat-text Explore scouts included — their finals truncate to
   the last section without it; recovery is a resume asking to re-emit the
   complete report, not a respawn.
-- An external-CLI/non-Claude step treats its required artifact file as a hard
-  completion gate (failure unless the file exists, checked per step, no
+- An external or programmatic agent step treats its required artifact file as
+  a hard completion gate (failure unless the file exists, checked per step, no
   out-of-repo paths) — such agents can exit 0 without writing anything.
+- Before releasing any worker, confirm the exact required artifact exists and
+  is readable, whether written by the worker or persisted by the head from its
+  complete final. A digest or alternative document does not satisfy this gate.
 - If a reviewer or executor has emitted the needed evidence/verdict but stalls
   on report formatting, give one bounded artifact deadline, then interrupt or
   resume once. Do not serially poll a stuck transcript for prose. If the
   required report still does not materialize, preserve the candidate findings
   and send a fresh narrow verifier against the artifact and spec.
-- Explore-type scouts cannot Write even to a scratchpad — dispatch
-  general-purpose when a written report file matters, or accept chat text.
+- Match requested operations to the worker's actual tool inventory before
+  dispatch. If a reader lacks shell, the head supplies Git metadata separately;
+  neither a role label nor a report requirement creates a missing capability.
 - Label every dispatch — Agent `description` and report filename — as
   `<role or model> + <task id> + <short subject>` (e.g. `Executor T4 P1.2
   snapshot`, `reports/executor-T4.md`) so the user can follow the pipeline
@@ -323,7 +333,7 @@ PLAN.md — the final review diffs from it.
 
 Session-start recon also checks for a CONCURRENT writer, not only a dirty tree:
 one `git status` is a point-in-time measurement that goes stale within minutes.
-Check other live `claude` processes and mtimes on tracked sources, and re-check
+Check other live write-capable agent processes and mtimes on tracked sources,
 between dispatches. A live foreign writer in the same checkout halts dispatch
 and goes to the user as one narrow question — never something to route around:
 the other side runs `git stash push` and `git checkout --` on files you share.
@@ -343,9 +353,14 @@ not after the next failure.
 
 One scout per concern — e.g. backlog and codebase map — with a concrete
 question and report format: files, lines, contracts, duplicates, traps.
-Read-only means no writes anywhere under the repo, tracked or not. A live probe
-can still mutate through POST/store calls; keep it GET-only or give it an
-explicit `mktemp` store outside the repo, then re-check `git status --porcelain`.
+Read-only is an effect boundary, not a tool label: caches, report files,
+dependency installs, generated outputs, and database writes count too. Use
+read-only capabilities and explicit allowed paths; a broad search with an
+exclusion glob can still ingest protected files. Disable query-cache writes or
+inspect the source directly. Mutating probes need a separately authorized
+disposable venue, never the source checkout; GET alone does not prove no write.
+After a probe, verify its footprint, including ignored outputs; a clean tracked
+Git diff alone cannot certify read-only behavior.
 For a consistency or terminology sweep, give parallel scouts a
 shared fixed key schema so their outputs are diffable by key. For a consult
 question about a branch or logic the user describes as already existing, the
@@ -380,7 +395,7 @@ Every spec is self-contained. Template:
 ```
 # T<n>: <title>
 ## Goal      — what to achieve AND why: intent, who it's for, what it enables.
-               (Claude executors perform better knowing the reason, not only the request.)
+               (Executors perform better knowing the reason, not only the request.)
 ## Context   — files:lines to change; contracts at the task boundary (schemas,
                signatures, field names, error codes) with example values, not
                prose; traps (duplicates, generated files). Everything the
@@ -621,11 +636,14 @@ amend ambient `HEAD` unless it still equals the intended task commit; otherwise
 create a task-only follow-on commit.
 
 Before a tool upgrade or multi-file compiler/test/build dispatch, check host
-free disk (`df -h`) and require at least 2 GiB available; below that, stop for
-an owner-approved cleanup of one exact cache target. Parallel dependency
-installs need additional headroom; on low-disk hosts run them sequentially
-reusing existing `node_modules`, or clean a worktree's `node_modules` right
-after its verification. When a worktree task
+free disk (`df -h`) and require at least 2 GiB available after any automatic
+runtime or cache rehydration; below that, stop for an owner-approved cleanup of
+one exact cache target. If the command guard rejects broad recursive removal,
+use an environment-supported, non-following exact-path deletion mechanism only
+after that authorization, then verify target absence and reclaimed space.
+Parallel dependency installs need additional headroom; on low-disk hosts run
+them sequentially reusing existing `node_modules`, or clean a worktree's
+`node_modules` right after its verification. When a worktree task
 lands after a prerequisite commit, tell the executor to verify that commit is
 in its base (`git log` contains `<sha>`) and rebase onto main first if not.
 `isolation: "worktree"` cuts from the PUSHED remote ref, so unpushed local
@@ -961,13 +979,19 @@ python3 <this-skill-dir>/scripts/feedback-log.py append --record-json '<one-line
 The JSON shape is:
 
 ```json
-{"date":"YYYY-MM-DD","project":"<slug>","task":"T<n>","category":"verifier_rejection|user_correction|routing|spec_defect|blocked|pattern","issue_key":"<stable-slug>","observation":"<what happened>","lesson":"<what should change>","rule":"<optional: concrete rule text>","status":"new"}
+{"date":"YYYY-MM-DD","project":"<slug>","task":"T<n>","category":"verifier_rejection|user_correction|routing|spec_defect|blocked|pattern","issue_key":"<stable-slug>","observation":"<what happened>","lesson":"<what should change>","rule":"<optional: concrete rule text>","session_id":"<stable originating session id>","status":"new"}
 ```
 
 The helper rejects malformed records and variant categories, locks the shared
 file, appends one canonical line, flushes it, and verifies the write. Never
 edit or replace `log.jsonl` from a read snapshot: concurrent orchestrators
 share it, so read-modify-write can truncate peer events.
+
+For new records, include the originating head session's stable opaque
+`session_id` when available. Reuse it across that session's tasks, workers,
+and retries; do not invent a fresh ID per event or use a private path as an ID.
+The field remains optional for older writers and unavailable provenance.
+Missing IDs mean unknown session identity, never distinct sessions by default.
 
 `issue_key` is the clustering handle — reuse the same slug for the same
 underlying issue so repeats become countable evidence. When no narrower

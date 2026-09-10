@@ -31,7 +31,7 @@ REQUIRED_FIELDS = {
     "lesson",
     "status",
 }
-OPTIONAL_FIELDS = {"rule"}
+OPTIONAL_FIELDS = {"rule", "session_id"}
 ISSUE_KEY = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z")
 DEFAULT_LOG = Path(__file__).resolve().parents[1] / "feedback" / "log.jsonl"
 
@@ -53,6 +53,10 @@ def validate_record(value: Any) -> dict[str, str]:
             raise ValueError(f"{field} must be a non-empty string")
     if "rule" in value and not isinstance(value["rule"], str):
         raise ValueError("rule must be a string when present")
+    if "session_id" in value and (
+        not isinstance(value["session_id"], str) or not value["session_id"].strip()
+    ):
+        raise ValueError("session_id must be a non-empty string when present")
 
     try:
         date.fromisoformat(value["date"])
@@ -77,6 +81,8 @@ def validate_record(value: Any) -> dict[str, str]:
     ]
     if "rule" in value:
         ordered_fields.append("rule")
+    if "session_id" in value:
+        ordered_fields.append("session_id")
     ordered_fields.append("status")
     return {field: value[field] for field in ordered_fields}
 

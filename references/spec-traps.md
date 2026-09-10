@@ -367,6 +367,10 @@ location, and current content:
   to a single builder leaves the siblings contradicting it: a toast kept
   soliciting a comment the flow no longer captured, a UX dead end that passed
   its per-task verifier.
+- When a durable flow copies identity or ownership into more than one visible
+  stage, vary actor and resource attributes deliberately and assert each field
+  at every acknowledgement and terminal surface. Equal-valued fixtures cannot
+  prove whether copy came from the authorized actor or the durable resource.
 - Adding a PERSISTED field is a round-trip category, not a write-path category:
   enumerate every writer AND every query that lists columns for that table,
   repo-wide by grep, and put one test through the query-BUILDING layer into the
@@ -407,6 +411,10 @@ location, and current content:
   ordered to unmount it raced its own result rendering — a conflicting resubmit
   left the step unchanged and the block simply vanished. Both final reviewers
   found it independently; every per-task verifier passed it.
+- A component whose identity or scope key changes does not synchronize derived
+  props into local state inside an effect. Prefer keyed ownership or derived
+  visibility, and test the scope switch; otherwise the wrapper's reset/adoption
+  effect races its own render and trips hooks lint after focused tests pass.
 - Reusing a user-facing component on a NEW surface silently reuses its COPY,
   which encodes the first surface's time scale and question framing. The reuse
   spec adds a step diffing every shared string against the new surface's own
@@ -474,6 +482,18 @@ location, and current content:
   element: run the project's test suite in the DoD and grep the old strings
   across test files; co-located tests get updated to the new contract
   (open-to-assert), never deleted — typecheck and lint cannot see any of this.
+- A shared UI primitive or domain-type cutover enumerates every consuming
+  interaction helper, mock, constructor, and exact action-count assertion.
+  Focused transpile tests are not a type gate: run workspace TypeScript
+  diagnostics plus the full consuming suite before handoff.
+- Keep source-shaped review bundles outside compiler and test-discovery roots.
+  If a foreign bundle already exists, preserve it and identify its owner before
+  remediation. Bind the gate to the repository's real compiler configuration
+  and runner collection rules: inspect compiler input and collected test paths,
+  assert the bundle is absent and intended source/tests remain present. A
+  targeted test filename may also select its copied counterpart. Any scoped
+  exclusion names only the evidence bundle, not failing product files; run the
+  actual gate afterward and do not call containment a product fix.
 - A mutation probe that only bumps a constant the tests derive their fixtures
   from is tautological — break the comparison or logic the check guards and
   pin at least one literal boundary value independent of the constant. Keep the
@@ -492,6 +512,11 @@ location, and current content:
   (`\p{L}`/`\p{N}` lookarounds for Cyrillic/Russian classifiers instead of
   ASCII `\b`). A route keyed by "exact match" also tests the collision where
   generated or stored text equals a real title/command.
+- For natural-language privacy or intent gates, enumerate every sibling
+  reference branch and qualifier, then add adjacent non-target grammatical
+  roles and out-of-lexicon tokens with the same endings. Every literal from the
+  owner or spec is a mandatory case; month/topic presence never overrides a
+  stronger organizational or non-person qualifier.
 - A safety or recovery gate needs bidirectional behavioral proof: every denied
   case causes zero guarded effects, and every authorized case traverses the
   real production loader and performs each required effect. Put a
