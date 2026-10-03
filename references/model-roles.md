@@ -64,3 +64,12 @@ route.
   summaries, routing, mechanical checks. NOT for architecture, complex
   debugging, large ambiguous tasks, or expensive-mistake decisions; drifts from
   instructions in large contexts.
+
+**Smoke before routing.** Before the first real dispatch on a pinned model,
+and before advising any production model switch, run one trivial call on the
+exact route (same CLI, auth kind, and model id) and quote its result; an
+account can reject a model the table lists. Match the planned capabilities:
+a tool-using route must execute a harmless real tool call and deliver a readable
+artifact through the named report writer. A text-only response proves neither.
+Record observed latency and remaining runtime budget; a passing smoke proves
+capability, not that a larger task will meet its deadline.

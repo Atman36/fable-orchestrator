@@ -70,7 +70,10 @@ location, and current content:
 - Any concrete number a spec or DoD quotes is computed from the real data or
   marked do-not-assert, never invented as an illustration.
 - A migration/sequence number is a codebase fact: list the target directory in
-  recon; never inherit the next number from a dossier or memory.
+  recon; never inherit the next number from a dossier or memory. When ordered
+  migrations replace a function, trace every replacement through the selected
+  revision and quote the final effective definition. A filename or an earlier
+  definition does not prove current behavior.
 - A scout's negative claim ("only consumer", "no X exists") entering a DoD or
   Decision: re-verify with your own grep at spec time, sweeping untracked and
   gitignored files too, or word it conditionally — never freeze it as a hard
@@ -367,6 +370,10 @@ location, and current content:
   to a single builder leaves the siblings contradicting it: a toast kept
   soliciting a comment the flow no longer captured, a UX dead end that passed
   its per-task verifier.
+- When a durable flow copies identity or ownership into more than one visible
+  stage, vary actor and resource attributes deliberately and assert each field
+  at every acknowledgement and terminal surface. Equal-valued fixtures cannot
+  prove whether copy came from the authorized actor or the durable resource.
 - Adding a PERSISTED field is a round-trip category, not a write-path category:
   enumerate every writer AND every query that lists columns for that table,
   repo-wide by grep, and put one test through the query-BUILDING layer into the
@@ -407,6 +414,10 @@ location, and current content:
   ordered to unmount it raced its own result rendering — a conflicting resubmit
   left the step unchanged and the block simply vanished. Both final reviewers
   found it independently; every per-task verifier passed it.
+- A component whose identity or scope key changes does not synchronize derived
+  props into local state inside an effect. Prefer keyed ownership or derived
+  visibility, and test the scope switch; otherwise the wrapper's reset/adoption
+  effect races its own render and trips hooks lint after focused tests pass.
 - Reusing a user-facing component on a NEW surface silently reuses its COPY,
   which encodes the first surface's time scale and question framing. The reuse
   spec adds a step diffing every shared string against the new surface's own
@@ -474,6 +485,18 @@ location, and current content:
   element: run the project's test suite in the DoD and grep the old strings
   across test files; co-located tests get updated to the new contract
   (open-to-assert), never deleted — typecheck and lint cannot see any of this.
+- A shared UI primitive or domain-type cutover enumerates every consuming
+  interaction helper, mock, constructor, and exact action-count assertion.
+  Focused transpile tests are not a type gate: run workspace TypeScript
+  diagnostics plus the full consuming suite before handoff.
+- Keep source-shaped review bundles outside compiler and test-discovery roots.
+  If a foreign bundle already exists, preserve it and identify its owner before
+  remediation. Bind the gate to the repository's real compiler configuration
+  and runner collection rules: inspect compiler input and collected test paths,
+  assert the bundle is absent and intended source/tests remain present. A
+  targeted test filename may also select its copied counterpart. Any scoped
+  exclusion names only the evidence bundle, not failing product files; run the
+  actual gate afterward and do not call containment a product fix.
 - A mutation probe that only bumps a constant the tests derive their fixtures
   from is tautological — break the comparison or logic the check guards and
   pin at least one literal boundary value independent of the constant. Keep the
@@ -492,6 +515,11 @@ location, and current content:
   (`\p{L}`/`\p{N}` lookarounds for Cyrillic/Russian classifiers instead of
   ASCII `\b`). A route keyed by "exact match" also tests the collision where
   generated or stored text equals a real title/command.
+- For natural-language privacy or intent gates, enumerate every sibling
+  reference branch and qualifier, then add adjacent non-target grammatical
+  roles and out-of-lexicon tokens with the same endings. Every literal from the
+  owner or spec is a mandatory case; month/topic presence never overrides a
+  stronger organizational or non-person qualifier.
 - A safety or recovery gate needs bidirectional behavioral proof: every denied
   case causes zero guarded effects, and every authorized case traverses the
   real production loader and performs each required effect. Put a
@@ -733,6 +761,22 @@ location, and current content:
   For the same matrix cell, sibling entry surfaces compare authorization,
   known-error delivery, user-visible response, durable state, and idempotent
   settlement.
+- Derive that matrix from every producer and await boundary, then map every
+  required cell to a named test the canonical runner actually executes. Cover
+  success, typed failure, rejection, ambiguous or lost response, replay/race,
+  cleanup, and visible terminal state when those branches exist. After a
+  confirmed earlier success, each later failure test asserts both its exact
+  terminal reason and the success state that must remain true; mutation-remove
+  each retained-state assertion before accepting broad green output. Record
+  the mapping as a branch-to-test table in the verification evidence; a blank
+  or unexecuted required cell is a failed gate, not a green caveat.
+- For recovery and cleanup matrices, enumerate every producer, outer
+  catch/entry path, destructive callsite, and injectable failure layer
+  separately. Match each assertion to the actual injection (for example,
+  helper exception versus child-process nonzero), prove cleanup and temporary
+  resource state, and trace redaction through producer → logger → terminal
+  output. A sibling callsite or lower-layer rejection is not coverage for the
+  named branch.
 - For a closed union, derive members from the production public contract,
   exercise behavior at the real producer boundary, assert the exact member set,
   and mutation-test removal of one member. A table that fabricates or shadows

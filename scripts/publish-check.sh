@@ -4,7 +4,11 @@
 set -eu
 cd "$(dirname "$0")/.."
 fail=0
-allow='^(SKILL\.md|README\.md|CHANGELOG\.md|LICENSE|\.gitignore|scripts/publish-check\.sh|references/[a-z0-9-]+\.md)$'
+if [ "$(git rev-parse --show-toplevel 2>/dev/null)" != "$(pwd -P)" ] || [ -z "$(git ls-files)" ]; then
+  echo "BLOCK: this directory is not a standalone git checkout of the skill; tracked-file checks would be vacuous" >&2
+  exit 1
+fi
+allow='^(SKILL\.md|README\.md|CHANGELOG\.md|LICENSE|\.gitignore|scripts/(publish-check\.sh|feedback-log\.py)|references/[a-z0-9-]+\.md)$'
 for f in $(git ls-files); do
   if ! printf '%s\n' "$f" | grep -Eq "$allow"; then
     echo "BLOCK: '$f' is not in the public allowlist" >&2
@@ -14,6 +18,12 @@ done
 if git grep -nE '(/Users/[A-Za-z0-9._-]+|sk-[A-Za-z0-9]{20,}|ghp_[A-Za-z0-9]{20,}|gho_[A-Za-z0-9]{20,}|AKIA[0-9A-Z]{16}|-----BEGIN [A-Z ]*PRIVATE KEY)' -- ':!scripts/publish-check.sh' >&2; then
   echo "BLOCK: private path or secret-like pattern in tracked files" >&2
   fail=1
+fi
+if [ -f feedback/log.jsonl ]; then
+  if ! python3 scripts/feedback-log.py audit; then
+    echo "BLOCK: local feedback journal audit failed" >&2
+    fail=1
+  fi
 fi
 if [ "$fail" -eq 0 ]; then
   echo "publish-check: OK"

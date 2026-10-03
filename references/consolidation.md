@@ -12,8 +12,15 @@ via a spec file — the head applies SKILL.md/CHANGELOG edits itself in the main
 session, grounded in the user's in-conversation instruction; the fresh
 verifier still validates the result.
 
+- **Journal preflight:** run `python3 scripts/feedback-log.py audit` before
+  counting. Malformed records or exact duplicates block consolidation;
+  provenance warnings require investigation. Exact duplicates count once.
 - **Promotion gate:** promote a cluster only at ≥2 observations from ≥2
   sessions; a single anecdote is promoted only on explicit user request.
+  Count distinct originating `session_id` values, not tasks, workers, dates,
+  or copies of the same journal. Legacy entries without IDs need independent
+  originating-session evidence; do not backfill guessed provenance. A
+  correction, refutation, or retry of one incident is not a new occurrence.
 - **Smallest surface wins:** routing lesson → routing-table row; spec-quality
   lesson → spec template or readiness test; verification lesson → DoD/verifier
   rules; scope lesson → Boundaries defaults; project-specific trap → that
@@ -48,12 +55,15 @@ verifier still validates the result.
 - **Privacy scrub:** generalized wording only; no project names, private
   paths, client or employer specifics in tracked files.
 - **Disposition:** every reviewed entry becomes `applied@<version>` or
-  `rejected(<reason>)`; applied/rejected entries move to `archive.jsonl`;
-  bump CHANGELOG.md; regenerate SUMMARY.md.
+  `rejected(<reason>)`; move them only through
+  `python3 scripts/feedback-log.py archive --dispositions <json>` (a list of
+  `{"record", "disposition"}`; locked, fingerprint-matched, all-or-nothing).
+  Events appended after the snapshot stay pending. Never rewrite the journal
+  from a read snapshot. Bump CHANGELOG.md; regenerate SUMMARY.md.
 - **Measure and audit the edit:** size deltas are in bytes (`wc -c`), never
   lines — a reflow makes line counts incomparable across versions; and any
   compression or rewrite of a rules section gets a clause-level diff audit by
   the fresh verifier, because even careful rewriting silently drops directives.
-- **DoD:** `scripts/publish-check.sh` exits 0; hard rules unchanged unless the
+- **DoD:** `scripts/feedback-log.py audit` and `scripts/publish-check.sh` exit 0; hard rules unchanged unless the
   user approved changing them; frontmatter intact. Commit; push on user
   confirmation or when the user asked for publication.
