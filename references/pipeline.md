@@ -493,6 +493,12 @@ was ordered".
 
 ### 6. Final review
 
+Before dispatch, copy exact primary acceptance lines from the deepest current
+user/package contract into the review spec; map mandatory criteria to them or
+established repository invariants. Preserve standing axes, safety, and required
+checks. Typical-case acceptance alone does not imply exhaustive Cartesian coverage;
+identify stricter suggestions separately rather than silently making them required.
+
 The last task is a review spec over the full diff from the start commit. Use
 the final-review route in the model table: a fresh Sol for Codex-native work;
 Opus for Claude-native work; or an out-of-family reviewer when independence

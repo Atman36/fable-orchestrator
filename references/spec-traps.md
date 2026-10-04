@@ -473,6 +473,11 @@ location, and current content:
   tasks may also grow needs a relative assertion (`all pass`, `>=N`); a
   fact/count change greps the OLD value repo-wide and updates every surface
   (docs, CLI help/usage strings, comments), not just the primary one.
+  For parsed counts, inspect the literal producer format/schema first. Make
+  raw total = classified + unclassified an executable DoD reconciliation over
+  nonoverlapping record identities. Report category/subset coverage and unresolved
+  records; never publish a subset as the whole artifact, or claim full coverage
+  until every required category is accounted for.
 - Known-flaky or documented-red tests never enter an absolute gate: check the
   dossier/handoff for flaky tests under the gated path and exclude them, scope
   the gate to the new tests, or assert no-NEW-failures against a recorded
@@ -731,7 +736,11 @@ location, and current content:
   The probe's SURFACE and PRINCIPAL match the real usage scenario — a
   group-surface probe hard-gated to public documents produced a FALSE regression
   that reached the owner-facing QA report until re-probed as a DM by the
-  department-scoped principal testers actually use. (d) The ARTIFACT under test
+  department-scoped principal testers actually use. Where fixture transforms matter,
+  inspect the real response/schema/formatter before writing assertions; before the
+  action, assert actual persisted/setup values after relevant triggers, normalization,
+  ordering, and formatting, and prove the fixture reaches the intended boundary.
+  (d) The ARTIFACT under test
   is the freshly built one: a reused dev/preview server keeps serving the
   previous build, and a green suite over source says nothing about the `dist`
   the probe loads — rebuild, restart, or assert the artifact's hash/mtime first.
