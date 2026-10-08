@@ -1,6 +1,6 @@
 ---
 name: fable-orchestrator
-description: Use when the user invokes /fable-orchestrator, asks to run a task or backlog through Fable or GPT-5.6 Sol, requests orchestrator/conveyor mode, or sets up a scheduled or recurring autonomous run (/loop, /goal).
+description: Use when the user invokes /fable-orchestrator, asks to run a task or backlog through Fable or GPT-6.1 Sol, requests orchestrator/conveyor mode, or sets up a scheduled or recurring autonomous run (/loop, /goal).
 ---
 
 # Fable Orchestrator
@@ -10,13 +10,15 @@ description: Use when the user invokes /fable-orchestrator, asks to run a task o
 "The head" is whichever model is running this skill; every hard rule, tier,
 and pipeline stage binds it regardless of model.
 
-- **Codex-native default: GPT-5.6 Sol.** Sol owns task understanding,
+- **Codex-native default: GPT-6.1 Sol (`openai-codex/gpt-6.1-sol`).** Sol owns task understanding,
   decomposition, architecture and product forks, conflict resolution, and
-  final synthesis. Terra and Luna execute bounded work; they do not replace
-  Sol as the senior agent.
-- **Claude-family default: Fable 5.** Supported fallback: **Opus 4.8** when
-  Fable is unavailable or too costly.
-- **Terra and Sonnet are never heads** for new spec-writing or fork-resolution;
+  final synthesis. Luna handles bounded work; Sol handles broader implementation
+  and remains the senior agent.
+  Use the exact available Sol route; do not substitute GPT-5.6 Sol or infer
+  new Luna identifiers from the Sol version.
+- **Claude-family high-tier route: Opus 5.5.** A user-selected Fable head
+  remains supported; ordinary workers use the owner's current model tiers.
+- **Luna, Sonnet, and Haiku are never heads** for new spec-writing or fork-resolution;
   in loop mode they may only drain pre-written rails (existing specs/queues).
 
 Head-specific strengths and constraints live in `references/model-roles.md`;
@@ -101,9 +103,8 @@ do not spend a recon cycle merely confirming the user's report. Investigate
 cause and scope directly, and rerun the reported scenario when it produces
 regression evidence or post-change acceptance evidence.
 
-**An assessment is a complete deliverable.** Fable is more proactive than
-Opus 4.8 — left unconstrained it infers a change and starts building it.
-Separate a request to *act* from a request to *understand*: when the user is
+**An assessment is a complete deliverable.** Separate a request to *act*
+from a request to *understand*: when the user is
 describing a problem, asking a question, or thinking out loud, the deliverable
 is your answer — report findings and stop; no pipeline, worktrees, or edits
 until asked. The trigger to build is an actual instruction to build, not your
@@ -206,14 +207,17 @@ fork that halts the pipeline for one narrow question. Standing gates:
 
 | Role | Codex-native route | Claude-native route | Effort |
 |---|---|---|---|
-| Head: decisions, architecture, synthesis | Sol | Fable; Opus fallback | medium/high |
-| Scouts (codebase map, backlog recon) | Luna for bounded scans; Terra if interpretation is material | Sonnet | medium |
-| Executors (code changes) | Terra; Luna for clear repeatable work | Sonnet | medium |
-| Verifiers (run the DoD check) | Luna; Terra if the scenario is complex | Haiku; Sonnet if the scenario is complex | medium |
-| Final review, architecture-critical verification | Fresh Sol | Opus | high/xhigh |
-| Live supervised micro-iteration with no engineering judgment | Spark | Haiku | low |
-| Out-of-family second opinion | Opus or Fable | Sol | high |
+| Head: decisions, architecture, synthesis | GPT-6.1 Sol | Opus 5.5; explicitly selected Fable | high |
+| Scouts: bounded extraction/recon | GPT-6 Luna | Haiku 5.5 | low/medium |
+| Executors: ordinary implementation | GPT-6.1 Sol; configured Z.ai GLM-5.3-Flash | Sonnet 5.5 | medium |
+| Verifiers: fixed DoD checks | GPT-6 Luna; Sol 6.1 for complex scenarios | Haiku 5.5; Sonnet 5.5 for complex scenarios | medium |
+| Final review, architecture-critical verification | Fresh Sol 6.1 or Opus 5.5 | Fresh Opus 5.5 or Sol 6.1 | high/xhigh |
+| Live supervised literal micro-iteration | GPT-6 Luna | Haiku 5.5 | low |
+| Out-of-family second opinion | Opus 5.5 | GPT-6.1 Sol | high |
 
+Sol spans medium/high work through effort and acceptance scope. Exact selectors
+and OMP pinning rules live in `references/model-roles.md`; retired GPT-5.6
+routes receive no new work. Free OpenRouter routes remain unchanged.
 Rows are defaults, not caps. When a cheaper model's output falls short, re-run
 on a smarter model without asking; judge the output, not the price. For
 anything that ships, intelligence > taste > cost — cost is only a tie-breaker.

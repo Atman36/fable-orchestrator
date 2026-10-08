@@ -52,7 +52,12 @@ location, and current content:
   assertion can pin the very behavior being fixed.
 - A field/column name is verified on the CONSUMING type that reads it (a
   client type, a view's exposed column list), not just on the producer or DB
-  row it was copied from.
+  row it was copied from. For JSON runtime artifacts, inspect the actual
+  producer/schema, then preflight shape with `python3 scripts/inspect-json.py
+  <file> --pointer <RFC6901-pointer>` before asserting fields. The helper emits
+  types/counts only, with at most 100 children and exact total/unshown counts;
+  it does not certify schema conformity, source authenticity, or semantics.
+  Keep task-specific semantic assertions and producer truth authoritative.
 - A NEW literal ordered into a typed sink (audit action, event kind, enum-ish
   field): recon quotes the sink's type — closed union, exhaustive switch,
   label map — and the spec extends the union and its labels in-scope or
