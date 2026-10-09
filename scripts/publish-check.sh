@@ -8,7 +8,7 @@ if [ "$(git rev-parse --show-toplevel 2>/dev/null)" != "$(pwd -P)" ] || [ -z "$(
   echo "BLOCK: this directory is not a standalone git checkout of the skill; tracked-file checks would be vacuous" >&2
   exit 1
 fi
-allow='^(SKILL\.md|README\.md|CHANGELOG\.md|LICENSE|\.gitignore|scripts/(publish-check\.sh|feedback-log\.py|inspect-json\.py|test-inspect-json\.py)|references/[a-z0-9-]+\.md)$'
+allow='^(SKILL\.md|README\.md|CHANGELOG\.md|LICENSE|\.gitignore|scripts/(publish-check\.sh|feedback-log\.py|inspect-json\.py|test-inspect-json\.py|check-citations\.py|test-check-citations\.py)|references/[a-z0-9-]+\.md)$'
 for f in $(git ls-files); do
   if ! printf '%s\n' "$f" | grep -Eq "$allow"; then
     echo "BLOCK: '$f' is not in the public allowlist" >&2
