@@ -448,7 +448,11 @@ location, and current content:
   contradict itself; prefer the project's real scanner over an ad-hoc grep
   when one exists. Reconcile every Boundaries/Steps ban against every behavior
   the spec itself requires — a banned data source that a required behavior
-  still needs gets an explicit carve-out. Cross-check a scout-authored
+  still needs gets an explicit carve-out. Include the dispatch envelope in
+  this reconciliation: required target access and resource lifetimes must fit
+  its permissions and cleanup instructions. A necessary exception names the
+  exact resource and allowed effect; it grants no broader access.
+  Cross-check a scout-authored
   instruction doc's own test list against its Steps/DoD before freezing the
   spec, and resolve any contradiction by the DoD.
 - A spec that delegates acceptance to a source doc or shared contract quotes
@@ -735,7 +739,14 @@ location, and current content:
   `npx vitest run` where the gate was `npm test` (build + `node --test` over
   `dist`) — and dry-run the literal command against the real tree, since a
   pre-existing basename collision left bare `pytest -q` unable to collect at
-  all. (b) The HARNESS ENTRY POINT traverses the layer that WRITES the state the
+  all. If the runner can reach a protected resource, require a task-local
+  preflight that loads its actual configuration and asserts the effective
+  target identity before fixture creation or API traffic. Test names, mock
+  markers, and requested environment overrides are not isolation evidence.
+  If that assertion is unavailable, use a proven isolated venue or mark the
+  check unverifiable. Name any necessary read-only configuration discovery
+  separately in Boundaries; it does not authorize test traffic.
+  (b) The HARNESS ENTRY POINT traverses the layer that WRITES the state the
   feature reads: a probe script that bypasses the webhook owning those writes
   exercises the fallback path, so its green is about the wrong mechanism. (c)
   The probe's SURFACE and PRINCIPAL match the real usage scenario — a

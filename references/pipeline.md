@@ -308,12 +308,23 @@ intersection: serialize those tasks or give them independent worktrees. Never
 amend ambient `HEAD` unless it still equals the intended task commit; otherwise
 create a task-only follow-on commit.
 
-Before a tool upgrade or multi-file compiler/test/build dispatch, check host
-free disk (`df -h`) and require at least 2 GiB available after any automatic
-runtime or cache rehydration; below that, stop for an owner-approved cleanup of
-one exact cache target. If the command guard rejects broad recursive removal,
-use an environment-supported, non-following exact-path deletion mechanism only
-after that authorization, then verify target absence and reclaimed space.
+Before a tool upgrade or compiler/test/build dispatch, measure host free disk
+(`df -h`) and the relevant runtime capacity, including concurrent workloads.
+Name the heavy commands and their required headroom in the spec, accounting
+for dependency installs and automatic runtime/cache rehydration. If an install
+or build footprint is not measured, retain 2 GiB as a conservative disk default;
+a lighter probe needs its own footprint, not an inherited build threshold.
+A shortfall blocks only the named resource-dependent commands: preserve
+independent implementation and light checks, and name a proven fallback venue
+or mark the blocked checks unverifiable. Do not mark the task accepted while
+its required checks remain unproven. Before starting additional services,
+verify capacity and capture the identity/liveness of preserved services;
+confirm afterward that they stayed intact, or stop the affected work.
+
+Cleanup still needs owner authorization for one exact cache target. If the
+command guard rejects broad recursive removal, use an environment-supported,
+non-following exact-path deletion mechanism only after that authorization,
+then verify target absence and actual reclaimed space.
 Parallel dependency installs need additional headroom; on low-disk hosts run
 them sequentially reusing existing `node_modules`, or clean a worktree's
 `node_modules` right after its verification. When a worktree task
