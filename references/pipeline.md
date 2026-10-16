@@ -308,6 +308,20 @@ intersection: serialize those tasks or give them independent worktrees. Never
 amend ambient `HEAD` unless it still equals the intended task commit; otherwise
 create a task-only follow-on commit.
 
+For tasks sharing a runtime lock, specify an executable lifetime and recovery
+contract. Prefer process-scoped locks; otherwise keep acquire/work/release in
+one shell call with exit cleanup, or persist the task/attempt, holder process
+identity and lock generation across calls. Bound acquisition waits and name
+the recovery owner: hard kills bypass exit traps. Reclaim only through a
+race-safe runtime operation that rechecks the same lock generation and proves
+its holder dead. A PID alone, a timeout, missing ownership data or permission
+denial cannot authorize removal. For a live hung worker, use only its
+confirmed owned backend's authorized interruption path, then verify death
+before reclaim. Acceptance exercises normal release, killed-holder recovery, a
+live holder that must retain its lock, and competing reclaimers; changed or
+uncertain ownership fails closed within the deadline. Use a task-local runtime
+test: no generic helper can infer arbitrary backend ownership.
+
 Before a tool upgrade or compiler/test/build dispatch, measure host free disk
 (`df -h`) and the relevant runtime capacity, including concurrent workloads.
 Name the heavy commands and their required headroom in the spec, accounting
