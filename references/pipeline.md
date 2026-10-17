@@ -275,6 +275,17 @@ is still running (a backgrounded run or a Monitor pause will not re-wake
 you). One sanctioned exception: a server the check needs lives and dies
 inside a single synchronous shell call — start it with `&`, poll, kill it
 before the call returns; never leave it running past the call.
+
+For each potentially long check, the spec names its working directory, expected
+runtime bound, effective tool/job deadline and supported wait/join mechanism.
+Distinguish an output-yield interval from a deadline that kills the process.
+Use a supported deadline long enough for the check, or a documented no-deadline
+mode with a bounded check-level timeout; never assume `timeout 0` has portable
+semantics or that a requested cap survived host clamping. Before dispatch, use
+a harmless task-local probe to prove that a yielded check can be joined through
+its exit status and report delivery under the selected runner. A yielded or
+still-running check is incomplete. If the host cannot keep the check attached,
+use a confirmed durable runner or leave acceptance explicitly unverified.
 When done: run the verification from the DoD section. If repo files changed,
 make one conventional commit mentioning T<n>. An evidence-only task or a task
 that produces no repo change returns its required evidence artifact and proves

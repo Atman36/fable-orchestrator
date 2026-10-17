@@ -651,9 +651,19 @@ location, and current content:
   DELETING a test file with assertions migrated elsewhere, the DoD demands a
   title-by-title migration table in the report; the net suite-count delta is
   the tripwire.
-- A verify or smoke SCRIPT is itself an artifact with a DoD: one green
-  end-to-end run against a real target before the package ships. "Compiles and
-  reviewed" is not verification for a runner.
+- A verify or smoke SCRIPT is itself an artifact with a DoD. Enumerate its
+  delivered subcommands and behavior-changing modes, then require a green
+  end-to-end run for each against a real target in an authorized disposable
+  venue before the package ships. Compile or review alone is insufficient.
+  Record a mode-to-command/exit/evidence table. When replacing an existing
+  runner, compare the old and new named-check sets and account for every
+  retained or deliberately removed check. Each new check needs a passing
+  control on correct behavior and a targeted failing control. On a pre-feature
+  baseline, only feature-discriminating checks must fail; unrelated invariants
+  may pass. A baseline that lacks the entire feature cannot establish absence
+  of false positives. Require a task-local executable mode/control matrix;
+  arbitrary runner semantics cannot be inferred by a generic helper. Any mode
+  without a safe test venue remains unverified and blocked from production use.
 - A verification command is checked against the real artifact's shape: `grep`
   over a listing containing non-ASCII filenames goes binary and reports a false
   MISSING — use `grep -a` or extract first. A false MISSING wastes rounds; a
