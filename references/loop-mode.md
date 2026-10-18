@@ -79,6 +79,12 @@ interposes a kernel with its own path allowlists, cost caps, watchdogs, and
 rollback artifacts — reconcile each spec against the kernel BEFORE dispatch,
 or the runner silently rolls back healthy work:
 
+- **Launch lifetime** — before dispatching an external worker, the head
+  applies the long-check lifetime contract in `references/pipeline.md` §
+  Dispatch to the launch itself. Record the effective host/job deadline and
+  worker CLI time bound separately; demonstrate launcher → worker → report/exit
+  completion with a harmless probe through that same launcher. A worker's
+  internal gate timeout does not prove its parent launch can survive it.
 - **Forbidden paths** — enumerate the runner's global/kernel forbidden paths
   and reconcile them against every file each spec orders changed; a
   spec-mandated file on the forbidden list needs an explicit pre-dispatch

@@ -887,15 +887,26 @@ location, and current content:
   across ALL candidate sources in parallel, each told to confirm or refute
   relevance first and stop early if irrelevant — a plausibly-named file can be
   the wrong corpus.
-- **Local citation gate.** If a synthesis or review report contains local
-  file:line citations, require a nonempty JSON array with exactly `path`,
-  `line`, `quote` per item: canonical relative POSIX path, positive integer
-  1-based line (not bool), nonblank single-line literal quote. Run
+- **Local citation gate.** Before a quoted source fact or source-derived
+  identifier determines a binding contract requirement in an executor spec,
+  validate its citation manifest against that artifact's actual authorized
+  source root: the assigned checkout/revision for repository files, or an
+  explicitly scoped evidence directory for task-local logs and reports. Use
+  separate root-bound manifests when origins differ; keep evidence in place
+  and preserve the checker's path-containment rules. Apply the same gate to
+  local file:line citations in synthesis and review reports.
+  Require a nonempty JSON array with exactly `path`, `line`, `quote` per item:
+  canonical relative POSIX path, positive integer 1-based line (not bool),
+  nonblank single-line literal quote. Run
   `python3 scripts/check-citations.py <manifest.json> --root <source-root>`;
-  every quote must occur at that exact line. A fresh independent verifier
-  reruns against the exact reviewed source checkout and compares claim meaning
-  with the quote separately. This gate checks pointer/quote fidelity only;
-  semantic correctness and claim coverage still require review.
+  every quote must occur at that exact line. A carried-over quote is rechecked
+  before edits if its source revision or evidence artifact changes. A fresh
+  independent verifier reruns against the exact reviewed checkout/evidence root
+  and compares claim meaning with the quote separately. This gate checks
+  pointer/quote fidelity only; semantic correctness and claim coverage still
+  require review. The head maps every binding quotation/identifier to its
+  evidence; the checker cannot infer omitted claims or prove that a literal
+  quote supports a decision.
 - **Visual DoD (full rule; SKILL.md keeps the headline).** A visual change's DoD
   compares a live headless screenshot against the design target (or pre-change
   baseline) and names the specific differences to check — spacing, color, copy,
