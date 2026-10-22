@@ -499,10 +499,15 @@ location, and current content:
   element: run the project's test suite in the DoD and grep the old strings
   across test files; co-located tests get updated to the new contract
   (open-to-assert), never deleted — typecheck and lint cannot see any of this.
-- A shared UI primitive or domain-type cutover enumerates every consuming
-  interaction helper, mock, constructor, and exact action-count assertion.
-  Focused transpile tests are not a type gate: run workspace TypeScript
-  diagnostics plus the full consuming suite before handoff.
+- A shared UI primitive, shell/API-request change, or domain-type cutover
+  enumerates every consuming interaction helper, mock, constructor, and exact
+  action-count assertion. Bind the executor DoD to the canonical runner's
+  collected consumer set, including strict API mocks and shell/layout tests;
+  reconcile collected versus executed test paths mechanically. If that set
+  cannot be established, run the full relevant suite. A hand-picked passing
+  subset does not close shared-surface acceptance. Focused transpile tests are
+  not a type gate: run workspace TypeScript diagnostics plus that consuming
+  suite before handoff.
 - Keep source-shaped review bundles outside compiler and test-discovery roots.
   If a foreign bundle already exists, preserve it and identify its owner before
   remediation. Bind the gate to the repository's real compiler configuration
@@ -549,6 +554,17 @@ location, and current content:
   budget), or state the content assertion and let the verifier choose the
   command. A reachable CLI does not prove an importable module path; dry-run
   the exact resolution/launch command before hardcoding either.
+  For a reused or retargeted venue, attach a per-runner target matrix derived
+  from its resolver and refusal predicates: exact binary/version, cwd/HEAD,
+  project, ports/socket, env precedence, clean-tree and fresh-output-path
+  requirements. Check every derived port and every command in sequence,
+  including separate dry-run/apply output paths when freshness is required;
+  copy a proven recipe verbatim, then revalidate it against the current runner.
+  Require a task-local executable preflight over this matrix before dispatch;
+  generic spec lint cannot infer arbitrary runner guards. Inventory existing
+  resources by identity/owner instead of assuming an empty daemon. Preserve
+  foreign resources and refusal behavior; a conflict changes the spec or blocks
+  the affected check, never authorizes weakening the guard or deleting state.
 - Npm scripts hide network and install behavior behind nested `npx` calls.
   For no-network/no-install tasks, inspect the exact script chain before the
   first run, prove each `npx` binary is project-pinned or already cached, and

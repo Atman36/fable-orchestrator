@@ -334,11 +334,16 @@ uncertain ownership fails closed within the deadline. Use a task-local runtime
 test: no generic helper can infer arbitrary backend ownership.
 
 Before a tool upgrade or compiler/test/build dispatch, measure host free disk
-(`df -h`) and the relevant runtime capacity, including concurrent workloads.
-Name the heavy commands and their required headroom in the spec, accounting
-for dependency installs and automatic runtime/cache rehydration. If an install
-or build footprint is not measured, retain 2 GiB as a conservative disk default;
-a lighter probe needs its own footprint, not an inherited build threshold.
+(`df -h`) and the relevant runtime capacity. Put a task-local executable
+capacity preflight in the DoD: command, pinned tool/version, host and runtime
+free space, measured peak growth, concurrent reservations, and the required
+post-run floor. Budget the whole acceptance cycle, including a failed gate,
+one repair venue and a rerun; dependency installs, image pulls, VM-disk growth
+and swap can share the same host capacity. Per-lane floors are not additive
+safety. Recheck before each heavy stage and serialize when aggregate headroom
+is insufficient or unmeasured. Unknown footprint requires a measured bounded
+probe or a proven alternate venue, never a universal guessed disk threshold.
+A lighter probe needs its own footprint, not an inherited build threshold.
 A shortfall blocks only the named resource-dependent commands: preserve
 independent implementation and light checks, and name a proven fallback venue
 or mark the blocked checks unverifiable. Do not mark the task accepted while
