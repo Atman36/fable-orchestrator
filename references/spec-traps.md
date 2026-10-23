@@ -74,11 +74,16 @@ location, and current content:
   same-process observation does not transfer to a resume or restart path.
 - Any concrete number a spec or DoD quotes is computed from the real data or
   marked do-not-assert, never invented as an illustration.
-- A migration/sequence number is a codebase fact: list the target directory in
-  recon; never inherit the next number from a dossier or memory. When ordered
-  migrations replace a function, trace every replacement through the selected
-  revision and quote the final effective definition. A filename or an earlier
-  definition does not prove current behavior.
+- A migration/sequence number is a codebase fact: census the base checkout,
+  active integration branches and the intended target's applied-version ledger
+  using already-authorized evidence. Derive the next version at execution time;
+  an illustrative number in a spec is not an allocation. Require a task-local
+  executable uniqueness check over that union and serialize allocation among
+  active migration writers; unknown required sources leave this gate unverified.
+  Do not reserve versions for unwritten future work. When ordered migrations
+  replace a function, trace every replacement through the selected revision and
+  quote the final effective definition. A filename or an earlier definition
+  does not prove current behavior.
 - A scout's negative claim ("only consumer", "no X exists") entering a DoD or
   Decision: re-verify with your own grep at spec time, sweeping untracked and
   gitignored files too, or word it conditionally — never freeze it as a hard

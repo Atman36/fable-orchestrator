@@ -205,6 +205,9 @@ fork that halts the pipeline for one narrow question. Standing gates:
 
 ## Model routing
 
+For optional OMP advisors, reviewer priorities or event hooks, read
+`references/omp.md` before configuring or relying on them.
+
 | Role | Codex-native route | Claude-native route | Effort |
 |---|---|---|---|
 | Head: decisions, architecture, synthesis | GPT-6.1 Sol | Opus 5.5; explicitly selected Fable | high |
