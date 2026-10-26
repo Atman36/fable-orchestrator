@@ -1,7 +1,8 @@
 # Consolidation — promoting feedback into rules
 
-Read this file when the review trigger fires (see SKILL.md "Review trigger")
-and the user confirms a consolidation run.
+Read this file when the review trigger fires (see
+`references/feedback-loop.md` § Review trigger) and the user confirms a
+consolidation run.
 
 Consolidation is a normal task through the pipeline: spec → executor → fresh
 verifier, target repo = this skill's directory.

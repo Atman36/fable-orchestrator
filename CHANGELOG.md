@@ -1,5 +1,360 @@
 # Changelog
 
+## 2.53.0 — 2026-10-26
+
+Owner-requested journal-driven maintenance over the 69-record relay journal;
+a local instruction version, not a publication claim. Session provenance for
+records without `session_id` was taken from their recorded task prefix; one
+head and its relay count as one session.
+
+- `references/model-roles.md`: native OMP `task` accepts `model` only for
+  `seance` (four sessions) — pin through the installed `omp -p --model` runner
+  with the no-fallback overlay, or dispatch unpinned and ledger the
+  self-reported model. Luna boundaries from three sessions: no large-file
+  positional inserts, no long-line reads without grep extraction and
+  line-number checks, no image verdicts; UNVERIFIED core sections go to Sol
+  once.
+- `references/pipeline.md`: the dispatch envelope pins an absolute venue and
+  HEAD, requires the worker to echo `rev-parse --show-toplevel HEAD` first and
+  to use absolute paths or `git -C`; the head rejects reports with a missing or
+  mismatched venue (three sessions read a stale worktree or default cwd). The
+  spec template's Decisions field now carries the pinned-old-behavior grep and
+  the authorized test-to-update set — the prose census rule existed and failed
+  again in three sessions.
+- `references/spec-traps.md`: a cause named by review or recon is measured on
+  the failing surface before a DoD depends on it, a diagnostic reproduces the
+  exact recorded failure shape first, and a fail-closed claim is traced through
+  later consumer overrides. The rendered-browser rule now requires the touched
+  module's browser specs on base and candidate and client-side navigation.
+- Dispositions: 24 applied, 16 already covered, 24 project-scope product or
+  harness traps (not transferred to any project file by this run); 5
+  single-session general lessons remain pending. Hard rules are unchanged.
+- Owner instruction: remove the inactive `gpt-5.3-codex-spark` route from
+  `references/model-roles.md` and `references/codex.md`; live supervised
+  micro-iterations go to Luna (or the Claude fallback). The micro-iteration
+  discipline (one invariant per call, stop after RED, reroute triggers) is kept
+  without the model name.
+- Owner instruction: GLM-5.3-Flash (`zai/glm-5.3-flash`) is paused — removed
+  from the SKILL.md executor row and the Medium tier; `model-roles.md` keeps a
+  one-line "never route until re-enabled" entry.
+- Owner instruction: name the free OpenRouter pool in `model-roles.md` §
+  Free OpenRouter pool — Nemotron 3 Ultra (text cross-checks), Nemotron 3.5
+  Super VL (visual triage) and Nemotron 3.5 Lightning (bulk classification),
+  with the provider's logging notice turned into an egress limit and a
+  no-silent-paid-variant rule. SKILL.md points there instead of "remain
+  unchanged".
+- Limitation: the census and browser-gate rules are still prose; a spec-check
+  gate for them is not part of this version.
+
+## 2.52.0 — 2026-10-25
+
+Owner-requested journal-driven maintenance; a local instruction version, not a
+publication claim.
+
+- Promote two multi-session relay clusters into the free-route guidance in
+  `references/model-roles.md`: a free route that passes smoke can still fail at
+  task scale (explicit short deadline, checkpoint commit, artifact-existence
+  check before successor dispatch, escalate stalled critical-path work to a
+  stronger route), and a free VL verdict — PASS or FAIL — is a hypothesis that
+  needs the head-opened image, a capture-method check and re-verification on a
+  reliable vision route.
+- Disposition a 15-record native batch from a single orchestration session:
+  ten project-scope traps returned to the owning project dossier; five
+  generalizable single-session lessons retained in archive for corroboration.
+  No native record met the two-session promotion gate; hard rules, routing
+  table and pipeline are unchanged.
+- Relay journal 66 → 61 pending; native journal 0 pending. Raw journals,
+  archives and this history remain local.
+
+## 2.51.0 — 2026-10-23
+
+Owner-approved OMP reference for selective ongoing advisors, separate WATCHDOG
+priorities and deterministic event hooks, grounded in official documentation.
+Preserve fresh-context acceptance, model/provider authorization and actual gate
+results; no feature, dependency or configuration is enabled by this update.
+
+Review six new local records: four already covered, one migration-version
+collision corroborated by a retained independent-session observation, and one
+navigation-race singleton not promoted. Refine only the owning migration clause
+with current cross-branch/ledger census and executable uniqueness, preserving
+execution-time allocation and effective-definition tracing. Journal originals,
+verification evidence and this maintenance history remain local. Commit only
+this batch's operative skill/reference changes; no remote publication requested.
+
+## 2.50.0 — 2026-10-22
+
+Owner-requested maintenance of 124 pending records; this is a local maintenance
+version, not a publication claim.
+
+- Replace the guessed disk floor with a task-local executable capacity budget
+  for concurrent workloads and the failed-gate/repair/rerun cycle.
+- Require a per-runner target/precondition matrix and executable preflight when
+  reusing or retargeting a verification venue; retain refusal and ownership gates.
+- Bind shared UI changes to the canonical collected consumer suite, including
+  strict API mocks and shell/layout coverage, with collection/execution accounting.
+- Fifteen observations from independent identified sessions support these three
+  changes. Disposition every reviewed record; retain raw evidence only locally.
+- Preserve native edition differences, main skills, routing and unrelated work.
+  Commit only this batch's operative reference hunks; keep history, journals and
+  review artifacts uncommitted. No remote publication authorized.
+
+## 2.49.0 — 2026-10-18
+
+Owner-requested maintenance of 33 new native feedback records; this version
+label describes local instruction changes, not publication.
+
+- Reuse the exact local citation checker before source quotations or identifiers
+  determine binding contract requirements in executor specs; retain its schema,
+  independent verification, semantic limits and existing report coverage.
+  Repository files and out-of-tree task evidence retain separately scoped
+  original roots; no evidence relocation or path-containment bypass.
+- Apply the existing long-check lifecycle contract to the external-worker launch
+  itself, owned by the head; distinguish host deadline from worker CLI bound.
+- Four pending observations support the two scoped changes; the launch family
+  also uses one retained independent-session archive observation. Native copies
+  and repeated incidents never add session credit.
+- Preserve main skills, routing, hard rules, native differences and unrelated
+  local work. Archive reviewed records with explicit individual dispositions;
+  raw feedback, changelog and verification evidence remain local and uncommitted.
+- Source/instruction checks do not establish live external-runner reliability
+  or measured model-quality improvement. Commit only this batch's operative
+  reference hunks; no remote publication is requested.
+
+## 2.48.0 — 2026-10-17
+
+Owner-requested maintenance of 45 pending native journal records; this version
+label describes local maintenance, not publication.
+
+- Use six observations from five identified sessions to refine long-gate
+  deadlines/join evidence, smoke mode coverage and discriminating controls;
+  each promoted family has evidence from two independent sessions.
+- Merge only the owning pipeline and smoke-check clauses; preserve main skills,
+  routing, hard rules, unrelated source work and native-edition differences.
+- Require task-local executable proofs instead of assuming universal timeout
+  semantics or inferring arbitrary runner modes with a generic helper.
+- Archive reviewed entries with individual reasons after validation; preserve
+  prior archive bytes and any later concurrent appends. Keep raw feedback local.
+- Instruction/source checks do not establish live runner behavior or measured
+  model quality. Commit only this batch's operational reference changes;
+  changelog, summaries and verification evidence remain local and uncommitted.
+
+## 2.47.0 — 2026-10-16
+
+Owner-requested journal maintenance batch; this version label does not claim
+publication. Review 33 pending records across the two native installations.
+
+- Promote two independently identified shared-lock incidents into one scoped
+  lifetime, bounded-wait and race-safe recovery contract in each pipeline.
+- Preserve live/unknown holder protection, all prior clauses, native edition
+  differences and the main skill byte-for-byte; add 981 bytes per reference.
+- Archive the 33 reviewed records with individual dispositions, plus one
+  corrected maintenance readiness event; preserve raw evidence and peer appends.
+- Structural, privacy/package and fresh independent instruction-case checks
+  pass. These are source checks, not live lock or measured model-quality proof.
+- Keep local changelog, summaries, journals and verification reports uncommitted;
+  commit only the new operational instruction hunk. Preserve prior local work.
+
+## 2.46.0 — 2026-10-15
+
+Owner-requested source-first review of the skill and the attached Deep Research
+summary. Runtime mechanisms were checked against Orca's official skill/docs,
+Hermes skills/bundles documentation, Herdr skill and AWS CLI Agent Orchestrator
+quick start; social-media throughput/cost anecdotes remain unverified.
+
+- Add an **optional** capability-first backend reference; separate instruction
+  bundles from actual worker lifecycle, with version-matched Orca dispatch and
+  evidence/cleanup gates. No new platform or dependency is assumed or installed.
+- Resolve the task-branch vs main conflict: no executor lands directly on main;
+  no push/merge/deploy without action-specific authorization. Parallel work and
+  background notifications are conditional on measured host support.
+- Make loop triggers, `/goal`, model routing, resource checks and Codex CLI
+  assumptions conditional. Safety refusals do not trigger model-shopping.
+- Narrow external-runner path permissions and disallow recovery-by-push;
+  preserve independent acceptance and explicit unverified verdicts.
+- Refresh the README and fix the feedback review-trigger reference. Offline
+  unit/contract checks are not production/runtime interoperability evidence.
+  No publication, feedback journal or project data accompanies this ZIP.
+
+## 2.45.0 — 2026-10-15
+
+Owner-requested review of 30 native feedback records; the other native journal
+had no pending entries. Two observations from distinct identified sessions
+support one release-gate fail-open family. Ten records without session IDs
+remain unknown; a corrected process diagnosis supplies no extra occurrence.
+
+- Extend the existing gate-mutation DoD with a scoped executable bypass matrix:
+  fixed acceptance policy independent of caller options, rename/deletion and
+  structural configuration checks, mode coverage, authoritative CI attempts,
+  and fail-closed evidence retrieval, with an accepting control.
+- Keep the rule in the matching reference in each installation, preserving
+  all original clauses, main skills, routing and edition-specific guidance.
+- Give every reviewed record an explicit disposition; archive through the
+  locked fingerprint-matching helper only after verification. Keep unique
+  evidence, later peer appends, and pre-existing archive bytes intact.
+- Checks cover source preservation and synthetic instruction scenarios, not
+  live release behavior or measured model quality. No publication is requested.
+
+## 2.44.0 — 2026-10-13
+
+Owner-requested consolidation of 43 pending native records plus one resolved
+maintenance observation. Six snapshot observations
+support two scoped merges across independently identified sessions; 37 retain
+explicit covered, project-specific, unsupported, or below-threshold reasons.
+Seven unknown originating sessions contribute no independent promotion credit.
+
+- Scope resource headroom to the named commands and measured runtime capacity;
+  preserve feasible work while keeping required verification incomplete until
+  evidence exists. Keep exact cleanup authorization and preserved-service checks.
+- Reconcile dispatch envelopes with required resource lifetime and target access;
+  require task-local effective-target evidence after runner configuration,
+  before fixtures or traffic can reach a protected resource.
+- Preserve every unrelated clause and native-edition difference. No generic
+  helper can infer arbitrary runtime footprints or target-selection semantics;
+  task-local executable assertions remain necessary. Scenario review validates
+  instruction decisions, not measured production or model performance.
+- Archive only the reviewed snapshot through fingerprint-matched locked writes;
+  preserve raw observations and later peer appends. Keep journals, reports and
+  this changelog local; commit only the two operational reference sources.
+
+## 2.43.0 — 2026-10-09
+
+Owner-requested consolidation of the current 27-record native snapshot
+(27 Codex, zero Claude), plus eight reviewed same-session maintenance observations.
+Two independent citation incidents apply; the other 25 snapshot entries and
+eight maintenance entries retain complete evidence and explicit dispositions.
+Fourteen legacy records have unknown originating sessions; task counts,
+retries and unknown identities do not add independent recurrence.
+
+- Promote the repeated local file/line citation check into a small read-only
+  standard-library helper instead of restating the existing grounding rule.
+  A strict manifest binds each literal quote to its exact source line; invalid
+  schemas, unsafe paths and wrong lines fail without partial success.
+- Add one conditional gate beside the existing grounding rule for synthesis
+  and review reports; preserve semantic review, snapshot/source limitations,
+  every old clause, both main files and edition-specific operating rules.
+- Keep project-specific policy and unverified model/timing heuristics local;
+  no OMP/model routing changes, package installation or public publication.
+- Keep the journal and this changelog local; commit only operational skill
+  sources, helper and meaningful contract tests. Later appends remain
+  pending under native fingerprint-matched archival.
+
+## 2.42.0 — 2026-10-08
+
+Owner-requested consolidation of 224 native snapshot records (121 Codex,
+103 Claude), plus five maintenance observations from this session. Fourteen
+snapshot dispositions apply to this version: six implement explicit owner
+model policy and eight support the repeated receipt/manifest shape family.
+The latter has two verified originating sessions; retries, unknown IDs and
+this maintenance session are not counted as independent origins. Covered,
+project-specific and below-threshold records retain their complete original
+evidence and explicit reasons. Canonical archive duplicates are preserved;
+matched dispositions and newly appended archive rows are counted separately.
+Later peer appends remain pending.
+
+- Align current default routing with Luna/Haiku 5.5, GLM 5.3 Flash/Sonnet 5.5/
+  Sol 6.1, and Sol 6.1/Opus 5.5. Preserve explicit optional-model safeguards;
+  remove retired automatic routes and unverified numerical comparisons.
+- Promote repeated receipt-shape inspection to a small read-only JSON helper.
+  It fully parses before resolving an exact pointer, bounds child descriptors,
+  suppresses scalar values, and rejects duplicate keys and nonfinite numbers.
+  Shape inspection does not prove schema validity or task-specific semantics.
+- Pin exact OMP selections for smoke evidence; judgment has a separate role
+  and fallback chain. Local OMP routing removes unintended Opus escalation
+  and the exhausted judgment route, disables unused llama.cpp discovery, and
+  preserves every free OpenRouter identity. No plugins are installed.
+- Verify helper behavior and clause preservation in both native editions.
+  OMP 18.8.4 runtime receipts establish successful tool reading and synthetic
+  semantic search; they do not establish all provider quotas or every Doctor
+  check. Later binary versions require a separate current-state observation.
+- Preserve hard rules, autonomy boundaries and distinct native editions.
+  This changelog entry and all journals remain local and outside the commit.
+
+## 2.41.0 — 2026-10-04
+
+Owner-requested native-journal consolidation: 40 snapshot records across two
+installations. Six independently supported Claude observations inform three
+localized merges; covered, unknown-provenance, and below-threshold records
+retain their original evidence with explicit dispositions. Later appends
+remain pending. This changelog entry is local and excluded from the commit.
+
+- Trace mandatory final-review criteria to exact primary acceptance lines or
+  established repository invariants; identify broader suggestions separately.
+- Require producer-shaped, nonoverlapping raw/classified/unclassified count
+  reconciliation as executable task evidence; qualify subset coverage.
+- Verify effective fixture inputs after relevant transformations and prove
+  the intended boundary is reached before accepting a probe.
+- Preserve each installation's defaults, hard rules, and original directives.
+  No global wrapper can interpret arbitrary producer formats or fixture
+  semantics; task-specific executable assertions remain required. Static
+  instruction checks establish clause coverage, not measured agent behavior.
+
+## 2.33.0 — 2026-09-05
+
+Consolidation of 210 pending events from two local feedback journals, plus one
+fresh isolated compiler/test-discovery replay recorded during this update.
+Existing rules remain the authority for covered failures; project-specific
+and insufficiently independent observations are retained in the local archive.
+
+- Reconcile report ownership with native read-only capabilities: the head
+  persists complete finals without granting workers unnecessary write tools.
+- Replace label-based reconnaissance assumptions with effect and path
+  boundaries, including query caches and unavailable shell operations.
+- Keep source-shaped review bundles out of compiler/test discovery; verify
+  actual collected paths without excluding failing product files.
+- Feedback accepts optional, validated `session_id` provenance. Consolidation
+  no longer treats task/worker counts or corrected claims as distinct sessions;
+  older writers remain usable without fabricated provenance.
+
+## 2.32.0 — 2026-09-04
+
+Consolidation of 254 pending feedback events across the Claude and shared
+Fable journals. Repeated cross-session clusters added narrow controls; covered,
+project-specific, and singleton events were archived without expanding the
+always-loaded surface.
+
+- Worker release now requires exact report-path equality plus a readable
+  artifact; status-only and alternate-document handoffs remain non-delivery.
+- Build dispatches measure disk after runtime rehydration and verify any
+  explicitly authorized exact-path cache cleanup by effect.
+- Push/replay sequencing binds snapshots, runners, and authorization to the
+  exact tested runtime and `HEAD`.
+- Spec gates now cover workspace type diagnostics after focused tests, shared
+  consumer/helper migrations, keyed UI state transitions, cross-stage identity
+  provenance, and adversarial sibling grammar branches.
+
+## 2.31.0 — 2026-08-26
+
+Consolidation of 79 local feedback events. Existing orchestration and
+spec-trap controls already cover the generalized failures; tool-specific,
+project-specific, singleton, and single-session observations were archived
+without expanding the skill.
+
+## 2.30.0 — 2026-08-22
+
+Consolidation of 130 pending feedback lines. Four truncated JSON records were
+repaired, 14 variant categories were normalized, 17 events produced narrow
+controls, and 113 covered, situational, project-specific, or singleton events
+were archived without expanding the skill.
+
+- Finished executors get one bounded resume attempt; correction ledgers stay
+  open through every acceptance item, and exhausted work stops without
+  accepting red code or discarding a shared-checkout diff.
+- Recovery verification now crosses entry paths, destructive callsites, and
+  injected failure layers while proving cleanup and terminal-output redaction.
+- Feedback capture now uses a schema-validating, locked append helper instead
+  of read-modify-write over the process-shared JSONL file.
+
+## 2.29.0 — 2026-08-20
+
+Consolidation of 65 local feedback events. Repeated cross-session failures
+produced two narrow verification controls; covered, project-specific, and
+single-session observations were archived without adding speculative rules.
+
+- Scenario matrices now derive from real producers and await boundaries and
+  bind each relevant terminal branch to a named, executed test.
+- Verifiers receive literal RED or head-command evidence required by the DoD,
+  while executor conclusions remain withheld.
+
 ## 2.28.0 — 2026-08-18
 
 Consolidation of 15 local feedback events plus a user-supplied account of

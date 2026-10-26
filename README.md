@@ -1,62 +1,44 @@
 # fable-orchestrator
 
-A Claude Code skill that turns Claude Fable 5 into a pure orchestrator: Fable
-understands the task, resolves forks, and writes executor-ready specs — all
-reading, coding, and verification is delegated to cheaper subagents (Sonnet,
-Haiku, Opus), and every result is accepted by a fresh-context verifier that
-did not build it.
+A capability-first orchestration **skill** for Claude-family, Codex-family,
+and explicitly supported agent shells. A head model owns the intent, specs,
+judgment and final synthesis; bounded workers implement, while independent
+checks accept results. The skill is instructions and validators — **not** a
+server, scheduler, background worker service or installation of Orca/Hermes.
 
-## Why
+## Use
 
-Frontier-model tokens are expensive and context is scarce. The division of
-labor that works: the smartest model does judgment (task intent, fork
-resolution, spec-writing); execution runs on models that are fast and cheap;
-acceptance belongs to an agent with a clean context. This skill encodes that
-as hard rules, a model routing table, a spec pipeline, and a feedback loop
-that makes the skill itself improve across sessions.
+Load `SKILL.md` in a compatible skill host or invoke it through that host's
+verified skill-loading mechanism. Follow the host's actual model/tool catalog
+instead of assuming a model ID, slash command or native `Agent` API is present.
+For a one-off change start with one executor and a separate deterministic
+check; scale out only when tasks and isolation justify it. Sensitive effects
+(push, merge, deployment, paid actions, external messages, destructive
+cleanup, private-data egress) remain subject to explicit human gates.
 
-## Install
+The reference most likely to prevent a failed first dispatch is
+[`references/execution-backends.md`](references/execution-backends.md): it
+explains preflights and minimal fallback paths for native subagents, an
+**installed and enabled** Orca runtime, and other optional shells.
 
-```sh
-git clone https://github.com/Atman36/fable-orchestrator "$HOME/.claude/skills/fable-orchestrator"
-```
-
-Then reference it from your global `CLAUDE.md` so it loads for Fable sessions:
-
-> If the running model is Fable (`claude-fable-*`): read
-> `~/.claude/skills/fable-orchestrator/SKILL.md` at session start and operate
-> as the orchestrator it describes.
-
-The skill also supports Opus 4.8 as the head via explicit invocation
-(`/fable-orchestrator`), for when Fable is unavailable or too costly.
-
-## What's inside
+## Structure
 
 | Path | Purpose |
 |---|---|
-| `SKILL.md` | The skill: hard rules, model routing, spec template, pipeline, feedback loop |
-| `references/` | Situational material read at the matching decision point: spec/DoD traps, model roles, Codex rules, loop mode, consolidation |
-| `scripts/publish-check.sh` | Public-safety gate: tracked-file allowlist + secret/path leak scan |
-| `feedback/` (local only, gitignored) | Raw session lessons; never published |
-| `CHANGELOG.md` | Versioned history of rule changes |
+| `SKILL.md` | Always-loaded operating contract: hard rules, autonomy, routing and handoff |
+| `references/execution-backends.md` | Runtime capabilities, supervised worker ownership, worktrees, recovery, bundles |
+| `references/pipeline.md` | On-demand recon → spec → dispatch → acceptance → final review |
+| `references/loop-mode.md` | Scheduled/recurring work only on a verified durable host |
+| `references/model-roles.md`, `references/codex.md` | Conditional model routing and Codex CLI restrictions |
+| `references/spec-traps.md` | Evidence-derived spec and DoD pitfalls |
+| `references/feedback-loop.md`, `references/consolidation.md` | Local feedback and owner-approved rule promotion |
+| `scripts/` | Standard-library validation helpers and tests; `publish-check.sh` is a local leak/allowlist gate |
+| `CHANGELOG.md` | Version history (not raw session or project feedback) |
 
-## The feedback loop
-
-1. **Capture** — adverse events (verifier rejections, user corrections,
-   routing escalations, spec defects) are appended as one-line JSONL records
-   to `feedback/log.jsonl`, keyed by `issue_key` so repeats cluster.
-2. **Review trigger** — at session start the orchestrator reads
-   `feedback/SUMMARY.md`; consolidation is proposed when an issue repeats
-   (≥2 entries from ≥2 sessions) or ≥5 entries are pending.
-3. **Consolidate** — a normal spec → executor → verifier task on this very
-   repo: repeated lessons are generalized (privacy-scrubbed) and promoted into
-   the smallest enforceable surface — a routing-table row beats a prose
-   paragraph — then dispositioned in the log, versioned in the CHANGELOG,
-   committed.
-
-Raw lessons stay local (`feedback/` is gitignored); only distilled, generic
-rules are published. `scripts/publish-check.sh` enforces the boundary and
-must pass before every push.
+Local `feedback/` journals and project/task artifacts are **not** part of this
+skill distribution. They stay outside public material and are excluded by
+`.gitignore`. A distribution ZIP does not provide an Orca runtime, Hermes
+skill bundle, saved task board, remote credentials or persistent agent sessions.
 
 ## License
 

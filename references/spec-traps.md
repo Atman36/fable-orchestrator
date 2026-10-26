@@ -117,6 +117,14 @@ location, and current content:
   "return 500 so the platform redelivers" was an unbounded retry loop against a
   store with no attempt counter. The burden of proof sits with the
   implementer, not the reviewer.
+- A CAUSE named by a review, recon, or code read is a hypothesis until measured
+  on the failing surface. Before a DoD depends on removing it, measure the whole
+  symptom (per-frame presence of the entire container, not the one provider a
+  review blamed); a diagnostic of a recorded failure first reproduces its exact
+  shape (interpreter, process tree, data), since narrower dummies masked a
+  timing defect; and before a spec asserts "fails closed", trace the value
+  through every later override in the consumer, not only the producer the fix
+  touches. Three sessions froze specs on a cause that did not meet the DoD.
 - A negative premise ("no legitimate caller exists", "this path is dead") gets
   its own grep across callers AND the test suite before it freezes a removal
   order: a path guarded by an existing test is a consumed contract, not dead
@@ -531,6 +539,17 @@ location, and current content:
   never into a green checkmark. When a spec ruling is a CONJUNCTION (A and B ⇒
   refuse), the DoD demands a test hitting exactly that conjunction, not each
   side separately.
+- For release-gate specs, bind the required policy to the acceptance contract,
+  independently of caller-controlled options: a target/base flag cannot
+  redefine the branch the gate must require. Enumerate applicable fail-open
+  paths: rename/deletion classification; configuration structure rather than
+  indentation; every CLI mode; failed, pending, and rerun evidence, including
+  which attempt is authoritative; and missing, malformed, or failed evidence
+  retrieval. Filtering to successes or sorting only by original creation time
+  can hide a later failure. Require a task-local executable rejection case for
+  each applicable path and an accepting control under the fixed policy, then
+  apply the mutation-probe rule above. No generic checker can infer an arbitrary
+  project's release policy or CI-attempt ordering; derive both from its contract.
 - Exact-answer, classifier, routing, and language-boundary changes need
   adversarial controls, not only happy paths. The DoD includes: positive cases
   for each intended spelling/script, negative cases where the token is only a
@@ -937,7 +956,9 @@ location, and current content:
   unverified, like a claim without a quote. Not only fidelity: typecheck, build
   and HTTP-200 stay green while the rendered page crashes at runtime (a
   hooks-order violation, a hydration error), so any UI-behavior change needs a
-  rendered-browser check, and any long-running external-process integration (a
+  rendered-browser check — run the touched module's existing browser specs on
+  base AND candidate, and drive client-side navigation transitions, not only
+  document loads — and any long-running external-process integration (a
   spawned CLI, a dev server) keeps a live smoke stage — static review does not
   close runtime acceptance criteria. Cheap default: `npx`-cached Playwright (the
   cached ms-playwright Chromium, not a system-Chrome `channel` — a sandboxed

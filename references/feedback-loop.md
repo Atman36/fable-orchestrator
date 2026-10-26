@@ -14,7 +14,7 @@ The skill improves from evidence, not impressions. State lives next to
 (short digest read at session start), `feedback/archive.jsonl` (consumed
 entries). `feedback/` is gitignored: raw lessons may contain project specifics
 and never leave this machine — only distilled, generalized rules enter the
-public SKILL.md.
+versioned skill files (never published without owner approval).
 
 Treat traces as improvement data, not context to retain wholesale. Preserve
 the decision, tool outcome, error, and repeated sequence needed to explain a

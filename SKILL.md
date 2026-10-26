@@ -62,8 +62,8 @@ human decision boundary instead of declaring completion.
 - Single non-trivial task → recon, one spec file, executor, verifier.
 - Backlog / multi-task job → the full pipeline below.
 - Recurring or scheduled job (`/loop`, `/goal`, cron, event-triggered) →
-  **read `references/loop-mode.md` in this skill's directory FIRST**; never
-  set up a loop without it.
+  **read `references/loop-mode.md` in this skill's directory FIRST**; these
+  commands are examples, not assumed platform features.
 
 You decide the shape of the work. Skipping a stage is fine when you can say
 why; skipping verification never is. When you have enough information to act,
@@ -71,6 +71,19 @@ act — do not re-derive settled facts or survey options you will not pursue.
 When the task is to test or evaluate a tool, run it in its own native mode and
 observe — manual supervision that hides the behavior under test defeats the
 goal.
+
+### Runtime gate (before dispatch)
+
+**Read `references/execution-backends.md` before choosing a worker backend.**
+Inventory the *actual* host tools, permissions, callable models, durable
+artifacts and lifecycle hooks; a skill, shell, worktree, slash command or
+published guide is not evidence that the current platform exposes it.
+Prefer one verified executor + independent check; add a native subagent or
+Orca-managed worker only for a task needing delegation. If no worker is
+available, follow the session-scoped hard-rule waiver below or stop with a
+ready-to-run spec; never simulate a dispatch or promise unseen background work.
+Agent count, worker lifecycle, costs and model choice are observations, not
+claims imported from social posts. A running process is not a completed task.
 
 ### Orchestration shape
 
@@ -154,18 +167,20 @@ in the loop, and let the tier gate dispatch. Unsure of the tier — treat it as
 the more restrictive one.
 
 - **green** — reads, and writes only to its own scratch/board/report files:
-  runs unsupervised.
-- **yellow** — produces something a human ships (a branch/PR, a project-file
-  edit, a draft reply): the agent drafts, a human approves before it lands.
-  Leave it on a branch or as an uncommitted diff, never straight to main/prod.
+  may run unsupervised where the host supports it.
+- **yellow** — produces something a human ships (a task branch/PR, a
+  project-file edit, a draft reply): the agent drafts, a human approves
+  integration or publication. Keep changes isolated on a task branch/worktree
+  or as an uncommitted diff; never land directly on main/prod.
 - **red** — money, production, outbound messages, or anything a customer sees:
   never runs alone; a human authorizes the specific action, every time.
 
 This subsumes the scope/money-fork stop rule — a red action is exactly the
 fork that halts the pipeline for one narrow question. Standing gates:
 
-- Push, force-push, and overwrites of user-primary data are yellow-or-red and
-  get a planned authorization gate.
+- A push, merge, force-push, and overwrite of user-primary data each require
+  explicit authorization appropriate to their effects; do not equate a local
+  task commit with approval to integrate or publish.
 - If merging to the default branch automatically deploys to production, the
   merge is a red production action. Feature-branch push, pull-request merge,
   and production rollout remain separate authorization gates even when the
@@ -191,8 +206,9 @@ fork that halts the pipeline for one narrow question. Standing gates:
   SHA) are hypotheses — re-measure in recon before any branch decision.
 - Every dispatch carries the minimum scope its job needs: a reader gets no
   write tools, a scout on untrusted input gets no credentials, an executor gets
-  no push. Capability handed over "just in case" is capability that gets used
-  under pressure.
+  no push. A worktree isolates files, not access to shared services, secrets,
+  caches or deployed data. Capability handed over "just in case" is capability
+  that gets used under pressure.
 - Sending data out of family (a Codex prompt, any third-party model or service)
   is a data-egress decision, not a routing one: secrets, customer data, and
   private corpora need the user's authorization in the current session — the
@@ -212,7 +228,7 @@ For optional OMP advisors, reviewer priorities or event hooks, read
 |---|---|---|---|
 | Head: decisions, architecture, synthesis | GPT-6.1 Sol | Opus 5.5; explicitly selected Fable | high |
 | Scouts: bounded extraction/recon | GPT-6 Luna | Haiku 5.5 | low/medium |
-| Executors: ordinary implementation | GPT-6.1 Sol; configured Z.ai GLM-5.3-Flash | Sonnet 5.5 | medium |
+| Executors: ordinary implementation | GPT-6.1 Sol | Sonnet 5.5 | medium |
 | Verifiers: fixed DoD checks | GPT-6 Luna; Sol 6.1 for complex scenarios | Haiku 5.5; Sonnet 5.5 for complex scenarios | medium |
 | Final review, architecture-critical verification | Fresh Sol 6.1 or Opus 5.5 | Fresh Opus 5.5 or Sol 6.1 | high/xhigh |
 | Live supervised literal micro-iteration | GPT-6 Luna | Haiku 5.5 | low |
@@ -220,7 +236,8 @@ For optional OMP advisors, reviewer priorities or event hooks, read
 
 Sol spans medium/high work through effort and acceptance scope. Exact selectors
 and OMP pinning rules live in `references/model-roles.md`; retired GPT-5.6
-routes receive no new work. Free OpenRouter routes remain unchanged.
+routes receive no new work. Free OpenRouter routes (owner pool, egress limits)
+live in `references/model-roles.md` § Free OpenRouter pool.
 Rows are defaults, not caps. When a cheaper model's output falls short, re-run
 on a smarter model without asking; judge the output, not the price. For
 anything that ships, intelligence > taste > cost — cost is only a tie-breaker.
@@ -241,8 +258,11 @@ silently inherits a dangerous ambient sandbox mode.
 
 ## Task board
 
-Keep orchestration state in a non-repo directory (session scratchpad or
-similar). **Never commit these files.**
+For a file-backed pipeline, keep the task state in a non-repo directory
+(session scratchpad or equivalent). **Never commit these files.** If an
+observed backend provides the same durable task/attempt/owner state, make
+that the single authority; keep only the specs and report pointers you need,
+not a second status board. Trivial edits need no board.
 
 ```
 <taskdir>/
@@ -262,8 +282,9 @@ coverage and final review.
 
 Statuses in PLAN.md: `todo → spec-ready → in-progress → verify → done | blocked`.
 
-The board has one writer: the orchestrator. Executors and verifiers never edit
-PLAN.md or spec files — they report, you record. Statuses start at `todo` —
+Task state has one writer: the orchestrator. Executors and verifiers never
+edit PLAN.md (or the backend's coordinator-owned task state) or spec files —
+they report, you record. Statuses start at `todo` —
 never pre-fill future results (done marks, commit hashes, verdicts) as
 templates: a templated board reads as finished work later. The same
 discipline covers owner-facing and tracked docs: status edits state only
@@ -272,8 +293,9 @@ in-progress marker, and a count crossing into a tracked file is recomputed
 from a pasted command output, never carried from a digest.
 
 For long-running or backlog work, the task is the unit of control, not the
-agent session, transcript, or PR. PLAN.md is the state machine: every active
-task has an owner/run, a status, an artifact path, and a next transition.
+agent session, transcript, or PR. PLAN.md — **or the one confirmed backend
+state store** — is the state machine: every active task has an owner/run,
+a status, an artifact path, and a next transition.
 Session transcripts are transport; if the transcript disappears but the task
 artifact exists, continue from the artifact and state, not from memory of the
 chat.
@@ -327,8 +349,8 @@ chat.
 - Match requested operations to the worker's actual tool inventory before
   dispatch. If a reader lacks shell, the head supplies Git metadata separately;
   neither a role label nor a report requirement creates a missing capability.
-- Label every dispatch — Agent `description` and report filename — as
-  `<role or model> + <task id> + <short subject>` (e.g. `Executor T4 P1.2
+- Label every dispatch — the host's description field **if supported** and
+  report filename — as `<role or model> + <task id> + <short subject>` (e.g. `Executor T4 P1.2
   snapshot`, `reports/executor-T4.md`) so the user can follow the pipeline
   live.
 - Session-scratchpad spec/board files can be wiped between turn pauses —
@@ -338,7 +360,8 @@ chat.
   retyped.
 
 Before the first dispatch, record the start commit (`git rev-parse HEAD`) in
-PLAN.md — the final review diffs from it.
+the one authoritative task state (PLAN.md for a file-backed run). The final
+review diffs from it.
 
 Session-start recon also checks for a CONCURRENT writer, not only a dirty tree:
 one `git status` is a point-in-time measurement that goes stale within minutes.
@@ -396,14 +419,12 @@ NEXT-SESSION.md still closes the session for anything the loop does not own.
 
 ## Loop mode (recurring / scheduled runs)
 
-The pipeline above is one-shot. For any *standing* job — a queue drained
-task-by-task, a check re-run on a schedule (`/loop`, `/goal`, cron, event
-triggers) — **read `references/loop-mode.md` in this skill's directory before
-creating, scheduling, or resuming the loop.** It defines the head/cheap-model
-division of labor, the five mandatory loop parts (trigger, one change per
-round, a fixed falsifiable check, a loop-owned state file, a hard stop),
-per-round tier routing, the run-once-by-hand rule, and the classifier-refusal
-rule for unattended rounds. Never set up a loop from memory of this paragraph.
+The pipeline above is one-shot. For any *standing* job — queue draining,
+a check on a schedule or an event — **read `references/loop-mode.md` before
+creating, scheduling, or resuming the loop.** Verify that this host actually
+has the proposed trigger and durable runner: `/loop` and `/goal` are examples,
+not portable commands. This reference defines the state, bounded checks,
+authorization tiers, failure/stop conditions and recovery contract.
 
 ## Feedback loop
 
@@ -420,17 +441,18 @@ stays local and gitignored.
 - One short pipeline status: done / in progress / blocked-and-why.
 - Don't retell subagent reports — only the decision and the next step.
 - Progress claims only from tool results of this session; unverified — say so.
-- Check budget/limit consumption at session start and before each large
-  parallel dispatch. Quick estimate:
-  `npx -y ccusage@latest blocks 2>&1 | tail -20` — a local-transcript estimate
-  of the current 5-hour block (weekly totals are estimates too; authoritative
-  percentages exist only in the interactive `/usage` panel — when the estimate
-  runs hot, ask the user for the `/usage` numbers). Tool unavailable — skip
-  without blocking. When low (>80% of the block, a hot weekly estimate, or the
-  user reports a squeeze): lower subagent effort, merge small tasks into
-  bigger ones, defer optional review passes; near a block boundary keep every
-  dispatch's partial completion durable (commit-per-spec, sequential batches)
-  and defer long unsplittable passes past it; never skip specs or verification.
+- Check available budget/limit evidence at session start and before a large
+  dispatch. Use a supported host usage panel or an **already-installed** local
+  meter; never run network-installing `npx -y` merely to estimate quota. A
+  transcript meter is not a provider quota. If unavailable, mark consumption
+  unknown and cap concurrency; on a demonstrated squeeze, prefer smaller
+  batches and durable checkpoints, defer optional review passes, but never
+  skip the task contract or independent verification.
 - The final message re-grounds a reader who saw none of the process: outcome
   first, then evidence, risks if any, and the next step; plain sentences, no
   internal labels, arrow chains, or invented shorthand from the run.
+- Every final report and session handoff ends with an agent ledger: how many
+  agents/model calls ran in the session, one row per dispatch with role, task,
+  requested route (provider/model/effort), observed self-reported model, and
+  outcome/artifact, plus the head model. Count from tool results, not memory;
+  a dispatch whose model could not be confirmed says so.

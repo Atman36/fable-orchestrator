@@ -1,13 +1,14 @@
 # Codex model family via `codex exec` — rules of engagement
 
-Read this file before every Codex routing. The OpenAI Codex CLI runs on the
-user's metered ChatGPT subscription — a scarce resource. In a Codex-native
+Read this file before every Codex routing. Codex CLI may use metered
+subscription access or separately billed credentials; verify the active
+authentication and quota mechanism rather than assuming either. In a Codex-native
 run, route through the Sol → Luna roles below. In a Claude-native
 run, call Codex only when it adds what the native agents cannot:
 
-- **Live GUI/browser walking** — clicking through pages, filling forms,
-  driving desktop apps, screenshotting live states: Codex's computer-use is
-  stronger.
+- **Live GUI/browser walking** — when the installed Codex runtime actually
+  exposes and passes a permitted observation-only computer-use smoke; model
+  identity alone does not prove the tool is available or superior.
 - **Out-of-family second opinion** — an independent review of a plan or a
   risky diff by a non-Claude model.
 - **Explicit user request.**
@@ -26,8 +27,6 @@ service speed are separate decisions.
   or localized work with a narrow contract and fixed acceptance gate.
 - `gpt-6-astra`: explicit opt-in execution escalation for terminal, recovery,
   computer use and unknown stateful environments; never mechanical work.
-- `gpt-5.3-codex-spark`: explicit opt-in, live supervised micro-edits requiring
-  no independent reasoning; never a long-running autonomous worker.
 
 Use exact catalog selectors; retired models have no default or compatibility
 route. Do not infer new Luna/Terra identifiers. Capability, supported effort,
@@ -36,17 +35,18 @@ prove none of them. Tool role labels do not prove dispatch model selection:
 check the supported pinning/override and state the actual route.
 
 The built-in subagent catalog and CLI catalog are separate. Refresh the active
-catalog before the first Codex routing of a session, then inspect the catalog
+catalog and `codex exec --help` (where shell access permits) before the first
+Codex routing of a session, then inspect the catalog and supported CLI flags
 for the route actually used before every pinned dispatch. If the exact
 user-pinned model is absent, preserve the task and spec and use the explicit
 CLI route for that model; if no model was pinned, use the nearest available
 role-equivalent route. An unavailable inherited model must not consume the
-first real dispatch. For example, if Spark is absent, use Luna Standard
-(`gpt-6-luna`) for a clear supervised micro-iteration, or the existing Claude
-fallback when Luna is unsuitable or unavailable.
+first real dispatch. For example, a clear supervised micro-iteration goes to
+Luna Standard (`gpt-6-luna`), or to the existing Claude fallback when Luna is
+unsuitable or unavailable.
 
 Use only effort levels supported by the selected live route, and pin one on
-every call, including Spark. `ultra` is a multi-agent execution mode, not a
+every call. `ultra` is a multi-agent execution mode, not a
 reasoning level; never auto-route it. It requires an explicit user request
 and a separate orchestration decision.
 
@@ -64,7 +64,7 @@ Standard speed is the default. Fast mode is a service tier, not a model, and
 consumes credits at a multiple of Standard (check the current rate). Use it
 only for an explicit latency reason with acceptable credit cost. Pin Standard
 with `-c 'service_tier="default"'`, or Fast with
-`-c 'service_tier="fast"'`; never apply Fast mode to Spark.
+`-c 'service_tier="fast"'`.
 
 ## Invocation
 
@@ -96,9 +96,10 @@ with `-c 'service_tier="default"'`, or Fast with
   `danger-full-access` or unknown settings, stop the resumed call before tools
   run and start a fresh invocation with the reviewed findings in a
   self-contained prompt.
-- Trap: the post-subcommand `codex exec -a/--ask-for-approval` form is rejected
-  by the arg parser (open openai/codex#26602, still broken on 0.142.5) — use
-  `-c approval_policy=never` or the pre-subcommand `codex -a never exec …`.
+- Older Codex CLI versions rejected some post-subcommand approval flags
+  (reported on 0.142.5). Validate the installed parser; use the verified
+  `-c approval_policy=never`/pre-subcommand equivalent and fail closed when
+  syntax or sandbox enforcement cannot be confirmed.
 - `--sandbox danger-full-access` / `--dangerously-bypass-approvals-and-sandbox`
   only inside an externally sandboxed environment AND with explicit user
   approval.
@@ -121,9 +122,9 @@ same agent reviewing itself. Read-only calls (second opinion, GUI observation)
 need no spec or verifier; a precise question and a required report format
 suffice.
 
-Spark is a micro-iteration tool, not a broad executor. Split behavior-dense
+A live micro-iteration worker is not a broad executor. Split behavior-dense
 work by one invariant, one test anchor, or one small artifact per call. For
-strict TDD, make Spark stop after the RED command and report the literal
+strict TDD, make the worker stop after the RED command and report the literal
 failure before any production edit. Stop and reroute after one compaction,
 broad-scan violation, missing durable artifact, or source edit before required
 RED proof. In large test files, give exact test-name anchors and one test case

@@ -10,14 +10,14 @@ Current automatic pool (owner policy; verify exact live availability):
 | Tier | Exact OMP selectors | Effort / role |
 |---|---|---|
 | Small | `openai-codex/gpt-6-luna`, `anthropic/claude-haiku-5-5` | bounded, auto-verifiable work |
-| Medium | `zai/glm-5.3-flash`, `anthropic/claude-sonnet-5-5`, `openai-codex/gpt-6.1-sol` | low/medium for bounded GLM artifacts; Sol medium for normal work |
+| Medium | `anthropic/claude-sonnet-5-5`, `openai-codex/gpt-6.1-sol` | Sonnet/Sol medium for normal work |
 | High | `openai-codex/gpt-6.1-sol`, `anthropic/claude-opus-5-5` | Sol high/xhigh; Opus planning/review, never cheap work |
 
 Codex-native default: **Sol leads and builds → Luna clears bounded volume →
 a fresh Sol or Opus reviews critical output.** Claude-native default:
 **Opus carries planning/review risk → Sonnet builds → Haiku clears bounded
 routine work.** Cross-family review is a deliberate independence tool.
-Fable, Astra, and Spark below require explicit opt-in; none is an automatic tier.
+Fable and Astra below require explicit opt-in; neither is an automatic tier.
 
 - **Fable 5 — explicit opt-in architect & inventor.** Hardest, newest, most ill-defined work:
   inventing products/systems, agent architectures, unexpected approaches,
@@ -56,32 +56,63 @@ Fable, Astra, and Spark below require explicit opt-in; none is an automatic tier
     with a precise acceptance gate. Give Luna a narrow contract; do not make
     it resolve product or architecture forks; escalate to Sol when the task
     changes architecture, security posture, scope, or remains ambiguous after recon.
-  - **`gpt-5.3-codex-spark` — near-instant research preview.** Live,
-    user-supervised, no-reasoning micro-iterations only: one literal rename,
-    prop, type error, CSS adjustment, or similarly exact patch with an explicit
-    check. It is separate from Fast mode and is never an autonomous acceptor,
-    final reviewer, security reviewer, architecture decision-maker, or
-    executor of an irreversible action.
+    Observed Luna failures, three sessions: a positional insert into a
+    ~1400-line doc corrupted it; reads of long single-line CSS came back
+    truncated, with cited lines beyond the file's length; a screenshot
+    verifier returned UNCLEAR on every row without opening the images. Route
+    large-file inserts to a deterministic anchored script plus a diff check
+    (or Sol), long-line census to grep-based extraction with cited line
+    numbers checked against file length, and image judgments to a reliable
+    vision route — Luna gets only metric/JSON checks there. A Luna report
+    with UNVERIFIED core sections goes to Sol once with the same spec.
 - **Haiku 5.5 (`anthropic/claude-haiku-5-5`) — bounded junior.** Classification, extraction, simple edits, short
   summaries, routing, mechanical checks. NOT for architecture, complex
   debugging, large ambiguous tasks, or expensive-mistake decisions; drifts from
   instructions in large contexts.
 
-- **GLM-5.3-Flash (`zai/glm-5.3-flash`) — bounded medium-tier worker.**
-  Use low/medium for clear artifacts with an exact acceptance gate, durable
-  report and deadline; high only after demonstrated complexity. Use only a
-  configured runner; sending private code to Z.ai is a data-egress decision.
+- **GLM-5.3-Flash (`zai/glm-5.3-flash`) — paused, not in the current pool.**
+  Owner does not use it as of 2026-10-26: never route to it, even when the
+  catalog lists it, until the owner re-enables it; a re-enabled Z.ai route is a
+  data-egress decision.
 - **Astra (`gpt-6-astra`) — explicit opt-in execution escalation.** Terminal,
   recovery and stateful unknown environments; never mechanical routine work.
 
 **Exact routing.** Catalog presence is not successful inference. Tool role
 labels do not guarantee per-dispatch model selection: check supported pinning
-or overrides and report the actual route. For an authorized OMP smoke, pin
-`--model <exact-provider/model>` and a temporary configuration overlay with
-`retry: { modelFallback: false }`; do not resume a session or use fuzzy ids.
+or overrides and report the actual route. Observed in four OMP sessions: the
+native `task` tool accepts `model` only for `seance`; scouts and task workers
+run on the host default route. For an authorized OMP smoke, and as the worker
+runner when the exact route matters, use the installed
+`omp -p --model <exact-provider/model>` with a temporary configuration overlay
+`retry: { modelFallback: false }` (a worker run only after its smoke); do not
+resume a session or use fuzzy ids. Otherwise dispatch natively, record the
+requested route as unpinned, and ledger the self-reported model.
 Judgment separately requires `modelRoles.judge: openai-codex/gpt-6-luna` and
 `retry.fallbackChains.judge: []`; do not append a chat thinking suffix to judge.
-Existing free OpenRouter choices remain unchanged.
+
+**Free OpenRouter pool** (owner-listed 2026-10-26; all three ids present in the
+OMP catalog that day — presence is not inference, smoke each before use):
+
+- `openrouter/nvidia/nemotron-3-ultra-550b-a55b:free` — text, 1M context, the
+  strongest free reasoner (55B active MoE). Narrow cross-checks, second
+  opinions, long-context extraction, bounded drafts behind a fixed gate. Never
+  acceptance, never alone on the critical path; tests it authors get a realism
+  review (production-imported units, request-derived mocks).
+- `openrouter/nvidia/nemotron-3.5-super-vl:free` — images, screenshots,
+  documents, video → text (12B active). Visual triage only; its verdicts fall
+  under § Free vision verdicts.
+- `openrouter/nvidia/nemotron-3.5-lightning:free` — 3B active, high
+  throughput. Bulk classification or extraction with a deterministic check;
+  no judgment, no code edits.
+
+The provider logs free-endpoint traffic and asks for no confidential data or
+personal data. Send only public, synthetic, or masked material unless the
+owner authorizes private code or data for that route in the current session;
+screenshots with personal data never go there. The catalog also lists paid
+variants of the same models: pin the `:free` suffix with
+`modelFallback: false` and never fall back to a paid variant silently. A
+`:free` variant can be retired without notice; re-check the catalog each
+session.
 
 **Smoke before routing.** Before the first real dispatch on a pinned model,
 and before advising any production model switch, run one trivial call on the
@@ -91,3 +122,15 @@ a tool-using route must execute a harmless real tool call and deliver a readable
 artifact through the named report writer. A text-only response proves neither.
 Record observed latency and remaining runtime budget; a passing smoke proves
 capability, not that a larger task will meet its deadline.
+
+**Free-route throughput.** Free routes pass smoke and still fail at task
+scale: every free-route dispatch carries an explicit short deadline, a
+checkpoint-commit instruction, and an artifact-existence check before any
+successor dispatch. When a free worker stalls or times out on the critical
+path, move that work to a stronger route; keep free models for narrow
+cross-checks.
+
+**Free vision verdicts.** A free VL model's verdict — PASS or FAIL — is a
+hypothesis, never acceptance evidence: open the actual image behind every
+security, P1/P2, or FAIL claim, check the capture method (masks, fullPage),
+and re-verify its rows on a reliable vision route before acceptance.
