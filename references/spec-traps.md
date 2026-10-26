@@ -52,7 +52,12 @@ location, and current content:
   assertion can pin the very behavior being fixed.
 - A field/column name is verified on the CONSUMING type that reads it (a
   client type, a view's exposed column list), not just on the producer or DB
-  row it was copied from.
+  row it was copied from. For JSON runtime artifacts, inspect the actual
+  producer/schema, then preflight shape with `python3 scripts/inspect-json.py
+  <file> --pointer <RFC6901-pointer>` before asserting fields. The helper emits
+  types/counts only, with at most 100 children and exact total/unshown counts;
+  it does not certify schema conformity, source authenticity, or semantics.
+  Keep task-specific semantic assertions and producer truth authoritative.
 - A NEW literal ordered into a typed sink (audit action, event kind, enum-ish
   field): recon quotes the sink's type — closed union, exhaustive switch,
   label map — and the spec extends the union and its labels in-scope or
@@ -69,8 +74,16 @@ location, and current content:
   same-process observation does not transfer to a resume or restart path.
 - Any concrete number a spec or DoD quotes is computed from the real data or
   marked do-not-assert, never invented as an illustration.
-- A migration/sequence number is a codebase fact: list the target directory in
-  recon; never inherit the next number from a dossier or memory.
+- A migration/sequence number is a codebase fact: census the base checkout,
+  active integration branches and the intended target's applied-version ledger
+  using already-authorized evidence. Derive the next version at execution time;
+  an illustrative number in a spec is not an allocation. Require a task-local
+  executable uniqueness check over that union and serialize allocation among
+  active migration writers; unknown required sources leave this gate unverified.
+  Do not reserve versions for unwritten future work. When ordered migrations
+  replace a function, trace every replacement through the selected revision and
+  quote the final effective definition. A filename or an earlier definition
+  does not prove current behavior.
 - A scout's negative claim ("only consumer", "no X exists") entering a DoD or
   Decision: re-verify with your own grep at spec time, sweeping untracked and
   gitignored files too, or word it conditionally — never freeze it as a hard
@@ -104,6 +117,14 @@ location, and current content:
   "return 500 so the platform redelivers" was an unbounded retry loop against a
   store with no attempt counter. The burden of proof sits with the
   implementer, not the reviewer.
+- A CAUSE named by a review, recon, or code read is a hypothesis until measured
+  on the failing surface. Before a DoD depends on removing it, measure the whole
+  symptom (per-frame presence of the entire container, not the one provider a
+  review blamed); a diagnostic of a recorded failure first reproduces its exact
+  shape (interpreter, process tree, data), since narrower dummies masked a
+  timing defect; and before a spec asserts "fails closed", trace the value
+  through every later override in the consumer, not only the producer the fix
+  touches. Three sessions froze specs on a cause that did not meet the DoD.
 - A negative premise ("no legitimate caller exists", "this path is dead") gets
   its own grep across callers AND the test suite before it freezes a removal
   order: a path guarded by an existing test is a consumed contract, not dead
@@ -440,7 +461,11 @@ location, and current content:
   contradict itself; prefer the project's real scanner over an ad-hoc grep
   when one exists. Reconcile every Boundaries/Steps ban against every behavior
   the spec itself requires — a banned data source that a required behavior
-  still needs gets an explicit carve-out. Cross-check a scout-authored
+  still needs gets an explicit carve-out. Include the dispatch envelope in
+  this reconciliation: required target access and resource lifetimes must fit
+  its permissions and cleanup instructions. A necessary exception names the
+  exact resource and allowed effect; it grants no broader access.
+  Cross-check a scout-authored
   instruction doc's own test list against its Steps/DoD before freezing the
   spec, and resolve any contradiction by the DoD.
 - A spec that delegates acceptance to a source doc or shared contract quotes
@@ -470,6 +495,11 @@ location, and current content:
   tasks may also grow needs a relative assertion (`all pass`, `>=N`); a
   fact/count change greps the OLD value repo-wide and updates every surface
   (docs, CLI help/usage strings, comments), not just the primary one.
+  For parsed counts, inspect the literal producer format/schema first. Make
+  raw total = classified + unclassified an executable DoD reconciliation over
+  nonoverlapping record identities. Report category/subset coverage and unresolved
+  records; never publish a subset as the whole artifact, or claim full coverage
+  until every required category is accounted for.
 - Known-flaky or documented-red tests never enter an absolute gate: check the
   dossier/handoff for flaky tests under the gated path and exclude them, scope
   the gate to the new tests, or assert no-NEW-failures against a recorded
@@ -482,10 +512,15 @@ location, and current content:
   element: run the project's test suite in the DoD and grep the old strings
   across test files; co-located tests get updated to the new contract
   (open-to-assert), never deleted — typecheck and lint cannot see any of this.
-- A shared UI primitive or domain-type cutover enumerates every consuming
-  interaction helper, mock, constructor, and exact action-count assertion.
-  Focused transpile tests are not a type gate: run workspace TypeScript
-  diagnostics plus the full consuming suite before handoff.
+- A shared UI primitive, shell/API-request change, or domain-type cutover
+  enumerates every consuming interaction helper, mock, constructor, and exact
+  action-count assertion. Bind the executor DoD to the canonical runner's
+  collected consumer set, including strict API mocks and shell/layout tests;
+  reconcile collected versus executed test paths mechanically. If that set
+  cannot be established, run the full relevant suite. A hand-picked passing
+  subset does not close shared-surface acceptance. Focused transpile tests are
+  not a type gate: run workspace TypeScript diagnostics plus that consuming
+  suite before handoff.
 - Keep source-shaped review bundles outside compiler and test-discovery roots.
   If a foreign bundle already exists, preserve it and identify its owner before
   remediation. Bind the gate to the repository's real compiler configuration
@@ -504,6 +539,17 @@ location, and current content:
   never into a green checkmark. When a spec ruling is a CONJUNCTION (A and B ⇒
   refuse), the DoD demands a test hitting exactly that conjunction, not each
   side separately.
+- For release-gate specs, bind the required policy to the acceptance contract,
+  independently of caller-controlled options: a target/base flag cannot
+  redefine the branch the gate must require. Enumerate applicable fail-open
+  paths: rename/deletion classification; configuration structure rather than
+  indentation; every CLI mode; failed, pending, and rerun evidence, including
+  which attempt is authoritative; and missing, malformed, or failed evidence
+  retrieval. Filtering to successes or sorting only by original creation time
+  can hide a later failure. Require a task-local executable rejection case for
+  each applicable path and an accepting control under the fixed policy, then
+  apply the mutation-probe rule above. No generic checker can infer an arbitrary
+  project's release policy or CI-attempt ordering; derive both from its contract.
 - Exact-answer, classifier, routing, and language-boundary changes need
   adversarial controls, not only happy paths. The DoD includes: positive cases
   for each intended spelling/script, negative cases where the token is only a
@@ -532,6 +578,17 @@ location, and current content:
   budget), or state the content assertion and let the verifier choose the
   command. A reachable CLI does not prove an importable module path; dry-run
   the exact resolution/launch command before hardcoding either.
+  For a reused or retargeted venue, attach a per-runner target matrix derived
+  from its resolver and refusal predicates: exact binary/version, cwd/HEAD,
+  project, ports/socket, env precedence, clean-tree and fresh-output-path
+  requirements. Check every derived port and every command in sequence,
+  including separate dry-run/apply output paths when freshness is required;
+  copy a proven recipe verbatim, then revalidate it against the current runner.
+  Require a task-local executable preflight over this matrix before dispatch;
+  generic spec lint cannot infer arbitrary runner guards. Inventory existing
+  resources by identity/owner instead of assuming an empty daemon. Preserve
+  foreign resources and refusal behavior; a conflict changes the spec or blocks
+  the affected check, never authorizes weakening the guard or deleting state.
 - Npm scripts hide network and install behavior behind nested `npx` calls.
   For no-network/no-install tasks, inspect the exact script chain before the
   first run, prove each `npx` binary is project-pinned or already cached, and
@@ -634,9 +691,19 @@ location, and current content:
   DELETING a test file with assertions migrated elsewhere, the DoD demands a
   title-by-title migration table in the report; the net suite-count delta is
   the tripwire.
-- A verify or smoke SCRIPT is itself an artifact with a DoD: one green
-  end-to-end run against a real target before the package ships. "Compiles and
-  reviewed" is not verification for a runner.
+- A verify or smoke SCRIPT is itself an artifact with a DoD. Enumerate its
+  delivered subcommands and behavior-changing modes, then require a green
+  end-to-end run for each against a real target in an authorized disposable
+  venue before the package ships. Compile or review alone is insufficient.
+  Record a mode-to-command/exit/evidence table. When replacing an existing
+  runner, compare the old and new named-check sets and account for every
+  retained or deliberately removed check. Each new check needs a passing
+  control on correct behavior and a targeted failing control. On a pre-feature
+  baseline, only feature-discriminating checks must fail; unrelated invariants
+  may pass. A baseline that lacks the entire feature cannot establish absence
+  of false positives. Require a task-local executable mode/control matrix;
+  arbitrary runner semantics cannot be inferred by a generic helper. Any mode
+  without a safe test venue remains unverified and blocked from production use.
 - A verification command is checked against the real artifact's shape: `grep`
   over a listing containing non-ASCII filenames goes binary and reports a false
   MISSING — use `grep -a` or extract first. A false MISSING wastes rounds; a
@@ -722,13 +789,24 @@ location, and current content:
   `npx vitest run` where the gate was `npm test` (build + `node --test` over
   `dist`) — and dry-run the literal command against the real tree, since a
   pre-existing basename collision left bare `pytest -q` unable to collect at
-  all. (b) The HARNESS ENTRY POINT traverses the layer that WRITES the state the
+  all. If the runner can reach a protected resource, require a task-local
+  preflight that loads its actual configuration and asserts the effective
+  target identity before fixture creation or API traffic. Test names, mock
+  markers, and requested environment overrides are not isolation evidence.
+  If that assertion is unavailable, use a proven isolated venue or mark the
+  check unverifiable. Name any necessary read-only configuration discovery
+  separately in Boundaries; it does not authorize test traffic.
+  (b) The HARNESS ENTRY POINT traverses the layer that WRITES the state the
   feature reads: a probe script that bypasses the webhook owning those writes
   exercises the fallback path, so its green is about the wrong mechanism. (c)
   The probe's SURFACE and PRINCIPAL match the real usage scenario — a
   group-surface probe hard-gated to public documents produced a FALSE regression
   that reached the owner-facing QA report until re-probed as a DM by the
-  department-scoped principal testers actually use. (d) The ARTIFACT under test
+  department-scoped principal testers actually use. Where fixture transforms matter,
+  inspect the real response/schema/formatter before writing assertions; before the
+  action, assert actual persisted/setup values after relevant triggers, normalization,
+  ordering, and formatting, and prove the fixture reaches the intended boundary.
+  (d) The ARTIFACT under test
   is the freshly built one: a reused dev/preview server keeps serving the
   previous build, and a green suite over source says nothing about the `dist`
   the probe loads — rebuild, restart, or assert the artifact's hash/mtime first.
@@ -849,6 +927,26 @@ location, and current content:
   across ALL candidate sources in parallel, each told to confirm or refute
   relevance first and stop early if irrelevant — a plausibly-named file can be
   the wrong corpus.
+- **Local citation gate.** Before a quoted source fact or source-derived
+  identifier determines a binding contract requirement in an executor spec,
+  validate its citation manifest against that artifact's actual authorized
+  source root: the assigned checkout/revision for repository files, or an
+  explicitly scoped evidence directory for task-local logs and reports. Use
+  separate root-bound manifests when origins differ; keep evidence in place
+  and preserve the checker's path-containment rules. Apply the same gate to
+  local file:line citations in synthesis and review reports.
+  Require a nonempty JSON array with exactly `path`, `line`, `quote` per item:
+  canonical relative POSIX path, positive integer 1-based line (not bool),
+  nonblank single-line literal quote. Run
+  `python3 scripts/check-citations.py <manifest.json> --root <source-root>`;
+  every quote must occur at that exact line. A carried-over quote is rechecked
+  before edits if its source revision or evidence artifact changes. A fresh
+  independent verifier reruns against the exact reviewed checkout/evidence root
+  and compares claim meaning with the quote separately. This gate checks
+  pointer/quote fidelity only; semantic correctness and claim coverage still
+  require review. The head maps every binding quotation/identifier to its
+  evidence; the checker cannot infer omitted claims or prove that a literal
+  quote supports a decision.
 - **Visual DoD (full rule; SKILL.md keeps the headline).** A visual change's DoD
   compares a live headless screenshot against the design target (or pre-change
   baseline) and names the specific differences to check — spacing, color, copy,
@@ -858,7 +956,9 @@ location, and current content:
   unverified, like a claim without a quote. Not only fidelity: typecheck, build
   and HTTP-200 stay green while the rendered page crashes at runtime (a
   hooks-order violation, a hydration error), so any UI-behavior change needs a
-  rendered-browser check, and any long-running external-process integration (a
+  rendered-browser check — run the touched module's existing browser specs on
+  base AND candidate, and drive client-side navigation transitions, not only
+  document loads — and any long-running external-process integration (a
   spawned CLI, a dev server) keeps a live smoke stage — static review does not
   close runtime acceptance criteria. Cheap default: `npx`-cached Playwright (the
   cached ms-playwright Chromium, not a system-Chrome `channel` — a sandboxed
