@@ -43,3 +43,11 @@ skill bundle, saved task board, remote credentials or persistent agent sessions.
 ## License
 
 MIT
+
+## Ownership transfer
+
+Read `references/session-handoff.md` before transferring a head; use the
+stdlib `scripts/handoff-validate.py` for snapshot/Git provenance checks.
+Neither the skill nor this validator installs a leader lock or proves that
+old heads and their workers have lost write permissions. Until the chosen
+runner has tested enforcement, transfers are manual and operator-confirmed.

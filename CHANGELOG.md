@@ -1,5 +1,26 @@
 # Changelog
 
+## 2.54.0 (candidate, not installed) — 2026-10-26
+
+Research-driven refinement of v2.53.0. This is a **local artifact**;
+no user machine, live repo, runtime lock or remote was changed.
+
+- Introduce `references/session-handoff.md` on both editions: fresh four-block
+  NEXT-SESSION; frozen JSON state + digest; RELEASE / CLAIM / ACK with a
+  fail-closed manual fallback, measured Git state and live-worker inventory.
+  A receipt or expired lease is NOT enforced exclusion (fencing remains a
+  separate runtime implementation and must be verified before automation).
+- Add `scripts/handoff-validate.py` with offline tests. It checks snapshot
+  structure, checksum, branch and HEAD, RELEASE/ACK consistency — and
+  explicitly does NOT claim to check ownership, active writers or approvals.
+- Preserve all five hard rules and autonomy tiers. No automatic takeover,
+  new background service, model role change or weakening of security gates.
+- Claude edition retains the earlier lean layout and conditional references;
+  `.agents` retains its original behavior outside the handoff path.
+- A single canonical edition plus sync/install automation remains follow-up
+  work after both editions pass A/B tests; do not symlink them blindly.
+
+
 ## 2.53.0 — 2026-10-26
 
 Owner-requested journal-driven maintenance over the 69-record relay journal;

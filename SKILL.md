@@ -270,7 +270,10 @@ not a second status board. Trivial edits need no board.
   PLAN.md              # queue: id, title, files touched, deps, status
   specs/T<n>-<slug>.md # one spec per task
   reports/<agent>.md   # full subagent reports; a short digest comes back in chat
-  NEXT-SESSION.md      # session handoff — see "Session handoff (NEXT-SESSION.md)"
+  NEXT-SESSION.md      # current human handoff snapshot; see references/session-handoff.md
+  STATE.json           # frozen transfer projection (file-backed handoffs only)
+  RELEASE.json         # old head stopped; not a lock
+  ACK.json             # successor checked state; not a lock
 ```
 
 For a multi-task business change, `MISSION.md` is the single package contract
@@ -383,39 +386,17 @@ contains recon, spec construction, dispatch/report contracts, background-work
 rules, acceptance, and final review. Load those details only when executing
 that workflow.
 
-## Session handoff (NEXT-SESSION.md)
+## Session handoff
 
-Any session whose work continues later — a backlog not drained, a context near
-its limit, an explicit "continue next time" — ends with a handoff in one fixed
-format: **done / remaining / branch / exact next command**. Same four blocks
-on two surfaces:
-
-1. **File, for agents and the next session:** write `<taskdir>/NEXT-SESSION.md`
-   (overwrite, not append). If the project keeps its own NEXT-SESSION.md (e.g.
-   at the repo root), that convention wins — but never commit it unless the
-   project deliberately tracks it.
-2. **Chat, for the user:** the same four blocks condensed to ≤10 lines inside
-   the final report, ready to paste into a fresh session.
-
-Template:
-
-```
-# NEXT-SESSION — <project> — <YYYY-MM-DD>
-## Done         — per task: id, one line, commit sha
-## Remaining    — queue in priority order; per item a named blocker or "ready"
-## Branch       — current branch and base; "clean" or the dirty files;
-                  unpushed commits; open worktrees; background processes
-## Next command — exact command(s) to run first, verbatim, copy-pasteable;
-                  paths to the specs/board the next session needs
-```
-
-Rules: all four blocks are mandatory — "none" is a valid value. Facts only
-from this session's tool results (hard rule 3). "Next command" contains no
-placeholders the next session must resolve first. When an executor dies
-mid-task, its partial state is recorded here, not lost. The next session
-starts by reading NEXT-SESSION.md and the board — never by re-exploring the
-repo. In loop mode the loop-owned state file plays this role round-to-round;
-NEXT-SESSION.md still closes the session for anything the loop does not own.
+When work passes between heads, read `references/session-handoff.md` before
+closing or resuming. Rewrite `NEXT-SESSION.md` (done / remaining / branch /
+exact next command); for file-backed head-to-head transfers, freeze a
+`STATE.json` snapshot and record RELEASE / ACK receipts. New heads check the
+snapshot hash, live Git state and potentially active writers **before**
+dispatching or changing project files. Prior heads do no more project work
+after RELEASE. Launcher acceptance, a receipt or an expired timestamp is
+**not** proof that the old head stopped. Without a verified runtime ownership
+guard, hand off manually with operator confirmation; stop on any conflict.
 
 ## Loop mode (recurring / scheduled runs)
 
