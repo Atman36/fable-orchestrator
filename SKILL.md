@@ -95,6 +95,16 @@ rare here; use it only when the specialist should own the remainder of the
 turn directly (for example, a live supervised micro-iteration), and name the
 return condition before dispatch.
 
+**Divide by context, not by role chain.** A separate worker is worth its
+handoff only when it buys a fresh context (independent verification, or a head
+context that would otherwise bloat), parallel independent slices, or different
+tools, permissions or model. Give each worker a piece that needs little from
+the rest and returns a compact result. Steps that chain on each other's output
+over the same small surface belong in one worker: a bounded recon phase with a
+stop-and-report gate inside the executor's spec beats a scout → head →
+executor relay, since every hop hands back a lossy summary. Verification
+always stays a separate context.
+
 Use deterministic orchestration where the flow is known: chain tasks through
 PLAN.md statuses, run independent file-disjoint work in parallel, and use an
 evaluator/verifier loop only against a fixed falsifiable check. Use

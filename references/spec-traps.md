@@ -117,14 +117,16 @@ location, and current content:
   "return 500 so the platform redelivers" was an unbounded retry loop against a
   store with no attempt counter. The burden of proof sits with the
   implementer, not the reviewer.
-- A CAUSE named by a review, recon, or code read is a hypothesis until measured
+- A CAUSE or behavioral premise named by a review, recon, code read, or session
+  handoff ("this input is already refused") is a hypothesis until measured
   on the failing surface. Before a DoD depends on removing it, measure the whole
   symptom (per-frame presence of the entire container, not the one provider a
   review blamed); a diagnostic of a recorded failure first reproduces its exact
   shape (interpreter, process tree, data), since narrower dummies masked a
   timing defect; and before a spec asserts "fails closed", trace the value
   through every later override in the consumer, not only the producer the fix
-  touches. Three sessions froze specs on a cause that did not meet the DoD.
+  touches. Before freezing a handed-over premise as a guard, measure it in
+  recon. Four sessions froze specs on a cause or premise that did not hold.
 - A negative premise ("no legitimate caller exists", "this path is dead") gets
   its own grep across callers AND the test suite before it freezes a removal
   order: a path guarded by an existing test is a consumed contract, not dead
@@ -422,6 +424,22 @@ location, and current content:
 - When stored state re-enters a processing stage, classify every field as that
   stage's INPUT or OUTPUT and replay only inputs; feeding derived outputs back
   as discovery data can make restrictive classifications impossible to heal.
+- A fix to a heuristic grammar, parser, matcher or classifier is specified
+  against its input CATEGORY, not the reported witnesses. Before the first fix
+  dispatch: state the invariant the change keeps (adding clause X never changes
+  the fields extracted from clause Y); have a probe worker generate a category
+  matrix covering missed AND spurious matches across orders, delimiters, quote
+  styles, forms and inflections; and pin a differential harness against the
+  immediate base in which every allowed deviation has a closed definition
+  (token set + context) plus adversarial rows for words sharing its stem.
+  A row labelled "guard" must be green on the base — if its input contains the
+  defect trigger, split it into a regression part and a guard part. Dry-run
+  every pinned row through the design contract before dispatch, and when the
+  contract says "as production does", name the whole production pipeline (all
+  preprocessing, extracted by a scout), not one stage. A green frozen matrix or
+  monotonicity corpus proves only that corpus. Two sessions: one parser family
+  took seven review rounds, each finding a new MAJOR sibling of the last
+  witness-driven fix.
 
 ## Divided ownership — two owners, one behavior
 
@@ -451,6 +469,13 @@ location, and current content:
   violation from the touched files, never absolute green. For logs, capture
   both counts and distinct message texts per route; "no new class" is stronger
   than an unmeetable zero over known noise.
+- A gate precondition or exemption for pre-existing behavior names the known
+  baseline failures as a CATEGORY predicate ("the production value is
+  preserved for this construction") plus the sibling commit or task that clears
+  them — never "every gate green" while the head knows a lane-wide baseline
+  failure, and never a single row id when a holdout set exists. Two sessions:
+  an integrator stopped on a known failure a sibling lane fixed; a row-id
+  exemption let a holdout sibling of the same class fail literally.
 - Reconcile every DoD check against the spec's own Boundaries before dispatch:
   a negative grep over a directory must be satisfiable by every step touching
   it; a token-ban grep must not target a file whose spec-mandated content

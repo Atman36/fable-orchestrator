@@ -1,5 +1,42 @@
 # Changelog
 
+## 2.55.0 — 2026-10-27
+
+Owner-requested journal consolidation (24 records, 18 from three sessions
+after 2.53.0) plus adoptions from Anthropic's "Building agents: When to fold
+subagents into your main agent loop" (2026-10-22). Hard rules 1–5, autonomy
+tiers and model routing are unchanged.
+
+- `references/spec-traps.md`: a fix to a heuristic grammar, parser, matcher
+  or classifier is specified against its input category — stated invariant,
+  generated category matrix (missed and spurious), differential harness with
+  closed allowed deviations, guard rows green on base, design-contract dry run
+  (two sessions; one parser family took seven review rounds). Gate
+  preconditions and exemptions name known baseline failures as a category
+  predicate plus the clearing commit (two sessions). The cause-is-hypothesis
+  trap now covers behavioral premises inherited from a session handoff (four
+  sessions).
+- `references/pipeline.md`: convergence cap — after the second same-family
+  MAJOR stop witness patching and re-spec against the category; after three
+  failed review rounds re-scope instead of patching. Acceptance over a corpus
+  reports per-case flips in both directions and runs nondeterministic cases
+  at least twice (article). Fix to the 2.53.0 venue rule: a shell-less reader
+  echoes the supplied venue marked "supplied, not measured" and is never asked
+  for command output; counts go to a shell-holding worker or head bookkeeping.
+- `SKILL.md` § Orchestration shape: divide by context, not by role chain — a
+  separate worker only for a fresh context, parallel independent slices, or
+  different tools/permissions/model; chained steps over one small surface go
+  to one worker with a bounded recon phase; verification stays separate
+  (article).
+- `references/consolidation.md`: retiring a rule compares per-case flips and
+  runs nondeterministic cases twice (article).
+- Not adopted from the article: folding scouts and executors into the head's
+  own loop — it conflicts with hard rules 1–2, which only the owner can change.
+- Dispositions: 13 applied, 2 already covered (caller census in spec-traps;
+  manual handoff without auto-launch in session-handoff — that record's
+  review-archive and CI-only-publication parts are one owner's close-out
+  preference, not promoted), 9 pending (single-session).
+
 ## 2.54.0 (candidate, not installed) — 2026-10-26
 
 Research-driven refinement of v2.53.0. This is a **local artifact**;

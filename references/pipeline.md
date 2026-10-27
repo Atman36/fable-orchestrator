@@ -322,10 +322,13 @@ never a reconstructed or reformatted summary — and split test counts into
 The venue header binds scouts and verifiers too. Reject any report whose
 echoed root/HEAD is missing or differs from the dispatched venue — three
 sessions acted on reads of a stale sibling worktree or the session's default
-cwd. A reader without shell receives the head's measured root and HEAD and
-reads repository sources only by absolute path under that root, or
+cwd. A reader without shell cannot measure: it receives the head's measured
+root and HEAD, echoes them marked "supplied, not measured", and reads
+repository sources only by absolute path under that root, or
 `git show <sha>:<path>`, plus the task and evidence directories its dispatch
-names.
+names. Never ask a shell-less reader for command output (line or match counts,
+`wc`, HEAD, test runs): route it to a shell-holding worker or measure it as
+head bookkeeping.
 
 A spec-reality divergence is a spec defect, not the executor's failure: fix
 the spec yourself and re-dispatch (the escalation ladder does not advance).
@@ -504,6 +507,12 @@ it built right?" (the DoD ran green); you answer "was the right thing
 built?" — check the result against the user's original intent before marking
 done; a green DoD on the wrong deliverable is still a failure.
 
+When acceptance compares base and candidate over a corpus, eval set or matrix,
+report per-case flips in both directions, not only the aggregate: a stable
+score can hide one fixed case and one newly broken one. Run each
+nondeterministic (live-model) case at least twice before calling it stable or
+fixed — a break can surface in only one run of two.
+
 After any rework that changes the file footprint, re-derive the verifier's
 expected file list from the REWORK, not from the original digest — a stale
 allowlist rejects correct work.
@@ -596,6 +605,14 @@ You arbitrate every finding:
   artifact the diff leaves with no consumer is resolved in the same package
   now — wire it, or propose a reviewed, authorized removal; never silently
   delete an unrelated user-owned artifact to make the review clean.
+
+**Convergence cap.** When review keeps finding same-family MAJORs in one
+component, the method is failing, not the last patch. After the second
+same-family MAJOR, stop witness-driven fixes and re-spec against the category
+(spec-traps: "A fix to a heuristic grammar, parser, matcher or classifier").
+After three failed review rounds on one change, dispatch no further patch:
+re-scope, split, or switch to a structural change, and record the round
+history in PLAN.md.
 
 Accepted bugs go to an authorized task-branch executor for a fix, then to an
 independent fresh verifier — a reviewer who also authors a fix never accepts

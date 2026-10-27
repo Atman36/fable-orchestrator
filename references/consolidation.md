@@ -43,7 +43,9 @@ verifier still validates the result.
   mechanism may have made a rule obsolete, compare the rule against its
   original failure artifacts plus a representative control (masked or
   synthetic when needed), then remove it only if the same falsifiable gates
-  stay green without it. If a documented rule fails again in another session,
+  stay green without it — compare per-case flips, not only aggregate pass
+  counts, and run nondeterministic cases at least twice. If a documented rule
+  fails again in another session,
   the next consolidation promotes the repeated operation into a script,
   executable check, capability boundary, or typed state transition instead of
   restating the prose; record an explicit limitation when no deterministic
