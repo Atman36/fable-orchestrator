@@ -85,8 +85,10 @@ run on the host default route. For an authorized OMP smoke, and as the worker
 runner when the exact route matters, use the installed
 `omp -p --model <exact-provider/model>` with a temporary configuration overlay
 `retry: { modelFallback: false }` (a worker run only after its smoke); do not
-resume a session or use fuzzy ids. Otherwise dispatch natively, record the
-requested route as unpinned, and ledger the self-reported model.
+resume a session or use fuzzy ids. For a native spawn on an exact route, use
+the temporary override sequence in `references/omp.md` § Per-spawn model
+routing. Otherwise dispatch natively, record the requested route as unpinned,
+and ledger the self-reported model.
 Judgment separately requires `modelRoles.judge: openai-codex/gpt-6-luna` and
 `retry.fallbackChains.judge: []`; do not append a chat thinking suffix to judge.
 
@@ -95,9 +97,15 @@ OMP catalog that day — presence is not inference, smoke each before use):
 
 - `openrouter/nvidia/nemotron-3-ultra-550b-a55b:free` — text, 1M context, the
   strongest free reasoner (55B active MoE). Narrow cross-checks, second
-  opinions, long-context extraction, bounded drafts behind a fixed gate. Never
-  acceptance, never alone on the critical path; tests it authors get a realism
-  review (production-imported units, request-derived mocks).
+  opinions that may add findings but never clear them, long-context
+  extraction, code census (it found every test pinning a removed string),
+  bounded drafts behind a fixed gate. Never acceptance, never verdicts, never
+  an unedited draft, never alone on the critical path: an unedited draft
+  invented a 2.0 s threshold, and a static (tool-less) review returned GO on a
+  fix where an executed probe found a MAJOR. Tests it authors get a realism
+  review (production-imported units, request-derived mocks); SQL it writes
+  gets a head read plus a run of the applied migration — a package-level
+  verify does not execute migrations.
 - `openrouter/nvidia/nemotron-3.5-super-vl:free` — images, screenshots,
   documents, video → text (12B active). Visual triage only; its verdicts fall
   under § Free vision verdicts.

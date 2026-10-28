@@ -758,7 +758,11 @@ location, and current content:
   decided on a measured number, and record the post-check query's baseline
   first so the verification is demonstrably capable of failing. Migration
   numbers are derived at execution time and never reserved for unwritten future
-  work — an operator applying in numeric order cannot un-see a gap.
+  work — an operator applying in numeric order cannot un-see a gap. Pre- and
+  postflight checks name every database object (table, column, function,
+  policy) by a scout's quote from the migration file itself, never from the
+  head's memory or a review summary: one session named a wrong column and a
+  wrong function in two hosted postflights, caught only by the executor.
 - Verbatim text you author is a claim at every level. A composite key uses a
   separator that cannot appear in either component; user-facing string
   typography is checked against codebase convention before freezing (mixed
@@ -937,7 +941,11 @@ location, and current content:
 - A performance DoD states the measurement CONDITIONS, not only the target
   number: profiling overlays, per-event logging, and an open inspector inflate
   the very numbers used to judge the fix. Measure with instrumentation off,
-  against a recorded baseline, removing one suspect at a time.
+  against a recorded baseline, removing one suspect at a time. A re-measure
+  for acceptance reuses the baseline's method verbatim (tool, endpoint, sample
+  count, warm-up, stand) and runs an interleaved A/B pair — base and candidate
+  on the same stand in the same window. Run-to-run spread on one stand reached
+  25%; a lone over-budget number cannot be attributed to the change.
 - **Synthesis grounding (full rule; SKILL.md keeps the headline).** When the
   artifact is a synthesis from sources (guide, digest, summary of advice), the
   spec names the deepest available source of truth (transcript over retelling,

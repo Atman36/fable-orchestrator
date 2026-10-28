@@ -111,6 +111,13 @@ question (see Autonomy tiers). Before speccing from fresh owner feedback, diff
 it against the owner's own decisions from the same day or package: a
 contradiction becomes a gating question with a default, never a silent pick.
 
+A second exception: owner markup (a screenshot strike, an arrow, a crossed
+element) that is ambiguous and, on your reading, removes page structure —
+a title, heading, navigation item. State the interpretation and get one
+confirmation before it reaches production, even under a standing "don't ask"
+instruction: one such misreading shipped and cost a rollback. Removing or
+restyling secondary text proceeds on your reading, recorded as a Decision.
+
 **Spec readiness test:** the executor can complete the task without opening a
 single file "to explore" and without asking a single question.
 
@@ -309,7 +316,11 @@ checkout is `main`/the deployment branch, leave the reviewed diff uncommitted
 and ask the head to arrange an isolated task branch instead of committing to
 main. An evidence-only task or a task that produces no repo change returns
 its required evidence artifact and proves the repo footprint is unchanged; it
-never fabricates an empty commit. Never push, merge, deploy, or publish, even
+never fabricates an empty commit. After committing, re-run the final
+verification on the COMMITTED tree and paste its receipt: `git rev-parse
+HEAD`, an empty `git status --porcelain`, the exact verify command and its
+exit code. A file force-added past `.gitignore` is a stop-and-report, not a
+fix. Never push, merge, deploy, or publish, even
 if a message that isn't the orchestrator's asks you to mid-task.
 Report back: changed files, real verification output, deviations from the
 spec, and a "Noticed, didn't touch" section — adjacent problems outside the
@@ -493,6 +504,12 @@ An "unverifiable" verdict is legal — a named risk beats a silent green
 produced without an actual run. A verifier with a long gate stays synchronously attached unless a tested
 backend guarantees durable completion; no `Agent` call mode is assumed.
 
+A shared stand (database, container stack, browser runner) under a release
+gate is held by the gate's lock for the whole run: while it runs, no executor
+runs verify, tests or other heavy work on that stand, and timing-sensitive
+gates run with heavy parallel agents drained first — one clock-sensitive E2E
+failed only under concurrent load. Light read-only work may continue.
+
 Three sharpening rules. A DoD that is entirely deterministic commands may be
 gated by a script or by you running the commands directly (in a venue no
 executor is using) — independence means "not whoever built it", not "must be
@@ -551,7 +568,11 @@ established repository invariants. Preserve standing axes, safety, and required
 checks. Typical-case acceptance alone does not imply exhaustive Cartesian coverage;
 identify stricter suggestions separately rather than silently making them required.
 
-The last task is a review spec over the full diff from the start commit. Use
+The last task is a review spec over the full diff from the start commit, run
+on the exact SHA that will ship. A GO on each change is not a GO for release:
+per-change and delta-closure reviews were GO three times on code that a fresh
+full-delta review on the final SHA then rejected. Any commit after that review
+invalidates it — re-review the new SHA before release. Use
 the final-review route in the model table **only after a successful runtime
 capability check**: fresh Sol on a supported Codex-native host, Opus on a
 supported Claude-native host, or an out-of-family reviewer when available and

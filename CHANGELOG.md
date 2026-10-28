@@ -1,5 +1,52 @@
 # Changelog
 
+## 2.56.0 — 2026-10-28
+
+Owner-requested consolidation of one session's feedback (ten points) plus a
+filtered pass over an owner-supplied improvement list. Hard rules 1–5,
+autonomy tiers and the routing table are unchanged.
+
+- `SKILL.md`: a GO on each change is not a GO for release — shipping needs a
+  fresh full-delta review on the exact SHA (three per-change GOs were
+  overturned by the final review in one session); a hand-repeated release-gate
+  preflight (disk, stand lock, runtime context, temp cleanup, exact-SHA
+  checkout) becomes the project's `stage start` after its second manual
+  repetition (repeated ~10 times by hand); rework and retries get
+  attempt-suffixed reports; on OMP a read-only worker's report is persisted
+  with `cp agent://<id> …`.
+- `references/pipeline.md`: ambiguous owner markup that removes page
+  structure (title, navigation) needs one confirmation before production,
+  even under a standing "don't ask" instruction; secondary-text removals do
+  not. Executors re-run the final verify on the committed tree and paste a
+  receipt (HEAD, empty porcelain, command, exit code). A release gate holds
+  its shared stand: no executor verify on it meanwhile, heavy agents drained
+  for timing-sensitive gates (S84 failure, S87 success). Final review runs on
+  the SHA that ships; a later commit invalidates it.
+- `references/spec-traps.md`: migration pre/postflights name database
+  objects by a scout quote from the migration file, never from memory (two
+  wrong names in one session). A performance re-measure reuses the baseline
+  method verbatim with an interleaved same-stand A/B pair (25% run-to-run
+  spread).
+- `references/model-roles.md`: Nemotron Ultra free route confirmed for code
+  census; never verdicts or unedited drafts (an invented threshold; a static
+  GO that missed a MAJOR); its SQL needs a head read and an applied-migration
+  run (S66, S87).
+- `references/omp.md` (now "OMP supervision and session controls"):
+  per-spawn model routing as record → session override → spawn → restore →
+  ledger; persisting read-only reports; the head cannot compact itself —
+  tell the owner at session start (`/compact` or an approved lower threshold);
+  the notice is also always loaded from `SKILL.md` § Communication discipline.
+- Improvement list, adopted only where evidence exists: attempt ledger
+  (attempt-suffixed reports; the task→attempt→artifact record already lived
+  in `execution-backends.md`), typed execution receipts (as the fixed
+  committed-tree receipt fields, not a validator script yet), reusable
+  workflow recipes (as the `stage start` promotion). Not adopted: enforced
+  ownership and its fault-injection suite (need a runtime ownership adapter;
+  `session-handoff.md` already fails closed without one), inbox integration
+  (platform feature), dependency gate checker and execution telemetry (no
+  observed failure; the agent ledger covers per-session accounting),
+  feedback → evals (already in `feedback-loop.md` and `consolidation.md`).
+
 ## 2.55.0 — 2026-10-27
 
 Owner-requested journal consolidation (24 records, 18 from three sessions

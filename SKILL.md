@@ -119,7 +119,10 @@ close command the agent needs; `stage finish` validates a structured result and
 writes the required report or dashboard artifacts. Promote only operations
 observed repeatedly and requiring no judgment; interpretation, forks, and
 acceptance remain with the head. Do not introduce a generic flow CLI for a
-one-off task.
+one-off task. A release-gate preflight repeated by hand — free-disk check,
+stand lock, runtime/container context, temp cleanup, exact-SHA checkout — is
+the typical first candidate: after its second manual repetition in a session,
+spec it as the project's `stage start`.
 
 User-reported failures and observations are evidence that the event occurred;
 do not spend a recon cycle merely confirming the user's report. Investigate
@@ -231,8 +234,9 @@ fork that halts the pipeline for one narrow question. Standing gates:
 
 ## Model routing
 
-For optional OMP advisors, reviewer priorities or event hooks, read
-`references/omp.md` before configuring or relying on them.
+For OMP advisors, reviewer priorities, event hooks, per-spawn model pins,
+persisting read-only reports, or context compaction, read `references/omp.md`
+before configuring or relying on them.
 
 | Role | Codex-native route | Claude-native route | Effort |
 |---|---|---|---|
@@ -318,7 +322,8 @@ chat.
 - Name the report writer in the dispatch. A write-capable worker writes the
   full report to the exact absolute `<taskdir>/reports/<agent>.md` path; a
   native read-only worker returns the complete report and the head persists
-  it verbatim there. Never grant write tools merely to obtain a report.
+  it verbatim there (on OMP: `cp agent://<id> <taskdir>/reports/<agent>.md`).
+  Never grant write tools merely to obtain a report.
   The ≤15-line digest includes the path, quotes, numbers, and verdicts needed
   for judgment; deciding "by pointer" without seeing the fact is forbidden.
 - Idle notification with no final message → read the report file before
@@ -365,7 +370,9 @@ chat.
 - Label every dispatch — the host's description field **if supported** and
   report filename — as `<role or model> + <task id> + <short subject>` (e.g. `Executor T4 P1.2
   snapshot`, `reports/executor-T4.md`) so the user can follow the pipeline
-  live.
+  live. A rework or retry is a new attempt with its own report
+  (`reports/executor-T4-a2.md`): no attempt overwrites another's evidence, and
+  review rounds are counted from these files.
 - Session-scratchpad spec/board files can be wiped between turn pauses —
   before a resume or dispatch, confirm the spec file still exists (inline it
   into the prompt if it vanished), and reuse ONE spec directory verbatim
@@ -394,7 +401,8 @@ Before any repo task that needs scouts, executors, tests, or independent
 acceptance, **read `references/pipeline.md` before the first dispatch**. It
 contains recon, spec construction, dispatch/report contracts, background-work
 rules, acceptance, and final review. Load those details only when executing
-that workflow.
+that workflow. A GO on each change is not a GO for release: shipping needs a
+fresh full-delta review on the exact SHA being released (§ Final review).
 
 ## Session handoff
 
@@ -439,6 +447,10 @@ stays local and gitignored.
   unknown and cap concurrency; on a demonstrated squeeze, prefer smaller
   batches and durable checkpoints, defer optional review passes, but never
   skip the task contract or independent verification.
+- If the head cannot compact its own context (on OMP `/compact` is the
+  owner's command), tell the owner at session start and agree the trigger:
+  they run it when asked, or approve a session-only lower threshold
+  (`references/omp.md` § Context compaction).
 - The final message re-grounds a reader who saw none of the process: outcome
   first, then evidence, risks if any, and the next step; plain sentences, no
   internal labels, arrow chains, or invented shorthand from the run.
