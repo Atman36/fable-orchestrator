@@ -340,6 +340,11 @@ repository sources only by absolute path under that root, or
 names. Never ask a shell-less reader for command output (line or match counts,
 `wc`, HEAD, test runs): route it to a shell-holding worker or measure it as
 head bookkeeping.
+Generate both venue-header forms with `scripts/venue-header.py --role reader`
+or `--role executor` instead of writing them by hand: the reader form carries
+the measured values and asks for no command, and the helper refuses a root that
+is not the repository top level. (Hand-written headers asked shell-less
+readers for commands in at least four sessions.)
 
 A spec-reality divergence is a spec defect, not the executor's failure: fix
 the spec yourself and re-dispatch (the escalation ladder does not advance).
@@ -407,6 +412,17 @@ branch** after inspecting its local state. Some hosts create worktrees from
 remote refs and others from local HEAD: inspect the actual base, never assume
 either. A stopped worker's worktree may persist or be reclaimed depending on
 the host; verify its existence and diff before resume or replacement.
+
+**Cleanup is a removal with consumers.** Before deleting a worktree, branch,
+cached image, tool install, or cache — by the head or a worker — grep the task
+directories' harnesses and tools, runbooks, STATUS/handoff files, and receipts
+for its path or name; a referenced item stays, or its consumer is repointed in
+the same step. Record each local branch's full SHA before removing worktrees
+and verify `refs/heads` afterwards: a worktree manager can delete the branch,
+unpushed commits included, while reporting success (observed with Orca
+`worktree rm`). Measure reclaimed space with `df` after each deletion: `du`
+overstates copy-on-write clones, and deletions inside a VM disk do not return
+host space without a trim.
 
 Before dispatching any executor whose DoD is check-driven — especially a
 headless or runner-adapter chain — verify the permission surface allows the
@@ -484,6 +500,14 @@ Before every new dispatch, re-check for concurrent writers and the preceding
 landed diff. Stale specs have their exact anchors re-verified. Quarantine
 foreign modifications; never stage, reset or overwrite them. Update the
 single task board from observed outcomes, never from a pending notification.
+
+A fact or decision the head changes after dispatch — a narrowed owner
+decision, a revised value or deadline — is a contract change, not a note:
+re-dispatch it explicitly to every in-flight or not-yet-accepted task whose
+spec carries the old value, and in the same step list the owner-facing docs
+(STATUS, handoff) and the tests or fixtures that pin the old value as that
+task's update set. Documentation commits land after the last fact-changing
+commit.
 
 ### 5. Acceptance — a separate verifier
 

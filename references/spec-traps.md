@@ -493,6 +493,13 @@ location, and current content:
   Cross-check a scout-authored
   instruction doc's own test list against its Steps/DoD before freezing the
   spec, and resolve any contradiction by the DoD.
+- Raw diagnostic capture is credential-bearing by default: local-stack startup
+  output, environment dumps, and assertion failures that stringify client,
+  page, or connection objects. Assertions compare primitive facts; workers
+  discard raw streams or persist only sanitized extracts, and the spec names
+  which. A secret-absence check matches the extracted secret values as fixed
+  strings against the outputs: a generic key=long-token shape regex hits
+  field-name constants and quoted pattern text and stops correct work.
 - A spec that delegates acceptance to a source doc or shared contract quotes
   the criteria list verbatim (or binds the doc itself) and derives its DoD
   from it line-by-line — every "must" line gets a mechanical check in each
@@ -575,6 +582,11 @@ location, and current content:
   each applicable path and an accepting control under the fixed policy, then
   apply the mutation-probe rule above. No generic checker can infer an arbitrary
   project's release policy or CI-attempt ordering; derive both from its contract.
+- An environment or deployment gate is a positive allowlist of named safe
+  targets: a missing, misspelled, or unrecognized marker resolves to the
+  restrictive branch. A deny-list ("anything except production") is fail-open,
+  and a unit test asserting that behavior pins the defect rather than proving
+  the gate.
 - Exact-answer, classifier, routing, and language-boundary changes need
   adversarial controls, not only happy paths. The DoD includes: positive cases
   for each intended spelling/script, negative cases where the token is only a
@@ -881,6 +893,16 @@ location, and current content:
   resource state, and trace redaction through producer → logger → terminal
   output. A sibling callsite or lower-layer rejection is not coverage for the
   named branch.
+- Async work that can outlive its scope — a request, observer callback, or
+  setup hook racing an identity change (sign-in or sign-out, filter, company,
+  a newer request) — adds late completion to that matrix: every outstanding
+  operation finishing after the change, in both orders, with success and
+  failure. A stale completion is fenced by the identity it started under: it
+  applies no state, leaves no lock or loading sentinel disarmed for the current
+  identity, and no cleanup tears down shared fixtures before in-flight writes
+  settle. Drive completion order with controllable deferred promises, not
+  sleeps, and keep explicit user-intent ownership separate from cache or
+  notification generations.
 - For a closed union, derive members from the production public contract,
   exercise behavior at the real producer boundary, assert the exact member set,
   and mutation-test removal of one member. A table that fabricates or shadows

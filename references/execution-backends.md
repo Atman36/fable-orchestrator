@@ -81,6 +81,11 @@ and https://github.com/awslabs/cli-agent-orchestrator/blob/main/docusaurus/docs/
   with confirmed filesystem isolation, no shared writeable contract/runtime,
   headroom, and an integration order. Limit fan-out by verified throughput,
   not social-media agent counts. A git worktree is not a security sandbox.
+- Concurrent heads, executors, and every sub-worker they spawn share the
+  provider's rate limit; count them all against the fan-out cap. Executor
+  dispatches forbid sub-agents unless the spec grants a fan-out budget. A
+  worker that dies on a rate-limit error is retried only after its footprint is
+  checked and concurrency has dropped.
 - For every worker record `task ID → attempt/owner → state → artifact → next
   transition` in the existing PLAN.md (or the host's durable state if it
   provides equivalent auditable ownership); do not build two competing boards.

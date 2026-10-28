@@ -365,8 +365,9 @@ chat.
   fresh narrow verifier against the artifact and spec. A checkpoint preserves
   progress; completion still requires the full report and acceptance evidence.
 - Match requested operations to the worker's actual tool inventory before
-  dispatch. If a reader lacks shell, the head supplies Git metadata separately;
-  neither a role label nor a report requirement creates a missing capability.
+  dispatch. If a reader lacks shell, the head supplies Git metadata separately
+  (`scripts/venue-header.py --role reader`); neither a role label nor a report
+  requirement creates a missing capability.
 - Label every dispatch — the host's description field **if supported** and
   report filename — as `<role or model> + <task id> + <short subject>` (e.g. `Executor T4 P1.2
   snapshot`, `reports/executor-T4.md`) so the user can follow the pipeline

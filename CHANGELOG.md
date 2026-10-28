@@ -1,5 +1,41 @@
 # Changelog
 
+## 2.57.0 — 2026-10-29
+
+Owner-requested consolidation of both editions' journals (46 pending records
+from ten sessions, plus two events from this run). Promoted clusters seen in
+at least two sessions; the environment-allowlist clause is a single-session
+corollary of the existing fail-closed rules. 20 records applied, 16
+already-covered records dispositioned without new text, 10 left pending
+(single session or project-specific). Hard rules 1–5, autonomy tiers and the
+routing table are unchanged.
+
+- `scripts/venue-header.py` (+ test): generates the reader and executor venue
+  headers from measured `rev-parse` values and refuses a root that is not the
+  repository top level. The prose rule "supply measured root/HEAD to
+  shell-less readers" failed in at least four sessions, so it is now a helper;
+  `SKILL.md` and `references/pipeline.md` point at it.
+- `references/pipeline.md`: cleanup is a removal with consumers — grep task
+  tools, runbooks, STATUS/handoff and receipts before deleting a worktree,
+  branch, cached image or cache; snapshot branch SHAs before worktree removal
+  (a manager deleted 25 branches while reporting success); measure reclaimed
+  space with `df` (two sessions). A fact or decision changed after dispatch
+  is re-dispatched as a contract change, with the docs and tests pinning the
+  old value in the same task's update set (two sessions).
+- `references/spec-traps.md`: async work outliving its scope adds late
+  completion across identity changes to the scenario matrix, with identity
+  fencing, lock/sentinel re-arm and write quiescence before cleanup (two
+  sessions, five rejections); environment gates are positive allowlists;
+  raw diagnostic capture is credential-bearing and secret-absence checks
+  match extracted values, not a shape regex (three sessions).
+- `references/execution-backends.md`: heads, executors and their sub-workers
+  share one provider rate limit; executors spawn no sub-agents without a
+  granted fan-out budget (two sessions).
+- `references/consolidation.md`: the fresh verifier recomputes every numeric
+  claim of the new CHANGELOG entry with a parser; sessions without an ID are
+  unknown, so counts read "at least N" (an over-count recurred in this run
+  after the 2.53.0 one).
+
 ## 2.56.0 — 2026-10-28
 
 Owner-requested consolidation of one session's feedback (ten points) plus a

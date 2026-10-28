@@ -67,6 +67,12 @@ verifier still validates the result.
   lines — a reflow makes line counts incomparable across versions; and any
   compression or rewrite of a rules section gets a clause-level diff audit by
   the fresh verifier, because even careful rewriting silently drops directives.
+- **Recompute every number:** the fresh verifier recomputes each numeric claim
+  in the new CHANGELOG entry (records, sessions, dispositions, per-rule
+  session counts) with a JSON parser over the journals and the disposition
+  file; a count taken from the semantic cluster instead of the applied records
+  is a finding. Session counts follow the provenance rule above: records
+  without `session_id` are unknown, so claim "at least N".
 - **DoD:** `scripts/feedback-log.py audit` and `scripts/publish-check.sh` exit 0; hard rules unchanged unless the
   user approved changing them; frontmatter intact. Commit; push on user
   confirmation or when the user asked for publication.
