@@ -86,6 +86,31 @@ and https://github.com/awslabs/cli-agent-orchestrator/blob/main/docusaurus/docs/
   dispatches forbid sub-agents unless the spec grants a fan-out budget. A
   worker that dies on a rate-limit error is retried only after its footprint is
   checked and concurrency has dropped.
+- **Context inheritance is measured per host, and set per spawn where the API
+  allows it.** This skill's default is a fresh worker that sees only its brief.
+  Before the first dispatch, read the spawn API: where it exposes an inheritance
+  option, set it explicitly on every spawn — Codex `spawn_agent` takes
+  `fork_context` (boolean; omitted = fresh) in the v1 multi-agent tool, but
+  `fork_turns` (`none` | `all`; omitted = `all`, a full-history fork) in
+  MultiAgentV2, where a fresh worker needs `fork_turns: "none"`. Where it
+  exposes none, rely on the host's documented behavior. A canary is informative
+  in one direction only: a child that repeats an unguessable marker (a fresh
+  UUID) written only in the head's own turn, never in a file or brief, almost
+  certainly inherited it; a miss is supporting evidence, not proof of a fresh
+  start. Without documented fresh starts, a check by that host's worker is not
+  independent acceptance. A fork is an opt-in experiment for an executor or
+  explorer whose task depends on the head's accumulated context (owner intent,
+  rejected options, live state) that a written brief would compress lossily; it
+  spends the child's context on the parent's history. Never fork a verifier,
+  reviewer or second-opinion worker: inherited authorship removes the
+  independence acceptance relies on, so a forked check counts as a self-check.
+  Forked children have continued the parent thread's role instead of the
+  delegated prompt (openai/codex#24150): open each fork's message with a role
+  boundary (you are the delegated <role>; inherited history is reference only;
+  this message is the active task; spawn agents only within the spec's fan-out
+  budget), and accept its output against the spec and DoD like any worker's.
+  Record `context: fresh | fork` per dispatch; widen forking beyond experiments
+  only after a same-task fresh-versus-fork comparison on the project's own work.
 - For every worker record `task ID → attempt/owner → state → artifact → next
   transition` in the existing PLAN.md (or the host's durable state if it
   provides equivalent auditable ownership); do not build two competing boards.

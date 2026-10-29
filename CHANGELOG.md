@@ -1,5 +1,25 @@
 # Changelog
 
+## 2.59.0 — 2026-10-29
+
+Owner-requested adoption of an external idea (mattpocock/skills#1341: start
+subagents with a fresh context, not a fork), reframed by the owner: in the
+owner's runs workers have not inherited the head's context, and inheritance
+is worth exploring rather than only forbidding. Source check of the Codex
+runtime: the v1 `spawn_agent` `fork_context` defaults to fresh, while
+MultiAgentV2 `fork_turns` defaults to a full-history fork.
+
+- `references/execution-backends.md`: context inheritance is measured per
+  host and set per spawn where the API allows it (`fork_turns: "none"` on
+  MultiAgentV2); a host without the option relies on its documented behavior
+  (a canary can show inheritance, never freshness), and its checks are not
+  independent without documented fresh starts. Forking is an opt-in
+  experiment for executors and explorers with a role-boundary preamble
+  (openai/codex#24150), never for verifiers or reviewers; widen it only after
+  a fresh-versus-fork comparison.
+- `SKILL.md`: pointer in § Divide by context; the agent ledger records
+  `context (fresh/fork)` per dispatch.
+
 ## 2.58.0 — 2026-10-29
 
 Owner-requested follow-up consolidation of 14 records journaled after 2.57.0

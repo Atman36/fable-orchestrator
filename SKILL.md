@@ -103,7 +103,10 @@ the rest and returns a compact result. Steps that chain on each other's output
 over the same small surface belong in one worker: a bounded recon phase with a
 stop-and-report gate inside the executor's spec beats a scout → head →
 executor relay, since every hop hands back a lossy summary. Verification
-always stays a separate context.
+always stays a separate context. Workers start fresh by default; some hosts
+fork the parent history unless told otherwise, so measure the host and set
+inheritance per spawn where its API allows, and fork only as a deliberate
+experiment, never for verification (`references/execution-backends.md`).
 
 Use deterministic orchestration where the flow is known: chain tasks through
 PLAN.md statuses, run independent file-disjoint work in parallel, and use an
@@ -457,6 +460,7 @@ stays local and gitignored.
   internal labels, arrow chains, or invented shorthand from the run.
 - Every final report and session handoff ends with an agent ledger: how many
   agents/model calls ran in the session, one row per dispatch with role, task,
-  requested route (provider/model/effort), observed self-reported model, and
-  outcome/artifact, plus the head model. Count from tool results, not memory;
-  a dispatch whose model could not be confirmed says so.
+  requested route (provider/model/effort), context (fresh/fork), observed
+  self-reported model, and outcome/artifact, plus the head model. Count from
+  tool results, not memory; a dispatch whose model could not be confirmed says
+  so.
