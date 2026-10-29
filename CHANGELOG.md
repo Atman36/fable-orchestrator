@@ -1,5 +1,24 @@
 # Changelog
 
+## 2.59.0 — 2026-10-29
+
+Owner-requested executable acceptance-evidence check. This is a tool addition,
+not a feedback consolidation; no journal entries were dispositioned and the
+hard rules remain unchanged.
+
+- `scripts/check-acceptance.py` compares explicitly required gates with typed
+  receipts, exact candidate SHA/ref, target and suite, and hashed artifacts.
+  Component or mocked evidence cannot satisfy a declared full-E2E gate;
+  missing, skipped, stale or inconsistent evidence is not admitted.
+- Synthetic CLI tests cover identity, status, schema, artifact integrity,
+  privacy-safe diagnostics and read-only operation. The publish allowlist
+  admits only the two new script names.
+- `references/acceptance-evidence.md` documents the opt-in interface and its
+  limits, linked from final review. `EVIDENCE_CONSISTENT` establishes only
+  consistency of supplied claims and bytes, not genuine execution, complete
+  coverage, live Git state, product acceptance or release approval. The
+  handoff snapshot validator retains its existing contract.
+
 ## 2.58.0 — 2026-10-29
 
 Owner-requested follow-up consolidation of 14 records journaled after 2.57.0

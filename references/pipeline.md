@@ -589,6 +589,9 @@ or no-diff task: `T<n> ✅ no repo change — <verifier's one-line verdict>`.
 Never touch the spec file after dispatch: it stays the clean record of "what
 was ordered".
 
+For explicit required-gate receipt consistency before final acceptance, use the
+opt-in `scripts/check-acceptance.py` interface in `references/acceptance-evidence.md`.
+
 ### 6. Final review
 
 Before dispatch, copy exact primary acceptance lines from the deepest current
