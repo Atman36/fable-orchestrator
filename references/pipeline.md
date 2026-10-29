@@ -78,10 +78,12 @@ Every spec is self-contained. Template:
                executor needs SO THEY NEVER EXPLORE.
 ## Decisions — forks you resolved, one-line rationale each. For every behavior
                a Decision changes or moves: the runnable grep for tests,
-               mocks and consumers pinning the OLD behavior, its hits, and
-               the authorized test-to-update set with before/after — or the
-               grep with "0 hits". Other failing tests stay stop points
-               (spec-traps § Enumerate the category).
+               mocks and consumers pinning the OLD behavior — every test
+               tier, including DB-backed and browser specs the executor
+               cannot run, and earlier tasks' diffs in this session — its
+               hits, and the authorized test-to-update set with
+               before/after — or the grep with "0 hits". Other failing tests
+               stay stop points (spec-traps § Enumerate the category).
 ## Steps     — numbered plan of edits, by file.
 ## Boundaries— what NOT to do: no drive-by refactoring, don't touch generated
                code, nothing beyond the task, no speculative abstractions.
@@ -371,8 +373,11 @@ For tasks sharing a runtime lock, specify an executable lifetime and recovery
 contract. Prefer process-scoped locks; otherwise keep acquire/work/release in
 one shell call with exit cleanup, or persist the task/attempt, holder process
 identity and lock generation across calls. Bound acquisition waits and name
-the recovery owner: hard kills bypass exit traps. Reclaim only through a
-race-safe runtime operation that rechecks the same lock generation and proves
+the recovery owner: hard kills bypass exit traps.
+In a persistent tool shell, run acquire/work/release inside an explicit child
+process (`bash -c`), so the holder PID and exit cleanup belong to that child,
+not the long-lived host shell. Reclaim only through a race-safe runtime
+operation that rechecks the same lock generation and proves
 its holder dead. A PID alone, a timeout, missing ownership data or permission
 denial cannot authorize removal. For a live hung worker, use only its
 confirmed owned backend's authorized interruption path, then verify death

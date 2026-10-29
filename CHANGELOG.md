@@ -1,5 +1,20 @@
 # Changelog
 
+## 2.58.0 — 2026-10-29
+
+Owner-requested follow-up consolidation of 14 records journaled after 2.57.0
+(13 here from two sessions, one in the `.claude` edition). Two clusters met
+the two-session bar: 5 records applied, 2 already covered, 7 pending (single
+session or project-specific).
+
+- `references/pipeline.md` runtime-lock contract: in a persistent tool shell,
+  acquire/work/release runs inside an explicit child process, preserving the
+  existing generation-checked, race-safe recovery requirements (two sessions).
+- `references/pipeline.md` spec template: the Decisions grep for tests pinning
+  the old behavior covers every test tier, including DB-backed and browser
+  specs the executor cannot run, and earlier tasks' diffs in the same session
+  (two sessions).
+
 ## 2.57.0 — 2026-10-29
 
 Owner-requested consolidation of both editions' journals (46 pending records
