@@ -1,5 +1,31 @@
 # Changelog
 
+## 2.60.0 — 2026-11-02
+
+Owner-requested review of both local journals: 90 input records from at least
+21 originating sessions (4 records lack session IDs). 18 records applied;
+72 dispositioned as covered, superseded, refuted, project-specific, or lacking
+independent-session evidence. One maintenance preflight-conflict event is
+archived separately. Original observations remain local; none enter the public
+distribution. Hard rules, autonomy tiers and routing-table defaults are unchanged.
+
+- `references/omp.md`: replace the obsolete blanket prohibition on ordinary
+  per-call pins with live-schema routing, override-conflict and approval gates.
+  Confirm every specialist's route; separate requested, host-confirmed and
+  self-reported identity. Record served tier from receipts, not configuration;
+  an owner-counter discrepancy halts further billed dispatch until resolved or
+  explicitly authorized. `SKILL.md` links this branch and updates the ledger.
+- `references/spec-traps.md`: prove trusted signals reach their consuming
+  function; bind shared-surface acceptance and rework to the canonical full
+  relevant suite on the exact candidate, falling back to the project suite
+  when its scope cannot be established. Distinguish CI eligibility, executed
+  jobs and deployed runtime; inspect disabled/filtered/zero-step runs before
+  claiming release evidence. Reuse the existing executable Local citation
+  gate rather than duplicate its manifest contract.
+- `references/pipeline.md`: same-family P2 findings now trigger the existing
+  convergence cap, not only MAJORs; require a class-level invariant and
+  category evidence before another review. The bounded retry cap stays intact.
+
 ## 2.59.0 — 2026-10-29
 
 Owner-requested adoption of an external idea (mattpocock/skills#1341: start

@@ -46,21 +46,39 @@ stop dependent work on failure. Hooks preserve the task's approval boundaries.
 
 ## Per-spawn model routing
 
-The documented task wire schema carries no per-spawn model for ordinary
-agents; precedence is `task.agentModelOverrides[<agent>]`, then the agent's
-frontmatter `model`, then the parent's model. Check the installed task schema
-first. When it offers no usable per-task model, route one spawn through a
-temporary override:
+Read the active task schema before selecting a route: hosts differ on whether
+ordinary agents accept a per-call `model`. Where supported, use an exact
+approved pin only when it does not conflict with that agent's
+`task.agentModelOverrides` entry. A rejected pin starts no worker; stop that
+dispatch and report the conflict, never silently substitute a configured model.
+Check each agent type separately, including `security-reviewer`; a task or
+reviewer override says nothing about another specialist's route.
 
-1. Read and record the current `task.agentModelOverrides` value.
-2. Set the session-only override for that agent name (a settings write needs
-   the owner's approval; never persist it).
-3. Spawn exactly the dispatches that need the route.
-4. Restore the recorded value immediately after the spawn.
-5. Ledger the requested route and the child's self-reported model.
+When no usable pin exists, use a configured route only if it is confirmed
+approved for the task. Otherwise obtain an owner-approved session-only routing
+change, preserving and restoring the exact prior value immediately after the
+intended spawns; never persist it or leave a blanket override active. Inspect
+settings only through an authorized host interface. A routing workaround does
+not change role capability: mechanical agents remain mechanical, not general
+executors chosen merely because their pin is accepted.
 
-A blanket override left active reroutes every later spawn of that agent: one
-owner-requested reviewer model silently became the route for all reviewers.
+Ledger the requested route, host-confirmed effective route and child's reported
+identity separately; unavailable evidence is `unknown`, not the requested name.
+Runtime model changes are recorded per phase, not rewritten as one head model.
+
+## Served service tier
+
+Before billed fan-out, establish the requested and effective service tier for
+each role from available host receipts or usage evidence. Configured or
+requested speed is not proof of the served tier: record the observed tier per
+dispatch, or `unknown` when the host provides no receipt. Tier names and their
+prices are host-specific; a Fast/priority request on one host establishes
+neither support nor cost on another. Retain the owner's model and cost gates.
+
+An owner usage counter disagreeing with the ledger is evidence of a discrepancy,
+not a reason to dismiss the counter. Report it and stop further billed dispatch
+until the routing/tier is resolved or the owner authorizes proceeding with the
+stated uncertainty. Do not change settings or buy a faster tier to diagnose it.
 
 ## Persisting read-only reports
 
@@ -87,3 +105,5 @@ Sources (checked 2026-10-23; installed-docs sections 2026-10-28):
 - https://omp.sh/docs/hooks
 - installed OMP docs `task-agent-discovery.md` (model precedence) and
   `compaction.md` (triggers, threshold settings)
+- 2026-11-02 routing revision: active task-tool schema and local feedback;
+  the web sources above were not rechecked for this revision.

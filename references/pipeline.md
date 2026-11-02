@@ -656,10 +656,13 @@ You arbitrate every finding:
   now — wire it, or propose a reviewed, authorized removal; never silently
   delete an unrelated user-owned artifact to make the review clean.
 
-**Convergence cap.** When review keeps finding same-family MAJORs in one
-component, the method is failing, not the last patch. After the second
-same-family MAJOR, stop witness-driven fixes and re-spec against the category
-(spec-traps: "A fix to a heuristic grammar, parser, matcher or classifier").
+**Convergence cap.** Repeated same-family correctness findings, including P2s,
+mean the method is failing, not merely the last patch. After the second such
+review round on one component, stop witness-driven fixes and re-spec against
+the category (spec-traps: "A fix to a heuristic grammar, parser, matcher or
+classifier"). Require a class-level invariant and category-matrix, differential
+or property evidence before another review; use a shared source of truth or
+required typed input where it removes the cause, not as generic abstraction.
 After three failed review rounds on one change, dispatch no further patch:
 re-scope, split, or switch to a structural change, and record the round
 history in PLAN.md.

@@ -33,6 +33,9 @@ location, and current content:
   carries the new field" fails at an action-layer input builder that maps
   fields explicitly, and every named row/field of a render/report spec needs a
   persisted producer — a value can be computed and then discarded.
+  For a trusted signal, prove it reaches the exact consuming function; its
+  presence in another module or snapshot does not establish availability.
+  A missing signal becomes an explicit source/contract Decision before dispatch.
 - A member of a type union is not evidence the code path exists — trace the
   producer of each variant.
 - An API gateway's error-code contract differs from the backing system's —
@@ -233,10 +236,11 @@ location, and current content:
   to one migration number was frozen into an owner-facing addendum before the
   second scout's deciding quote arrived with a different one, forcing a
   correction edit.
-- Paths and identifiers enter a spec by PASTE from the scout report, never
-  retyped. A plausible-but-wrong parent directory (same file name, same line
-  number, same field content) is exactly the token that gets mis-recalled, and
-  the executor pays for it at dispatch time.
+- Paste paths and identifiers from measured source evidence into specs and
+  head-authored synthesis documents. A digest paraphrase is not an edit anchor.
+  Run the Local citation gate below before dispatch, with separate measured
+  roots and manifests for differing editions; semantic attribution stays a
+  separate check.
 - WHEN a destructive mechanism fires is never inferred from adjacent facts.
   "Deletions run only at the end of a successful scan" held for one removal
   class while policy-driven removals applied inline mid-run — the reassurance
@@ -546,13 +550,16 @@ location, and current content:
   (open-to-assert), never deleted — typecheck and lint cannot see any of this.
 - A shared UI primitive, shell/API-request change, or domain-type cutover
   enumerates every consuming interaction helper, mock, constructor, and exact
-  action-count assertion. Bind the executor DoD to the canonical runner's
-  collected consumer set, including strict API mocks and shell/layout tests;
-  reconcile collected versus executed test paths mechanically. If that set
-  cannot be established, run the full relevant suite. A hand-picked passing
-  subset does not close shared-surface acceptance. Focused transpile tests are
-  not a type gate: run workspace TypeScript diagnostics plus that consuming
-  suite before handoff.
+  action-count assertion. Bind acceptance to the canonical runner's full
+  relevant suite, derived from its collected consumer set, including strict
+  API mocks and shell/layout tests; reconcile collected versus executed paths.
+  If the relevant suite cannot be established, run the full project suite.
+  Named-file or grep-selected green tests alone do not close acceptance.
+  The executor or a named independent verifier runs that suite on the exact
+  candidate before review, including rework. Reuse evidence only for an
+  unchanged candidate; a change invalidates affected-suite results. Focused
+  transpile tests are not a type gate: run workspace TypeScript diagnostics
+  plus the consuming suite before handoff.
 - Keep source-shaped review bundles outside compiler and test-discovery roots.
   If a foreign bundle already exists, preserve it and identify its owner before
   remediation. Bind the gate to the repository's real compiler configuration
@@ -587,6 +594,15 @@ location, and current content:
   restrictive branch. A deny-list ("anything except production") is fail-open,
   and a unit test asserting that behavior pins the defect rather than proving
   the gate.
+- A CI-backed release proves that the eligible run started and reached every
+  required job on the exact candidate SHA. Check workflow state and trigger
+  filters before dispatch: a disabled workflow, ignored docs-only push, or
+  failed run with zero executed steps is not code verification. Inspect run
+  annotations for the cause, including billing restrictions. Choose the
+  intended automatic trigger or an authorized manual dispatch, not both.
+  Enabling workflows, spending, and deployment retain their approval gates.
+  Report merged source, CI acceptance, and deployed runtime separately; neither
+  a merge nor a green build proves rollout.
 - Exact-answer, classifier, routing, and language-boundary changes need
   adversarial controls, not only happy paths. The DoD includes: positive cases
   for each intended spelling/script, negative cases where the token is only a

@@ -237,9 +237,9 @@ fork that halts the pipeline for one narrow question. Standing gates:
 
 ## Model routing
 
-For OMP advisors, reviewer priorities, event hooks, per-spawn model pins,
-persisting read-only reports, or context compaction, read `references/omp.md`
-before configuring or relying on them.
+For OMP advisors, reviewer priorities, event hooks, model routing or served-tier
+evidence, persisting read-only reports, or context compaction, read
+`references/omp.md` before configuring or relying on them.
 
 | Role | Codex-native route | Claude-native route | Effort |
 |---|---|---|---|
@@ -460,7 +460,7 @@ stays local and gitignored.
   internal labels, arrow chains, or invented shorthand from the run.
 - Every final report and session handoff ends with an agent ledger: how many
   agents/model calls ran in the session, one row per dispatch with role, task,
-  requested route (provider/model/effort), context (fresh/fork), observed
-  self-reported model, and outcome/artifact, plus the head model. Count from
-  tool results, not memory; a dispatch whose model could not be confirmed says
-  so.
+  requested route (provider/model/effort), context (fresh/fork), host-confirmed
+  effective model, separately self-reported identity, observed service tier,
+  and outcome/artifact, plus the head model per phase. Count from tool
+  results, not memory; unavailable model or tier evidence is `unknown`.
