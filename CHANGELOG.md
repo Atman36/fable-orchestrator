@@ -1,5 +1,26 @@
 # Changelog
 
+## 2.61.0 — 2026-11-03
+
+Owner-requested prompt audit (anthropics/skills `prompt-audit.md`). Only
+findings with a repository-grounded or documented-pattern basis are applied;
+conflicts involving authorization, safety or unordered history stay open for
+the owner. Hard rules, autonomy tiers and routing-table defaults are unchanged.
+
+- `references/model-roles.md`: drop the stale "native `task` accepts `model`
+  only for `seance`" claim and the unpinned-dispatch fallback; defer to the
+  live task schema and `references/omp.md` § Per-spawn model routing. A
+  rejected pin stops the dispatch. The `omp -p` exact-route runner stays.
+- `references/consolidation.md`: describe the archive helper's real guarantee
+  — all dispositions validated before writes; archive append and journal
+  rewrite are separate, so an interrupted move may need recovery — instead of
+  "all-or-nothing".
+- `SKILL.md`, `references/feedback-loop.md`, `references/pipeline.md`: replace
+  numeric output ceilings (≤15-line digest, ≤30-line SUMMARY, one-line
+  proposals) and "don't retell reports" with content requirements: material
+  evidence, verdicts and uncertainty, kept scan-able. Record formats (PLAN
+  status line, JSONL entries) are unchanged.
+
 ## 2.60.0 — 2026-11-02
 
 Owner-requested review of both local journals: 90 input records from at least

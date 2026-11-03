@@ -72,8 +72,8 @@ journal.
 At session start (after reading SUMMARY.md and auditing the journal) and again at session close,
 consolidation is due when any issue_key has ≥2 entries from ≥2 different
 sessions, or ≥5 entries have `status:"new"`, or the user asks for it. When
-due, propose it in one line and run on confirmation — never silently rewrite
-your own operating rules. **To run a consolidation, read
+due, briefly name the reason and proposed scope, then run on confirmation —
+never silently rewrite your own operating rules. **To run a consolidation, read
 `references/consolidation.md` first** — it holds the promotion gate, the
 smallest-surface and privacy rules, the disposition mechanics, the
 consolidation DoD, and the self-modification-classifier exception for editing
@@ -90,12 +90,13 @@ Before the final report:
    anything missed to `log.jsonl`. "Nothing to log" is valid only when no
    trigger fired.
 3. **Digest.** If anything was appended this session, refresh the
-   pending-clusters list in `SUMMARY.md` (≤30 lines: issue_key, count,
-   one-line lesson). SUMMARY is derived state — the orchestrator updates it
-   directly, no pipeline.
+   pending-clusters list in `SUMMARY.md` with each issue_key, count and
+   concise lesson. Preserve decision-relevant evidence and uncertainty.
+   SUMMARY is derived state — the orchestrator updates it directly, no
+   pipeline.
 4. **Trigger check.** If the review trigger is met, propose consolidation in
-   the final report as one line naming the top clusters; run it on
-   confirmation — this session if budget allows, else first thing next
+   the final report, briefly naming the top clusters and proposed scope; run
+   it on confirmation — this session if budget allows, else first thing next
    session.
 5. **Report.** The final report names the feedback outcome explicitly:
    entries logged (by issue_key) or "no feedback events this session".

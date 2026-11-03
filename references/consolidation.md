@@ -60,7 +60,9 @@ verifier still validates the result.
 - **Disposition:** every reviewed entry becomes `applied@<version>` or
   `rejected(<reason>)`; move them only through
   `python3 scripts/feedback-log.py archive --dispositions <json>` (a list of
-  `{"record", "disposition"}`; locked, fingerprint-matched, all-or-nothing).
+  `{"record", "disposition"}`; locked and fingerprint-matched. All dispositions
+  are validated before writes; archive append and journal rewrite are separate
+  operations, so an interrupted move may need recovery).
   Events appended after the snapshot stay pending. Never rewrite the journal
   from a read snapshot. Bump CHANGELOG.md; regenerate SUMMARY.md.
 - **Measure and audit the edit:** size deltas are in bytes (`wc -c`), never

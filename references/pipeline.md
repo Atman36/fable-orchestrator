@@ -12,11 +12,12 @@
 
 ### 1. Recon (subagents, parallel)
 
-If the local `feedback/SUMMARY.md` exists, skim it (≤30 lines): generalizable
-lessons adjust routing and spec emphasis. Missing local feedback is normal in a
-clean skill installation. Before dispatch, use `references/execution-backends.md`
-to verify which reader/worker/runner actually exists; do not assume the host
-implements native agents, worktrees or notifications.
+If the local `feedback/SUMMARY.md` exists, skim its relevant clusters:
+generalizable lessons adjust routing and spec emphasis. Missing local feedback
+is normal in a clean skill installation. Before dispatch, use
+`references/execution-backends.md` to verify which reader/worker/runner
+actually exists; do not assume the host implements native agents, worktrees or
+notifications.
 
 **Bounded evidence first.** Separate fixed extraction from interpretation:
 known literal searches, inventories, counts, and named gate commands use a

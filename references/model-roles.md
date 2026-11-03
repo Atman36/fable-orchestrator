@@ -79,16 +79,17 @@ Fable and Astra below require explicit opt-in; neither is an automatic tier.
 
 **Exact routing.** Catalog presence is not successful inference. Tool role
 labels do not guarantee per-dispatch model selection: check supported pinning
-or overrides and report the actual route. Observed in four OMP sessions: the
-native `task` tool accepts `model` only for `seance`; scouts and task workers
-run on the host default route. For an authorized OMP smoke, and as the worker
-runner when the exact route matters, use the installed
+or overrides and report the actual route. Per-call pin support differs by host
+and agent type: read the active task schema and follow `references/omp.md`
+§ Per-spawn model routing. Where supported, use an exact approved per-call pin
+that does not conflict with the agent's override; a rejected pin starts no
+worker — stop that dispatch, never substitute an unpinned or different model.
+When the exact route matters and no native route is usable, run an authorized
+OMP smoke and then the worker through the installed
 `omp -p --model <exact-provider/model>` with a temporary configuration overlay
-`retry: { modelFallback: false }` (a worker run only after its smoke); do not
-resume a session or use fuzzy ids. For a native spawn on an exact route, use
-the temporary override sequence in `references/omp.md` § Per-spawn model
-routing. Otherwise dispatch natively, record the requested route as unpinned,
-and ledger the self-reported model.
+`retry: { modelFallback: false }`; do not resume a session or use fuzzy ids.
+Record the requested route, host-confirmed effective route and child's
+self-reported identity separately; unavailable evidence is `unknown`.
 Judgment separately requires `modelRoles.judge: openai-codex/gpt-6-luna` and
 `retry.fallbackChains.judge: []`; do not append a chat thinking suffix to judge.
 

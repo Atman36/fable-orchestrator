@@ -327,8 +327,9 @@ chat.
   native read-only worker returns the complete report and the head persists
   it verbatim there (on OMP: `cp agent://<id> <taskdir>/reports/<agent>.md`).
   Never grant write tools merely to obtain a report.
-  The ≤15-line digest includes the path, quotes, numbers, and verdicts needed
-  for judgment; deciding "by pointer" without seeing the fact is forbidden.
+  The digest includes the report path and the evidence needed for judgment:
+  material quotes, numbers, verdicts and uncertainty. Keep it scan-able;
+  deciding "by pointer" without seeing the fact is forbidden.
 - Idle notification with no final message → read the report file before
   re-asking the agent.
 - A stop notification is not completion and its digest is not evidence: a
@@ -442,7 +443,8 @@ stays local and gitignored.
 ## Communication discipline
 
 - One short pipeline status: done / in progress / blocked-and-why.
-- Don't retell subagent reports — only the decision and the next step.
+- Summarize decisions and next steps, including material evidence or risks
+  the user needs; leave bulky raw reports in their artifacts.
 - Progress claims only from tool results of this session; unverified — say so.
 - Check available budget/limit evidence at session start and before a large
   dispatch. Use a supported host usage panel or an **already-installed** local
